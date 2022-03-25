@@ -95,6 +95,13 @@
             <version>2.7.11</version>
         </dependency>
 
+        <!-- jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.19.0</version>
+        </dependency>
+
         <!-- 代码生成器依赖  V3.0.3+ -->
         <!--<dependency>
             <groupId>com.baomidou</groupId>

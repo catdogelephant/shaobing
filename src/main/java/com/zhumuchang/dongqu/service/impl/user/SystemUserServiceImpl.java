@@ -12,7 +12,6 @@ import com.zhumuchang.dongqu.api.service.SystemUserService;
 import com.zhumuchang.dongqu.config.utils.PwUtils;
 import com.zhumuchang.dongqu.mapper.user.SystemUserMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -31,7 +30,6 @@ import java.time.LocalDateTime;
 @Service
 public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemUser> implements SystemUserService {
 
-    @DubboReference
 
     @Autowired
     private SystemUserMapper systemUserMapper;
@@ -43,7 +41,9 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
             log.info("登录 - 用户不存在 - param={}", JSONObject.toJSON(param));
             return null;
         }
-
+        //生成token
+//        Jwts.builder().setSubject()
+//        JwtUtil.checkSign()
         return null;
     }
 
