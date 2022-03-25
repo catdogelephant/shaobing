@@ -22,4 +22,9 @@ public class LoginTokenDto implements Serializable {
      * userId
      */
     private String userId;
+
+    /**
+     * 返回异常信息
+     */
+    private String respMsg;
 }

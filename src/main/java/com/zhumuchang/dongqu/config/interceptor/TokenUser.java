@@ -1,6 +1,6 @@
 package com.zhumuchang.dongqu.config.interceptor;
 
-import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
 import java.io.Serializable;

@@ -18,7 +18,7 @@ public class LoginDto implements Serializable {
      * 用户名
      */
     @NotBlank(message = "请输入用户名")
-    private String userName;
+    private String account;
 
     /**
      * 密码

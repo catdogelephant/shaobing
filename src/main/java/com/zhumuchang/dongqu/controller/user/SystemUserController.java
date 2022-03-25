@@ -34,15 +34,21 @@ public class SystemUserController {
     @Resource
     private SystemUserService systemUserService;
 
+    @PassToken
     @PostMapping(name = "登录", path = "/login")
     public ResultDto login(@Valid @RequestBody LoginDto param, HttpServletRequest request) {
         LoginTokenDto resp = systemUserService.login(param);
-        if (null != resp) {
-            ResultDto result = new ResultDto(resp, 200, "请求成功");
-            return result;
+        if (null == resp) {
+            return new ResultDto(null, 500, "登录失败");
         }
-        return new ResultDto(null, 500, "请求失败");
+        if (!StringUtils.isEmpty(resp.getRespMsg())) {
+            return new ResultDto(null, 500, resp.getRespMsg());
+        }
+        return new ResultDto(resp, 200, "请求成功");
     }
+    //异常情况：
+    //1、未知：返回500
+    //2、可返回错误信息：101
 
     @PassToken
     @PostMapping(name = "注册", path = "/register")

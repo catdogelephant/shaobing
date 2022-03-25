@@ -1,13 +1,19 @@
 package com.zhumuchang.dongqu.config.interceptor;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import cn.hutool.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 import com.zhumuchang.dongqu.config.utils.JacksonUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @Author sx
@@ -32,7 +38,34 @@ public class JwtUtil {
      **/
     private static final cn.hutool.crypto.symmetric.AES AES = SecureUtil.aes(THE_SECOND_MESSAGE_KEY);
 
-    public static TokenUser checkSign(String token,String userId,String tokenSecret) {
+    /**
+     * 获取token
+     *
+     * @param subject     加密数据（一般包括userId、userName、附加内容）
+     * @param validPeriod 过期时间
+     * @return token
+     */
+    public static String getToken(JSONObject subject, long validPeriod) {
+        if (null == subject || null == subject.get("userId") || null == subject.get("userName")) {
+            log.info("JwtUtil - 获取token - subject参数为空 - subject={}", subject);
+            return null;
+        }
+        if (0 >= validPeriod) {
+            log.info("JwtUtil - 获取token - 过期时间错误 - validPeriod={}", validPeriod);
+            return null;
+        }
+        subject.put("rn", RandomUtil.randomString(8));
+        long now = System.currentTimeMillis();
+        JwtBuilder jwtBuilder = Jwts.builder()//.setIssuer("goldnurse.com")
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + validPeriod))
+                .setSubject(Arrays.toString(AES.encrypt(JacksonUtil.toJson(subject))))
+                .signWith(SignatureAlgorithm.HS256, DEFAULT_TOKEN_SECRET);
+        String token = jwtBuilder.compact();
+        return token;
+    }
+
+    public static TokenUser checkSign(String token, String userId, String tokenSecret) {
 
         JSONObject jsonObject;
         try {
@@ -50,7 +83,7 @@ public class JwtUtil {
         if (jsonObject == null
                 || jsonObject.get("userId") == null
                 || jsonObject.get("userName") == null
-                || ! jsonObject.get("userId").toString().equals(userId)){
+                || !jsonObject.get("userId").toString().equals(userId)) {
             log.info("TOKEN 信息无效");
             return null;
         }

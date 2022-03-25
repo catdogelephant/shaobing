@@ -26,7 +26,7 @@ public interface SystemUserMapper extends BaseMapper<SystemUser> {
      * @param param 请求参数
      * @return userId
      */
-    String login(@Param("param") LoginDto param);
+    SystemUser login(@Param("param") LoginDto param);
 
     /**
      * 新增系统管理员并返回主键id

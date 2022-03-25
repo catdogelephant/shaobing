@@ -7,13 +7,14 @@
         values(#{systemUser.openId}, #{systemUser.name}, #{systemUser.phone}, #{systemUser.account}, #{systemUser.password}, #{systemUser.createdTime})
     </insert>
 
-    <select id="login" resultType="java.lang.String">
+    <select id="login" resultType="com.zhumuchang.dongqu.api.bean.user.SystemUser">
         SELECT
-            `id`
+            `id`,
+            `name`,
+            `password`
         FROM
             `system_user`
         WHERE
-            `name` = #{param.userName}
-            AND password = #{param.password}
+            `account` = #{param.account}
     </select>
 </mapper>
