@@ -4,6 +4,9 @@ import com.zhumuchang.dongqu.config.interceptor.JwtInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -28,7 +31,7 @@ public class MyConfige implements WebMvcConfigurer{
 //        };
 //    }
 
-    @Value("${jwt.tokenSecret}")
+    @Value("${jwt.token.secret}")
     private String tokenSecret;
 
     @Override
@@ -41,11 +44,24 @@ public class MyConfige implements WebMvcConfigurer{
 
     /**
      * jwt拦截器
-     *
-     * @return
      */
     @Bean
     public JwtInterceptor jwtInterceptor() {
         return new JwtInterceptor(tokenSecret);
+    }
+
+    /**
+     * redisTemplate
+     */
+    @Bean
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        template.setKeySerializer(stringRedisSerializer);
+        template.setValueSerializer(stringRedisSerializer);
+        template.setHashKeySerializer(stringRedisSerializer);
+        template.setHashValueSerializer(stringRedisSerializer);
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
     }
 }

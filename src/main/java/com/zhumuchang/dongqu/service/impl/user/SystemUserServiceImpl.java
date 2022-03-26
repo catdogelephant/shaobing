@@ -15,9 +15,13 @@ import com.zhumuchang.dongqu.config.utils.PwUtils;
 import com.zhumuchang.dongqu.mapper.user.SystemUserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -31,9 +35,18 @@ import java.time.LocalDateTime;
 @Service
 public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemUser> implements SystemUserService {
 
-
     @Autowired
     private SystemUserMapper systemUserMapper;
+
+    /**
+     * redisTemplate
+     */
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
+
+
+    @Value("${jwt.token.timeout}")
+    private long tokenTimeOut;
 
     @Override
     public LoginTokenDto login(LoginDto param) {
@@ -55,8 +68,10 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
         JSONObject subject = new JSONObject();
         subject.put("userId", systemUser.getId());
         subject.put("userName", systemUser.getName());
-        String token = JwtUtil.getToken(subject, 10000);
+        String token = JwtUtil.getToken(subject, tokenTimeOut);
         resp.setToken(token);
+        //放入缓存
+        redisTemplate.opsForValue().set("token", token, tokenTimeOut, TimeUnit.SECONDS);
         return resp;
     }
 

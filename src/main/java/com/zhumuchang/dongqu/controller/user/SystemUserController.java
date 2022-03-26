@@ -1,7 +1,6 @@
 package com.zhumuchang.dongqu.controller.user;
 
 
-import cn.hutool.core.util.IdUtil;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
@@ -60,8 +59,29 @@ public class SystemUserController {
         return new ResultDto(null, ResponseEnum.FAIL.getCode(), errorMsg);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         System.out.println(IdUtil.simpleUUID());
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        arrayList.add(5);
+        arrayList.add(2);
+//        arrayList.add(1);
+//        arrayList.add(3);
+        arrayList.add(4);
+        Collections.sort(arrayList);
+        System.out.println(arrayList);
+        int i = Collections.binarySearch(arrayList, 3);
+        System.out.println(i);
+        arrayList.add(-i-1, 3);
+        System.out.println(arrayList);
+        Collections.fill(arrayList, 10);
+        System.out.println(arrayList);
+        Integer[] array = arrayList.toArray(new Integer[1]);
+        for (Integer integer : array) {
+            System.out.println(integer);
+        }
+    }*/
+
+    public static void main(String[] args) {
     }
 
 }
