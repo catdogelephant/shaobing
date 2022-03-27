@@ -7,6 +7,7 @@ import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
 import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
 import com.zhumuchang.dongqu.api.service.SystemUserService;
+import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ public class SystemUserController {
     @Resource
     private SystemUserService systemUserService;
 
+    @ApiIdempotent
     @PassToken
     @PostMapping(name = "登录", path = "/login")
     public ResultDto login(@Valid @RequestBody LoginDto param, HttpServletRequest request) {
@@ -82,6 +84,9 @@ public class SystemUserController {
     }*/
 
     public static void main(String[] args) {
+        Thread thread = new Thread();
+        thread.interrupt();
+        thread.stop();
     }
 
 }

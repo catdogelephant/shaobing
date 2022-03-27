@@ -117,6 +117,12 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!-- aop -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- 代码生成器依赖  V3.0.3+ -->
         <!--<dependency>
             <groupId>com.baomidou</groupId>
