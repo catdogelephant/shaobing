@@ -2,7 +2,7 @@ package com.zhumuchang.dongqu.api.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zhumuchang.dongqu.api.bean.user.SystemUser;
+import com.zhumuchang.dongqu.api.bean.user.SesameSystemUser;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
@@ -15,7 +15,7 @@ import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
  * @author sx
  * @since 2022-03-12
  */
-public interface SystemUserService extends IService<SystemUser> {
+public interface SystemUserService extends IService<SesameSystemUser> {
 
     /**
      * 登录

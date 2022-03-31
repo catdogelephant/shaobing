@@ -2,7 +2,7 @@ package com.zhumuchang.dongqu.mapper.user;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zhumuchang.dongqu.api.bean.user.SystemUser;
+import com.zhumuchang.dongqu.api.bean.user.SesameSystemUser;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @Mapper
-public interface SystemUserMapper extends BaseMapper<SystemUser> {
+public interface SystemUserMapper extends BaseMapper<SesameSystemUser> {
 
     /**
      * 登录
@@ -26,13 +26,13 @@ public interface SystemUserMapper extends BaseMapper<SystemUser> {
      * @param param 请求参数
      * @return userId
      */
-    SystemUser login(@Param("param") LoginDto param);
+    SesameSystemUser login(@Param("param") LoginDto param);
 
     /**
      * 新增系统管理员并返回主键id
      *
-     * @param systemUser 请求参数
+     * @param sesameSystemUser 请求参数
      * @return 主键id
      */
-    Integer insertSystemUser(@Param("systemUser") SystemUser systemUser);
+    Integer insertSystemUser(@Param("systemUser") SesameSystemUser sesameSystemUser);
 }

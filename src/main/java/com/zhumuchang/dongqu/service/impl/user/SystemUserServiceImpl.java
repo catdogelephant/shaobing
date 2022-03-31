@@ -5,7 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zhumuchang.dongqu.api.bean.user.SystemUser;
+import com.zhumuchang.dongqu.api.bean.user.SesameSystemUser;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Service
-public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemUser> implements SystemUserService {
+public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SesameSystemUser> implements SystemUserService {
 
     @Autowired
     private SystemUserMapper systemUserMapper;
@@ -50,15 +50,15 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
 
     @Override
     public LoginTokenDto login(LoginDto param) {
-        SystemUser systemUser = systemUserMapper.login(param);
+        SesameSystemUser sesameSystemUser = systemUserMapper.login(param);
         LoginTokenDto resp = new LoginTokenDto();
-        if (null == systemUser) {
+        if (null == sesameSystemUser) {
             log.info("登录 - 用户不存在 - param={}", JSONObject.toJSON(param));
             resp.setRespMsg("该用户不存在");
             return resp;
         }
         //校验密码
-        boolean flag = PwUtils.checkPw(param.getPassword(), systemUser.getPassword(), systemUser.getId().toString());
+        boolean flag = PwUtils.checkPw(param.getPassword(), sesameSystemUser.getPassword(), sesameSystemUser.getId().toString());
         if (!flag) {
             log.info("登录 - 密码错误 - param={}", JSONObject.toJSON(param));
             resp.setRespMsg("密码错误");
@@ -66,8 +66,8 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
         }
         //生成token
         JSONObject subject = new JSONObject();
-        subject.put("userId", systemUser.getId());
-        subject.put("userName", systemUser.getName());
+        subject.put("userId", sesameSystemUser.getId());
+        subject.put("userName", sesameSystemUser.getName());
         String token = JwtUtil.getToken(subject, tokenTimeOut);
         resp.setToken(token);
         //放入缓存
@@ -93,16 +93,16 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SystemU
 
     @Override
     public String register(RegisterReq param) {
-        SystemUser systemUser = new SystemUser()
+        SesameSystemUser sesameSystemUser = new SesameSystemUser()
                 .setOpenId(IdUtil.simpleUUID())
                 .setName(param.getUserName())
                 .setPhone(param.getPhone())
                 .setAccount(param.getPhone())
                 .setCreatedTime(LocalDateTime.now());
-        Integer id = systemUserMapper.insertSystemUser(systemUser);
+        Integer id = systemUserMapper.insertSystemUser(sesameSystemUser);
         //获取密码
         String password = PwUtils.processPw("123456", id.toString());
-        SystemUser updateUser = new SystemUser()
+        SesameSystemUser updateUser = new SesameSystemUser()
                 .setId(id)
                 .setPassword(password);
         boolean update = this.updateById(updateUser);

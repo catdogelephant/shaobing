@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class SystemUser extends Peo implements Serializable {
+public class SesameSystemUser extends Peo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhumuchang.dongqu.mapper.user.SystemUserMapper">
 
-    <insert id="insertSystemUser" parameterType="com.zhumuchang.dongqu.api.bean.user.SystemUser" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertSystemUser" parameterType="com.zhumuchang.dongqu.api.bean.user.SesameSystemUser" useGeneratedKeys="true" keyProperty="id">
         insert into `system_user`(open_id, `name`, `phone`, `account`, `password`, created_time)
-        values(#{systemUser.openId}, #{systemUser.name}, #{systemUser.phone}, #{systemUser.account}, #{systemUser.password}, #{systemUser.createdTime})
+        values(#{sesameSystemUser.openId}, #{sesameSystemUser.name}, #{sesameSystemUser.phone}, #{sesameSystemUser.account}, #{sesameSystemUser.password}, #{sesameSystemUser.createdTime})
     </insert>
 
-    <select id="login" resultType="com.zhumuchang.dongqu.api.bean.user.SystemUser">
+    <select id="login" resultType="com.zhumuchang.dongqu.api.bean.user.SesameSystemUser">
         SELECT
             `id`,
             `name`,
