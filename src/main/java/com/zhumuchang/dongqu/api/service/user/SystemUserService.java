@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.api.service;
+package com.zhumuchang.dongqu.api.service.user;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;

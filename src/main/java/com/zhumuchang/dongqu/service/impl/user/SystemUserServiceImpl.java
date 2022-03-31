@@ -9,7 +9,7 @@ import com.zhumuchang.dongqu.api.bean.user.SesameSystemUser;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
-import com.zhumuchang.dongqu.api.service.SystemUserService;
+import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.config.interceptor.JwtUtil;
 import com.zhumuchang.dongqu.config.utils.PwUtils;
 import com.zhumuchang.dongqu.mapper.user.SystemUserMapper;
