@@ -20,4 +20,12 @@ public class ExceptionHandle {
         ResultDto result = new ResultDto(e.getBindingResult().getFieldError().getDefaultMessage(), 500, "参数异常");
         return result;
     }
+
+    @ResponseBody
+    @ExceptionHandler(ArrayIndexOutOfBoundsException.class)
+    public ResultDto arrayIndexOutOfBoundsExceptionHandle(ArrayIndexOutOfBoundsException e) {
+        String message = e.getMessage();
+        ResultDto result = new ResultDto(message, 500, message);
+        return result;
+    }
 }

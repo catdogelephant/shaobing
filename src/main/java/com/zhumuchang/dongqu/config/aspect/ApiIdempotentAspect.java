@@ -60,7 +60,8 @@ public class ApiIdempotentAspect {
             return joinPoint.proceed();
         }
         log.info("Idempotent hits, key=" + key);
-        return "重复访问！";
+        throw new ArrayIndexOutOfBoundsException("重复访问");
+//        return "重复访问！";
 //        throw new PrivateCaptureException("重复访问!");
     }
 }
