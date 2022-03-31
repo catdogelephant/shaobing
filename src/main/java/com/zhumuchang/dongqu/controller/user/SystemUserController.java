@@ -51,6 +51,7 @@ public class SystemUserController {
     //1、未知：返回500
     //2、可返回错误信息：101
 
+    @ApiIdempotent
     @PassToken
     @PostMapping(name = "注册", path = "/register")
     public ResultDto register(@Valid @RequestBody RegisterReq param) {
