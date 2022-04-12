@@ -38,8 +38,8 @@ public class MyConfige implements WebMvcConfigurer{
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration interceptorRegistration = registry.addInterceptor(jwtInterceptor());
         //拦截请求
-//        interceptorRegistration.addPathPatterns("/**");
-        interceptorRegistration.addPathPatterns("/user/**");
+        interceptorRegistration.addPathPatterns("/**");
+//        interceptorRegistration.addPathPatterns("/shaobing/**");
     }
 
     /**

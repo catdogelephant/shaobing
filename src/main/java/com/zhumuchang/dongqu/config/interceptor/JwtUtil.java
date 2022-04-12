@@ -54,6 +54,7 @@ public class JwtUtil {
             log.info("JwtUtil - 获取token - 过期时间错误 - validPeriod={}", validPeriod);
             return null;
         }
+        validPeriod = validPeriod * 1000;
         subject.put("rn", RandomUtil.randomString(8));
         long now = System.currentTimeMillis();
         JwtBuilder jwtBuilder = Jwts.builder()//.setIssuer("goldnurse.com")
@@ -78,17 +79,18 @@ public class JwtUtil {
             subject = new String(AES.decrypt(strToByte(subject)));
             jsonObject = JacksonUtil.toEntity(subject, JSONObject.class);
         } catch (Exception e) {
+            log.error("JwtUtil - 校验token - 异常", e);
             return null;
         }
         if (jsonObject == null
                 || jsonObject.get("userId") == null
                 || jsonObject.get("userName") == null
-                || !jsonObject.get("userId").toString().equals(userId)) {
+                /*|| !jsonObject.get("userId").toString().equals(userId)*/) {
             log.info("TOKEN 信息无效");
             return null;
         }
         TokenUser tokenUser = new TokenUser();
-        tokenUser.setUserId(userId);
+        tokenUser.setUserId(String.valueOf(jsonObject.get("userId")));
         tokenUser.setUserName(jsonObject.get("userName").toString());
         tokenUser.setSubject(jsonObject);
         return tokenUser;
