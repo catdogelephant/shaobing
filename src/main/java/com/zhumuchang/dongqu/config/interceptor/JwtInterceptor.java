@@ -33,7 +33,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         StringBuffer requestURL = request.getRequestURL();
         String token = request.getHeader("token");
-        String userId = request.getHeader("userId");
+//        String userId = request.getHeader("userId");
         String requestMethod = request.getMethod();
 
         //如果不是直接映射到方法直接通过
@@ -49,16 +49,19 @@ public class JwtInterceptor implements HandlerInterceptor {
             //有不校验token注解直接放行
             return true;
         }
-        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(token)) {
-            log.info("用户ID或Token为空 - 请求方法：{}， 地址：{}， userId：{}， token：{}", method, requestURL, userId, token);
+        if (/*StringUtils.isEmpty(userId) || */StringUtils.isEmpty(token)) {
+//            log.info("用户ID或Token为空 - 请求方法：{}， 地址：{}， userId：{}， token：{}", method, requestURL, userId, token);
+            log.info("用户ID或Token为空 - 请求方法：{}， 地址：{}， token：{}", method, requestURL, token);
             return false;
         }
         // 验证 token
-        tokenUser = JwtUtil.checkSign(token, userId, tokenSecret);
-        if (null == token) {
+        tokenUser = JwtUtil.checkSign(token, null, tokenSecret);
+        if (null == tokenUser) {
             log.info("TOKEN 验证失败 - 请求方法：{}， 地址：{}", method, requestURL);
             return false;
         }
+        //把tokenUser放到请求中，在controller上可以拿到
+        request.setAttribute("tokenUser", tokenUser);
         return true;
     }
 }

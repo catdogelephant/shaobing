@@ -13,7 +13,7 @@
             `name`,
             `password`
         FROM
-            `system_user`
+            `sesame_system_user`
         WHERE
             `account` = #{param.account}
     </select>

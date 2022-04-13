@@ -6,7 +6,7 @@ import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
 import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
-import com.zhumuchang.dongqu.api.service.SystemUserService;
+import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
 import org.springframework.util.StringUtils;

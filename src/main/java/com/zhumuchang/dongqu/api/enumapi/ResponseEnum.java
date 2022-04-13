@@ -21,6 +21,11 @@ public enum ResponseEnum {
 
     /** token 失效 */
     TOKEN_FAIL(103, "你的认证信息已失效，请重新登陆"),
+
+    /** 参数类型错误 **/
+    PARAM_NULL_FAIL(401, "参数为空"),
+
+    PARAM_ERROR(402, "参数错误")
     ;
 
     private final Integer code;
