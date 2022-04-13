@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
+import com.zhumuchang.dongqu.api.dto.user.ResultDto;
+import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
 import com.zhumuchang.dongqu.config.constants.ConstantsUtils;
 import com.zhumuchang.dongqu.config.interceptor.TokenUser;
@@ -74,4 +76,39 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
         }
         return null;
     }
+
+    /**
+     * 停启用品类
+     *
+     * @param param     品类ID
+     * @param tokenUser tokenUser
+     * @return 响应对象
+     */
+    @Override
+    public ResultDto enableCategory(ReqOneParamDto param, TokenUser tokenUser) {
+        if (null == param || Objects.isNull(param.getParam()) || StringUtils.isEmpty(String.valueOf(param.getParam())) || null == tokenUser) {
+            log.info("停启用品类 - 参数为空 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
+            return new ResultDto(ResponseEnum.PARAM_NULL_FAIL, null);
+        }
+        String openId = String.valueOf(param.getParam());
+        SesameCategory sesameCategory = sesameCategoryMapper.getByOpenId(openId);
+        if (null == sesameCategory || ConstantsUtils.CODE_0.equals(sesameCategory.getDelFlag())) {
+            log.info("停启用品类 - 品类不存在或品类已删除 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
+            return new ResultDto(ResponseEnum.PARAM_ERROR, null);
+        }
+
+        Integer enable;
+        if (null == sesameCategory.getEnable() || ConstantsUtils.CODE_0.equals(sesameCategory.getEnable())) {
+            enable = ConstantsUtils.CODE_1;
+        } else {
+            enable = ConstantsUtils.CODE_0;
+        }
+        Boolean update = sesameCategoryMapper.updateEnableById(sesameCategory.getId(), enable, tokenUser.getUserId());
+        if (!update) {
+            log.info("停启用品类 - 更新失败 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
+            return new ResultDto(ResponseEnum.FAIL, null);
+        }
+        return new ResultDto(ResponseEnum.SUCCESS, null);
+    }
+
 }

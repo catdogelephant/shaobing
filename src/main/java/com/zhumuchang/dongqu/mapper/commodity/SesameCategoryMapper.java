@@ -33,4 +33,22 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
      * @return 品类数量
      */
     Integer countByName(@Param("name") String name);
+
+    /**
+     * 根据品类ID更新品类停启用状态
+     *
+     * @param categoryId 品类ID
+     * @param enable     停启用状态 0.停用 1.启用
+     * @param updateId   更新人ID
+     * @return true：成功 false：失败
+     */
+    Boolean updateEnableById(@Param("categoryId") Integer categoryId, @Param("enable") Integer enable, @Param("updateId") String updateId);
+
+    /**
+     * 根据对外ID获取品类信息
+     *
+     * @param openId 品类对外ID
+     * @return 品类信息
+     */
+    SesameCategory getByOpenId(String openId);
 }

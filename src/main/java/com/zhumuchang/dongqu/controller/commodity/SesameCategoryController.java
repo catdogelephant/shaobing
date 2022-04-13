@@ -38,4 +38,11 @@ public class SesameCategoryController {
         }
         return new ResultDto(null, 200, "请求成功");
     }
+
+    @PostMapping(name = "停启用品类", value = "/enableCategory")
+    public ResultDto enableCategory(HttpServletRequest request, @RequestBody ReqOneParamDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        ResultDto resultDto = sesameCategoryService.enableCategory(param, tokenUser);
+        return resultDto;
+    }
 }

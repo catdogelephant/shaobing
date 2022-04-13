@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhumuchang.dongqu.mapper.commodity.SesameCategoryMapper">
+    <update id="updateEnableById">
+        UPDATE sesame_category
+        SET `enable` = #{enable}, update_id = #{updateId}
+        WHERE `id` = #{categoryId}
+    </update>
 
     <select id="countByNotDel" resultType="java.lang.Integer">
         SELECT
@@ -19,5 +24,16 @@
         WHERE
             del_flag = 1
             AND `name` = #{name}
+    </select>
+
+    <select id="getByOpenId" resultType="com.zhumuchang.dongqu.api.bean.commodity.SesameCategory">
+        SELECT
+            `id`,
+            `enable`
+        FROM
+            sesame_category
+        WHERE
+            del_flag = 1
+            AND open_id = #{openId}
     </select>
 </mapper>
