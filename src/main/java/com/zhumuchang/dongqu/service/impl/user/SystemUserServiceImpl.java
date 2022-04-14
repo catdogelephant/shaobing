@@ -65,6 +65,15 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SesameS
             resp.setRespMsg("密码错误");
             return resp;
         }
+        //设置redis的key
+        String key = "TOKEN_" + sesameSystemUser.getId();
+        //获取redis中的token
+        String redisToken = redisTemplate.opsForValue().get(key);
+        if (!StringUtils.isEmpty(redisToken)) {
+            log.info("登录 - redis中token未过期");
+            resp.setToken(redisToken);
+            return resp;
+        }
         //生成token
         JSONObject subject = new JSONObject();
         subject.put("userId", sesameSystemUser.getId());
@@ -77,7 +86,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SesameS
         }
         resp.setToken(token);
         //放入缓存
-        redisTemplate.opsForValue().set("token", token, tokenTimeOut, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, token, tokenTimeOut, TimeUnit.SECONDS);
         return resp;
     }
 

@@ -1,6 +1,8 @@
 package com.zhumuchang.dongqu.controller.user;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
@@ -9,14 +11,11 @@ import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
 import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -27,6 +26,7 @@ import javax.validation.Valid;
  * @author sx
  * @since 2022-03-12
  */
+@Slf4j
 @RestController
 @RequestMapping("/user/system")
 public class SystemUserController {
@@ -34,10 +34,24 @@ public class SystemUserController {
     @Resource
     private SystemUserService systemUserService;
 
+    @PassToken
+    @PostMapping(name = "测试", path = "/test", produces = "application/json;charset=utf-8")
+    public Object test() {
+        String str = "test";
+        System.out.println(str);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            str = mapper.writeValueAsString("successtest");
+        } catch (JsonProcessingException e) {
+            log.info("测试feign - 异常", e);
+        }
+        return str;
+    }
+
     @ApiIdempotent
     @PassToken
     @PostMapping(name = "登录", path = "/login")
-    public ResultDto login(@Valid @RequestBody LoginDto param, HttpServletRequest request) {
+    public ResultDto login(@Valid @RequestBody LoginDto param) {
         LoginTokenDto resp = systemUserService.login(param);
         if (null == resp) {
             return new ResultDto(null, 500, "登录失败");
@@ -60,6 +74,32 @@ public class SystemUserController {
             return new ResultDto(ResponseEnum.SUCCESS, null);
         }
         return new ResultDto(null, ResponseEnum.FAIL.getCode(), errorMsg);
+    }
+
+    @PassToken
+    @PostMapping(name = "刷新token", path = "/refreshToken")
+    public String refreshToken(@Valid @RequestBody LoginDto param) {
+        LoginTokenDto resp = systemUserService.login(param);
+        ObjectMapper mapper = new ObjectMapper();
+        String respStr = "";
+        try {
+            if (null == resp) {
+                respStr = mapper.writeValueAsString(new ResultDto(null, 500, "登录失败"));
+            } else if (!StringUtils.isEmpty(resp.getRespMsg())) {
+                respStr = mapper.writeValueAsString(new ResultDto(null, 500, resp.getRespMsg()));
+            } else {
+                respStr = mapper.writeValueAsString(new ResultDto(resp, 200, "请求成功"));
+            }
+        } catch (JsonProcessingException e) {
+            log.info("刷新token - 异常", e);
+            try {
+                return mapper.writeValueAsString(new ResultDto(ResponseEnum.FAIL, null));
+            } catch (JsonProcessingException jsonProcessingException) {
+                log.info("刷新token - 异常 - 转json异常", e);
+                return null;
+            }
+        }
+        return respStr;
     }
 
     /*public static void main(String[] args) {
@@ -85,9 +125,13 @@ public class SystemUserController {
     }*/
 
     public static void main(String[] args) {
-        Thread thread = new Thread();
-        thread.interrupt();
-        thread.stop();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String json = mapper.writeValueAsString("successtest");
+            System.out.println(json);
+        } catch (JsonProcessingException e) {
+            log.info("测试feign - 异常", e);
+        }
     }
 
 }

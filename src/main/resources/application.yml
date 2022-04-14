@@ -11,6 +11,8 @@ spring:
       pool:
         max-active: 8
         max-wait: 30000
+  application:
+    name: springcloudShaobing
 
 server:
   servlet:
@@ -20,3 +22,18 @@ jwt:
   token:
     secret: seeSSSEEE
     timeout: 300
+
+#Eureka配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8010/eureka
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    instance-id: 烧饼服务提供方 #修改Eureka上的默认描述信息
+    prefer-ip-address: true #显示服务的IP地址
+#监控服务默认配置，由actuator包提供
+info: #路径信息点击去后，以json格式呈现
+  app.name: shaobing-springcloud
+  company.name: 烧的SpringCloud初使用'
