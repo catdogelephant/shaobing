@@ -35,17 +35,19 @@ public class SystemUserController {
     private SystemUserService systemUserService;
 
     @PassToken
-    @PostMapping(name = "测试", path = "/test", produces = "application/json;charset=utf-8")
-    public Object test() {
-        String str = "test";
+    @PostMapping(name = "测试", path = "/test"/*, produces = "application/json;charset=utf-8"*/)
+    public LoginDto test() {
+        /*String str = "test";
         System.out.println(str);
         ObjectMapper mapper = new ObjectMapper();
         try {
             str = mapper.writeValueAsString("successtest");
         } catch (JsonProcessingException e) {
             log.info("测试feign - 异常", e);
-        }
-        return str;
+        }*/
+        LoginDto loginDto = new LoginDto();
+        loginDto.setAccount("woshishabi");
+        return loginDto;
     }
 
     @ApiIdempotent
