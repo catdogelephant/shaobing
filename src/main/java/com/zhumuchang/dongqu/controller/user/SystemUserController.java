@@ -1,6 +1,7 @@
 package com.zhumuchang.dongqu.controller.user;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
@@ -9,6 +10,7 @@ import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
 import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,6 +29,7 @@ import javax.validation.Valid;
  * @author sx
  * @since 2022-03-12
  */
+@Slf4j
 @RestController
 @RequestMapping("/user/system")
 public class SystemUserController {
@@ -60,6 +63,27 @@ public class SystemUserController {
             return new ResultDto(ResponseEnum.SUCCESS, null);
         }
         return new ResultDto(null, ResponseEnum.FAIL.getCode(), errorMsg);
+    }
+
+    @PassToken
+    @PostMapping(name = "刷新token", path = "/refreshToken")
+    public LoginTokenDto refreshToken(@RequestBody LoginDto param) {
+        LoginTokenDto resp = new LoginTokenDto();
+        if (null == param || StringUtils.isEmpty(param.getPassword()) || StringUtils.isEmpty(param.getAccount())) {
+            log.info("刷新token - 参数为空 - param={}", JSONObject.toJSON(param));
+            resp.setRespMsg("参数为空");
+            return resp;
+        }
+        resp = systemUserService.login(param);
+        return resp;
+    }
+
+    @PassToken
+    @PostMapping(name = "测试feign调用", path = "/testFeign")
+    public LoginDto testFeign() {
+        LoginDto loginDto = new LoginDto();
+        loginDto.setAccount("woshishabi");
+        return loginDto;
     }
 
     /*public static void main(String[] args) {
