@@ -11,6 +11,8 @@ spring:
       pool:
         max-active: 8
         max-wait: 30000
+  application:
+    name: shaobing
 
 server:
   servlet:
