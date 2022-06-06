@@ -12,10 +12,7 @@ import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -84,6 +81,13 @@ public class SystemUserController {
         LoginDto loginDto = new LoginDto();
         loginDto.setAccount("woshishabi");
         return loginDto;
+    }
+
+    @PassToken
+    @GetMapping(name = "测试Security", path = "/testSecurity")
+    public ResultDto testSecurity() {
+        System.out.println("----------------->>>testSecurity<<<-----------------");
+        return new ResultDto(ResponseEnum.SUCCESS, null);
     }
 
     /*public static void main(String[] args) {
