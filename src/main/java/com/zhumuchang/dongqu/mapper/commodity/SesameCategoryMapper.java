@@ -2,10 +2,14 @@ package com.zhumuchang.dongqu.mapper.commodity;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -51,4 +55,18 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
      * @return 品类信息
      */
     SesameCategory getByOpenId(String openId);
+
+    /**
+     * 品类分页列表
+     *
+     * @param page           分页
+     * @param categoryName   品类名称
+     * @param categoryEnable 品类状态 0.停用 1.启用
+     * @param startTime      开始时间
+     * @param endTime        结束时间
+     * @return 分页列表
+     */
+    Page<RespCategoryPageDto> categoryPage(@Param("page") Page<RespCategoryPageDto> page, @Param("categoryName") String categoryName,
+                                           @Param("categoryEnable") Integer categoryEnable,
+                                           @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
 }

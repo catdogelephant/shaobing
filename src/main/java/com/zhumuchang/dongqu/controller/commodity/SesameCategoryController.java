@@ -1,16 +1,14 @@
 package com.zhumuchang.dongqu.controller.commodity;
 
 
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
 import com.zhumuchang.dongqu.config.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,6 +41,12 @@ public class SesameCategoryController {
     public ResultDto enableCategory(HttpServletRequest request, @RequestBody ReqOneParamDto param) {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         ResultDto resultDto = sesameCategoryService.enableCategory(param, tokenUser);
+        return resultDto;
+    }
+
+    @GetMapping(name = "品类分页列表", value = "/categoryPage")
+    public ResultDto categoryPage(ReqCategoryPageDto param) {
+        ResultDto resultDto = sesameCategoryService.categoryPage(param);
         return resultDto;
     }
 }

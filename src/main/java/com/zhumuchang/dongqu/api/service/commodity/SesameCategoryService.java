@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.api.service.commodity;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.config.interceptor.TokenUser;
@@ -34,4 +35,12 @@ public interface SesameCategoryService extends IService<SesameCategory> {
      * @return 响应对象
      */
     ResultDto enableCategory(ReqOneParamDto param, TokenUser tokenUser);
+
+    /**
+     * 品类分页列表
+     *
+     * @param param 请求参数
+     * @return 品类分页列表
+     */
+    ResultDto categoryPage(ReqCategoryPageDto param);
 }

@@ -3,9 +3,12 @@ package com.zhumuchang.dongqu.service.impl.commodity;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
@@ -109,6 +112,23 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
             return new ResultDto(ResponseEnum.FAIL, null);
         }
         return new ResultDto(ResponseEnum.SUCCESS, null);
+    }
+
+    /**
+     * 品类分页列表
+     *
+     * @param param 请求参数
+     * @return 品类分页列表
+     */
+    @Override
+    public ResultDto categoryPage(ReqCategoryPageDto param) {
+        if (null == param) {
+            param = new ReqCategoryPageDto();
+        }
+        Page<RespCategoryPageDto> page = new Page<>(param.getCurrent(), param.getSize());
+        page = sesameCategoryMapper.categoryPage(page, param.getCategoryName(), param.getCategoryEnable(),
+                param.getStartTime(), param.getEndTime());
+        return new ResultDto(ResponseEnum.SUCCESS, page);
     }
 
 }
