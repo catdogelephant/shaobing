@@ -1,6 +1,7 @@
 package com.zhumuchang.dongqu.api.dto.user;
 
-import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class ResultDto implements Serializable {
     /**
      * 返回值
      */
-    private Object resp;
+    private Object data;
 
     /**
      * 返回状态码
@@ -29,17 +30,42 @@ public class ResultDto implements Serializable {
      */
     private String msg;
 
-    public ResultDto(ResponseEnum responseEnum, Object resp) {
-        this.resp = resp;
-        this.code = responseEnum.getCode();
-        this.msg = responseEnum.getMsg();
+    public ResultDto(BusinessEnum businessEnum, Object data) {
+        this.data = data;
+        this.code = businessEnum.getCode();
+        this.msg = businessEnum.getMsg();
     }
 
-    public ResultDto(){}
+    public ResultDto() {
+    }
 
-    public ResultDto(Object resp, Integer code, String msg) {
-        this.resp = resp;
+    public ResultDto(Object data, Integer code, String msg) {
+        this.data = data;
         this.code = code;
         this.msg = msg;
+    }
+
+    /**
+     * 业务异常返回结果
+     *
+     * @param be 业务异常
+     * @return 返回结果
+     */
+    public static ResultDto businessError(BusinessException be) {
+        return new ResultDto(null, be.getErrorCode(), be.getErrorMsg());
+    }
+
+    /**
+     * 其他异常返回结果
+     *
+     * @param businessEnum 返回枚举
+     * @return 返回结果
+     */
+    public static ResultDto otherError(BusinessEnum businessEnum) {
+        return new ResultDto(null, businessEnum.getCode(), businessEnum.getMsg());
+    }
+
+    public static ResultDto successful() {
+        return new ResultDto(BusinessEnum.SUCCESS, null);
     }
 }

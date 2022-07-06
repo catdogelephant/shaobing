@@ -10,7 +10,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
-import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
@@ -91,13 +91,13 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
     public ResultDto enableCategory(ReqOneParamDto param, TokenUser tokenUser) {
         if (null == param || Objects.isNull(param.getParam()) || StringUtils.isEmpty(String.valueOf(param.getParam())) || null == tokenUser) {
             log.info("停启用品类 - 参数为空 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
-            return new ResultDto(ResponseEnum.PARAM_NULL_FAIL, null);
+            return new ResultDto(BusinessEnum.PARAM_NULL_FAIL, null);
         }
         String openId = String.valueOf(param.getParam());
         SesameCategory sesameCategory = sesameCategoryMapper.getByOpenId(openId);
         if (null == sesameCategory || ConstantsUtils.CODE_0.equals(sesameCategory.getDelFlag())) {
             log.info("停启用品类 - 品类不存在或品类已删除 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
-            return new ResultDto(ResponseEnum.PARAM_ERROR, null);
+            return new ResultDto(BusinessEnum.PARAM_ERROR, null);
         }
 
         Integer enable;
@@ -109,9 +109,9 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
         Boolean update = sesameCategoryMapper.updateEnableById(sesameCategory.getId(), enable, tokenUser.getUserId());
         if (!update) {
             log.info("停启用品类 - 更新失败 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
-            return new ResultDto(ResponseEnum.FAIL, null);
+            return new ResultDto(BusinessEnum.FAIL, null);
         }
-        return new ResultDto(ResponseEnum.SUCCESS, null);
+        return new ResultDto(BusinessEnum.SUCCESS, null);
     }
 
     /**
@@ -128,7 +128,7 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
         Page<RespCategoryPageDto> page = new Page<>(param.getCurrent(), param.getSize());
         page = sesameCategoryMapper.categoryPage(page, param.getCategoryName(), param.getCategoryEnable(),
                 param.getStartTime(), param.getEndTime());
-        return new ResultDto(ResponseEnum.SUCCESS, page);
+        return new ResultDto(BusinessEnum.SUCCESS, page);
     }
 
 }

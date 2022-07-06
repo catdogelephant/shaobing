@@ -8,7 +8,7 @@ import lombok.Getter;
  * @Date 2022/3/22 18:36
  */
 @Getter
-public enum ResponseEnum {
+public enum BusinessEnum {
 
     /** 操作成功 */
     SUCCESS(200, "操作成功"),
@@ -22,17 +22,20 @@ public enum ResponseEnum {
     /** token 失效 */
     TOKEN_FAIL(103, "你的认证信息已失效，请重新登陆"),
 
-    /** 参数类型错误 **/
+    /** 参数类型错误 */
     PARAM_NULL_FAIL(401, "参数为空"),
 
-    PARAM_ERROR(402, "参数错误")
+    PARAM_ERROR(402, "参数错误"),
+
+    /** 操作类型错误 */
+    NO_PERMISSION(403, "没有权限操作")
     ;
 
     private final Integer code;
 
     private final String msg;
 
-    ResponseEnum(Integer code, String msg) {
+    BusinessEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }

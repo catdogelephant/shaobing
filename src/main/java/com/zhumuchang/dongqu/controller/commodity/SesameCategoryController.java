@@ -4,7 +4,9 @@ package com.zhumuchang.dongqu.controller.commodity;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -48,5 +50,10 @@ public class SesameCategoryController {
     public ResultDto categoryPage(ReqCategoryPageDto param) {
         ResultDto resultDto = sesameCategoryService.categoryPage(param);
         return resultDto;
+    }
+
+    @GetMapping(name = "测试自定义异常和异常拦截器", value = "/test/business")
+    public ResultDto testBusinessException() {
+        throw new BusinessException(BusinessEnum.NO_PERMISSION);
     }
 }
