@@ -45,7 +45,8 @@
             created_time
         FROM
             sesame_category
-        <where>
+        WHERE
+            del_flag = 1
             <if test="categoryName != null and categoryName != ''">
                 AND `name` LIKE CONCAT('%', #{categoryName}, '%')
             </if>
@@ -58,8 +59,21 @@
             <if test="endTime != null ">
                 AND <![CDATA[DATE_FORMAT(created_time,'%Y-%m-%d') <= DATE_FORMAT(#{endTime},'%Y-%m-%d') ]]>
             </if>
-        </where>
         ORDER BY
             created_time DESC
+    </select>
+    <select id="categoryDetailByOpenId"
+            resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto">
+        SELECT
+            open_id,
+            `name` AS categoryName,
+            `enable` AS categoryEnable,
+            created_name,
+            created_time
+        FROM
+            sesame_category
+        WHERE
+            open_id = #{openId}
+            AND del_flag = 1
     </select>
 </mapper>

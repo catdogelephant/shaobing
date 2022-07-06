@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.controller.commodity;
 
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
@@ -50,6 +51,12 @@ public class SesameCategoryController {
     public ResultDto categoryPage(ReqCategoryPageDto param) {
         ResultDto resultDto = sesameCategoryService.categoryPage(param);
         return resultDto;
+    }
+
+    @GetMapping(name = "根据ID获取品类详情", value = "/categoryDetail")
+    public Object categoryDetailByOpenId(String id) {
+        RespCategoryPageDto resp = sesameCategoryService.categoryDetailByOpenId(id);
+        return resp;
     }
 
     @GetMapping(name = "测试自定义异常和异常拦截器", value = "/test/business")

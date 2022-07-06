@@ -37,15 +37,9 @@ public class SystemUserController {
     @ApiIdempotent
     @PassToken
     @PostMapping(name = "登录", path = "/login")
-    public ResultDto login(@Valid @RequestBody LoginDto param, HttpServletRequest request) {
-        LoginTokenDto resp = systemUserService.login(param);
-        if (null == resp) {
-            return new ResultDto(null, 500, "登录失败");
-        }
-        if (!StringUtils.isEmpty(resp.getRespMsg())) {
-            return new ResultDto(null, 500, resp.getRespMsg());
-        }
-        return new ResultDto(resp, 200, "请求成功");
+    public Object login(@Valid @RequestBody LoginDto param, HttpServletRequest request) {
+        LoginTokenDto loginTokenDto = systemUserService.login(param);
+        return loginTokenDto;
     }
     //异常情况：
     //1、未知：返回500

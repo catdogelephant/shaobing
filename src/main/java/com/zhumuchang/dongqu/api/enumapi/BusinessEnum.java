@@ -27,8 +27,10 @@ public enum BusinessEnum {
 
     PARAM_ERROR(402, "参数错误"),
 
+    DATA_NOT_FOUND(403, "数据不存在"),
+
     /** 操作类型错误 */
-    NO_PERMISSION(403, "没有权限操作")
+    NO_PERMISSION(413, "没有权限操作")
     ;
 
     private final Integer code;

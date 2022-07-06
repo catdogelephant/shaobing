@@ -65,7 +65,16 @@ public class ResultDto implements Serializable {
         return new ResultDto(null, businessEnum.getCode(), businessEnum.getMsg());
     }
 
-    public static ResultDto successful() {
+    public static ResultDto success() {
         return new ResultDto(BusinessEnum.SUCCESS, null);
     }
+
+    public static ResultDto success(Object data) {
+        return new ResultDto(BusinessEnum.SUCCESS, data);
+    }
+
+    public static ResultDto fail() {
+        return new ResultDto(BusinessEnum.FAIL, null);
+    }
+
 }

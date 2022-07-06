@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
@@ -43,4 +44,12 @@ public interface SesameCategoryService extends IService<SesameCategory> {
      * @return 品类分页列表
      */
     ResultDto categoryPage(ReqCategoryPageDto param);
+
+    /**
+     * 根据ID获取品类详情
+     *
+     * @param openId 品类对外ID
+     * @return 品类详情
+     */
+    RespCategoryPageDto categoryDetailByOpenId(String openId);
 }

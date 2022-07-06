@@ -9,7 +9,9 @@ import com.zhumuchang.dongqu.api.bean.user.SesameSystemUser;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.user.SystemUserService;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.JwtUtil;
 import com.zhumuchang.dongqu.commons.utils.PwUtils;
 import com.zhumuchang.dongqu.mapper.user.SystemUserMapper;
@@ -54,15 +56,13 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SesameS
         LoginTokenDto resp = new LoginTokenDto();
         if (null == sesameSystemUser) {
             log.info("登录 - 用户不存在 - param={}", JSONObject.toJSON(param));
-            resp.setRespMsg("该用户不存在");
-            return resp;
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "用户不存在");
         }
         //校验密码
         boolean flag = PwUtils.checkPw(param.getPassword(), sesameSystemUser.getPassword(), sesameSystemUser.getId().toString());
         if (!flag) {
             log.info("登录 - 密码错误 - param={}", JSONObject.toJSON(param));
-            resp.setRespMsg("密码错误");
-            return resp;
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "密码错误");
         }
         //生成token
         JSONObject subject = new JSONObject();

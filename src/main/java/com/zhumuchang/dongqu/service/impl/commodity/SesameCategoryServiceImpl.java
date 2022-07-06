@@ -13,12 +13,13 @@ import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.mapper.commodity.SesameCategoryMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -47,7 +48,7 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
      */
     @Override
     public String addCategory(ReqOneParamDto param, TokenUser tokenUser) {
-        if (null == param || Objects.isNull(param.getParam()) || StringUtils.isEmpty(String.valueOf(param.getParam())) || null == tokenUser) {
+        if (null == param || Objects.isNull(param.getParam()) || StringUtils.isBlank(String.valueOf(param.getParam())) || null == tokenUser) {
             log.info("新增品类 - 参数为空 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
             return "参数为空";
         }
@@ -89,7 +90,7 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
      */
     @Override
     public ResultDto enableCategory(ReqOneParamDto param, TokenUser tokenUser) {
-        if (null == param || Objects.isNull(param.getParam()) || StringUtils.isEmpty(String.valueOf(param.getParam())) || null == tokenUser) {
+        if (null == param || Objects.isNull(param.getParam()) || StringUtils.isBlank(String.valueOf(param.getParam())) || null == tokenUser) {
             log.info("停启用品类 - 参数为空 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
             return new ResultDto(BusinessEnum.PARAM_NULL_FAIL, null);
         }
@@ -129,6 +130,24 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
         page = sesameCategoryMapper.categoryPage(page, param.getCategoryName(), param.getCategoryEnable(),
                 param.getStartTime(), param.getEndTime());
         return new ResultDto(BusinessEnum.SUCCESS, page);
+    }
+
+    /**
+     * 根据ID获取品类详情
+     *
+     * @param openId 品类对外ID
+     * @return 品类详情
+     */
+    @Override
+    public RespCategoryPageDto categoryDetailByOpenId(String openId) {
+        if (StringUtils.isBlank(openId)) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        RespCategoryPageDto resp = sesameCategoryMapper.categoryDetailByOpenId(openId);
+        if (null == resp) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
+        }
+        return resp;
     }
 
 }

@@ -69,4 +69,12 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
     Page<RespCategoryPageDto> categoryPage(@Param("page") Page<RespCategoryPageDto> page, @Param("categoryName") String categoryName,
                                            @Param("categoryEnable") Integer categoryEnable,
                                            @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+
+    /**
+     * 根据ID获取品类详情
+     *
+     * @param openId 品类对外ID
+     * @return 品类详情
+     */
+    RespCategoryPageDto categoryDetailByOpenId(String openId);
 }

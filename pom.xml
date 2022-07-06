@@ -123,6 +123,11 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
         <!-- 代码生成器依赖  V3.0.3+ -->
         <!--<dependency>
             <groupId>com.baomidou</groupId>
