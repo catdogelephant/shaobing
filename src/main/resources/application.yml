@@ -1,6 +1,7 @@
 spring:
   datasource:  # 数据源
-    url: jdbc:mysql://192.168.17.128:3306/see_see?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&allowMultiQueries=true
+#    url: jdbc:mysql://192.168.17.128:3306/see_see?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/local_easy?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&allowMultiQueries=true
     username: root
     password: 123123
   redis:

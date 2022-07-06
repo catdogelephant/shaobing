@@ -43,9 +43,10 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
+        String name = method.getName();
         //获取方法上面是否有不校验token注解
         PassToken passToken = method.getAnnotation(PassToken.class);
-        if (null != passToken) {
+        if (null != passToken || "error".equals(name)) {
             //有不校验token注解直接放行
             return true;
         }
