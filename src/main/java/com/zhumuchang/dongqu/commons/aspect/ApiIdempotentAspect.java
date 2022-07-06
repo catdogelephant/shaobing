@@ -1,7 +1,7 @@
-package com.zhumuchang.dongqu.config.aspect;
+package com.zhumuchang.dongqu.commons.aspect;
 
-import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
-import com.zhumuchang.dongqu.config.utils.KeyUtil;
+import com.zhumuchang.dongqu.commons.annotation.ApiIdempotent;
+import com.zhumuchang.dongqu.commons.utils.KeyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -39,7 +39,7 @@ public class ApiIdempotentAspect {
     /**
      * Idempotent注解位置
      */
-    @Pointcut("@annotation(com.zhumuchang.dongqu.config.annotation.ApiIdempotent)")
+    @Pointcut("@annotation(com.zhumuchang.dongqu.commons.annotation.ApiIdempotent)")
     public void executeIdempotent() {
     }
 

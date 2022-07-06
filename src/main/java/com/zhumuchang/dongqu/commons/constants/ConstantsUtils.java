@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.config.constants;
+package com.zhumuchang.dongqu.commons.constants;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;

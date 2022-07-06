@@ -5,7 +5,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
-import com.zhumuchang.dongqu.config.interceptor.TokenUser;
+import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;

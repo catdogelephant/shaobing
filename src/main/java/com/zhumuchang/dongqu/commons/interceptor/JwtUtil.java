@@ -1,10 +1,10 @@
-package com.zhumuchang.dongqu.config.interceptor;
+package com.zhumuchang.dongqu.commons.interceptor;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONObject;
-import com.zhumuchang.dongqu.config.utils.JacksonUtil;
+import com.zhumuchang.dongqu.commons.utils.JacksonUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.config.interceptor;
+package com.zhumuchang.dongqu.commons.interceptor;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;

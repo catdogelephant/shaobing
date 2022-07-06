@@ -1,6 +1,6 @@
-package com.zhumuchang.dongqu.config.interceptor;
+package com.zhumuchang.dongqu.commons.interceptor;
 
-import com.zhumuchang.dongqu.config.annotation.PassToken;
+import com.zhumuchang.dongqu.commons.annotation.PassToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;

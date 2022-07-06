@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.config.utils;
+package com.zhumuchang.dongqu.commons.utils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonGenerator;
