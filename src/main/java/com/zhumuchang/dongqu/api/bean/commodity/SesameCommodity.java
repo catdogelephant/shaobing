@@ -64,6 +64,21 @@ public class SesameCommodity implements Serializable {
     private Integer limitBuy;
 
     /**
+     * 序号
+     */
+    private Integer sort;
+
+    /**
+     * 停启用 0.停用 1.启用
+     */
+    private Integer enable;
+
+    /**
+     * 删除状态 0.删除 1.正常
+     */
+    private Integer delFlag;
+
+    /**
      * 创建人id
      */
     private String createdId;

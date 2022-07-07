@@ -1,6 +1,8 @@
 package com.zhumuchang.dongqu.commons.interceptor;
 
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.annotation.PassToken;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -52,13 +54,13 @@ public class JwtInterceptor implements HandlerInterceptor {
         if (/*StringUtils.isEmpty(userId) || */StringUtils.isEmpty(token)) {
 //            log.info("用户ID或Token为空 - 请求方法：{}， 地址：{}， userId：{}， token：{}", method, requestURL, userId, token);
             log.info("用户ID或Token为空 - 请求方法：{}， 地址：{}， token：{}", method, requestURL, token);
-            return false;
+            throw new BusinessException(BusinessEnum.TOKEN_FAIL);
         }
         // 验证 token
         tokenUser = JwtUtil.checkSign(token, null, tokenSecret);
         if (null == tokenUser) {
             log.info("TOKEN 验证失败 - 请求方法：{}， 地址：{}", method, requestURL);
-            return false;
+            throw new BusinessException(BusinessEnum.TOKEN_FAIL);
         }
         //把tokenUser放到请求中，在controller上可以拿到
         request.setAttribute("tokenUser", tokenUser);

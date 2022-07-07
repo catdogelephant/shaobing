@@ -22,15 +22,15 @@ public enum BusinessEnum {
     /** token 失效 */
     TOKEN_FAIL(103, "你的认证信息已失效，请重新登陆"),
 
+    /** 操作类型错误 */
+    NO_PERMISSION(104, "没有权限操作"),
+
     /** 参数类型错误 */
     PARAM_NULL_FAIL(401, "参数为空"),
 
     PARAM_ERROR(402, "参数错误"),
 
-    DATA_NOT_FOUND(403, "数据不存在"),
-
-    /** 操作类型错误 */
-    NO_PERMISSION(413, "没有权限操作")
+    DATA_NOT_FOUND(403, "数据不存在")
     ;
 
     private final Integer code;
