@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -64,14 +65,28 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserMapper, SesameS
             log.info("登录 - 密码错误 - param={}", JSONObject.toJSON(param));
             throw new BusinessException(BusinessEnum.FAIL.getCode(), "密码错误");
         }
+        //设置redis的key
+        String key = "TOKEN_" + sesameSystemUser.getId();
+        //获取redis中的token
+        String redisToken = redisTemplate.opsForValue().get(key);
+        if (!StringUtils.isEmpty(redisToken)) {
+            log.info("登录 - redis中token未过期");
+            resp.setToken(redisToken);
+            return resp;
+        }
         //生成token
         JSONObject subject = new JSONObject();
         subject.put("userId", sesameSystemUser.getId());
         subject.put("userName", sesameSystemUser.getName());
         String token = JwtUtil.getToken(subject, tokenTimeOut);
+        if (StringUtils.isEmpty(token)) {
+            log.info("登录 - 获取token为空");
+            resp.setRespMsg("登录失败");
+            return resp;
+        }
         resp.setToken(token);
         //放入缓存
-        redisTemplate.opsForValue().set("token", token, tokenTimeOut, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key, token, tokenTimeOut, TimeUnit.SECONDS);
         return resp;
     }
 
