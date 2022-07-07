@@ -13,13 +13,13 @@ spring:
         max-wait: 30000
   application:
     name: shaobing
-  boot:
-    admin:
-      client:
-        url: http://localhost:8002
-        instance:
-          prefer-ip: true # 有可能会遇到该服务注册到Admin上面之后显示的是 当前计算机用户名:当前服务端口号，把这个改成true之后，就变成 当前服务所在ip:端口号，
-                            # 这样Admin就可以检测这个服务的健康情况了，否则找不到该服务
+#  boot:
+#    admin:
+#      client:
+#        url: http://localhost:8002
+#        instance:
+#          prefer-ip: true # 有可能会遇到该服务注册到Admin上面之后显示的是 当前计算机用户名:当前服务端口号，把这个改成true之后，就变成 当前服务所在ip:端口号，
+#                            # 这样Admin就可以检测这个服务的健康情况了，否则找不到该服务
 
 
 server:
@@ -33,12 +33,12 @@ jwt:
 
 # management 是所有actuator的配置
 # management.endpoints.端口名.xxxx 对某个端点的具体配置
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*' # 以web方式暴露所有端点
-    enabled-by-default: true # 开启所有监控端点
-  endpoint:
-    health:
-      show-details: always #展示详细信息
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*' # 以web方式暴露所有端点
+#    enabled-by-default: true # 开启所有监控端点
+#  endpoint:
+#    health:
+#      show-details: always #展示详细信息
