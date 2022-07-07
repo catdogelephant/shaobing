@@ -81,7 +81,7 @@ public class SystemUserController {
     @GetMapping(name = "测试Security", path = "/testSecurity")
     public ResultDto testSecurity() {
         System.out.println("----------------->>>testSecurity<<<-----------------");
-        return new ResultDto(ResponseEnum.SUCCESS, null);
+        return new ResultDto(BusinessEnum.SUCCESS, null);
     }
 
     /*public static void main(String[] args) {
