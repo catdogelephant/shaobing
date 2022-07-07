@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
-import com.zhumuchang.dongqu.config.interceptor.TokenUser;
+import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
 /**
  * <p>

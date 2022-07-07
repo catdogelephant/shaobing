@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.config.utils;
+package com.zhumuchang.dongqu.commons.utils;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.config.handle;
+package com.zhumuchang.dongqu.commons.handle;
 
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import org.springframework.web.bind.MethodArgumentNotValidException;

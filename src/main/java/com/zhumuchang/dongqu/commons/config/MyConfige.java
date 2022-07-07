@@ -1,6 +1,6 @@
-package com.zhumuchang.dongqu.config;
+package com.zhumuchang.dongqu.commons.config;
 
-import com.zhumuchang.dongqu.config.interceptor.JwtInterceptor;
+import com.zhumuchang.dongqu.commons.interceptor.JwtInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
