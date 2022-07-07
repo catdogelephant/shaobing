@@ -150,4 +150,21 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
         return resp;
     }
 
+    /**
+     * 根据对外ID删除品类
+     *
+     * @param openId 品类对外ID
+     */
+    @Override
+    public void delCategoryByOpenId(TokenUser tokenUser, String openId) {
+        if (StringUtils.isBlank(openId) || null == tokenUser) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        RespCategoryPageDto resp = sesameCategoryMapper.categoryDetailByOpenId(openId);
+        if (null == resp) {
+            log.info("根据对外ID删除品类 - 品类不存在或已删除 - openId={}", openId);
+        }
+        sesameCategoryMapper.delCategoryByOpenId(tokenUser.getUserId(), openId);
+    }
+
 }

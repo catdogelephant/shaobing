@@ -77,4 +77,12 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
      * @return 品类详情
      */
     RespCategoryPageDto categoryDetailByOpenId(String openId);
+
+    /**
+     * 根据对外ID删除品类
+     *
+     * @param openId   品类对外ID
+     * @param updateId 操作人ID
+     */
+    void delCategoryByOpenId(@Param("updateId") String updateId, @Param("openId") String openId);
 }

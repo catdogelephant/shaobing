@@ -59,6 +59,13 @@ public class SesameCategoryController {
         return resp;
     }
 
+    @PostMapping(name = "删除品类", value = "/delCategory")
+    public Object delCategoryByOpenId(HttpServletRequest request, String id) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameCategoryService.delCategoryByOpenId(tokenUser, id);
+        return null;
+    }
+
     @GetMapping(name = "测试自定义异常和异常拦截器", value = "/test/business")
     public ResultDto testBusinessException() {
         throw new BusinessException(BusinessEnum.NO_PERMISSION);

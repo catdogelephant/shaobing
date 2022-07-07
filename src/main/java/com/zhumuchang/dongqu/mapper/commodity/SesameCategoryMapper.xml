@@ -7,6 +7,12 @@
         WHERE `id` = #{categoryId}
     </update>
 
+    <update id="delCategoryByOpenId">
+        UPDATE sesame_category
+        SET del_flag = 0, update_Id = #{updateId}
+        WHERE open_id = #{openId}
+    </update>
+
     <select id="countByNotDel" resultType="java.lang.Integer">
         SELECT
             COUNT(1)

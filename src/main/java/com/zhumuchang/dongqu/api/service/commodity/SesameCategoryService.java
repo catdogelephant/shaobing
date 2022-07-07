@@ -46,10 +46,17 @@ public interface SesameCategoryService extends IService<SesameCategory> {
     ResultDto categoryPage(ReqCategoryPageDto param);
 
     /**
-     * 根据ID获取品类详情
+     * 根据对外ID获取品类详情
      *
      * @param openId 品类对外ID
      * @return 品类详情
      */
     RespCategoryPageDto categoryDetailByOpenId(String openId);
+
+    /**
+     * 根据对外ID删除品类
+     *
+     * @param openId 品类对外ID
+     */
+    void delCategoryByOpenId(TokenUser tokenUser, String openId);
 }
