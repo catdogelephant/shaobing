@@ -66,7 +66,7 @@
                 AND <![CDATA[DATE_FORMAT(created_time,'%Y-%m-%d') <= DATE_FORMAT(#{endTime},'%Y-%m-%d') ]]>
             </if>
         ORDER BY
-            created_time DESC
+            `sort`
     </select>
     <select id="categoryDetailByOpenId"
             resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto">
@@ -81,5 +81,19 @@
         WHERE
             open_id = #{openId}
             AND del_flag = 1
+    </select>
+
+    <select id="appCategoryPage"
+            resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto">
+        SELECT
+            open_id,
+            `name` AS categoryName
+        FROM
+            sesame_category
+        WHERE
+            del_flag = 1
+            AND enable = 1
+        ORDER BY
+            `sort`
     </select>
 </mapper>

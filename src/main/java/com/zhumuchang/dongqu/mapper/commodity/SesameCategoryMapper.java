@@ -4,6 +4,7 @@ package com.zhumuchang.dongqu.mapper.commodity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -85,4 +86,12 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
      * @param updateId 操作人ID
      */
     void delCategoryByOpenId(@Param("updateId") String updateId, @Param("openId") String openId);
+
+    /**
+     * app端获取品类分页列表
+     *
+     * @param page 分页参数
+     * @return 品类分页列表
+     */
+    Page<RespAppCategoryPageDto> appCategoryPage(Page<RespAppCategoryPageDto> page);
 }

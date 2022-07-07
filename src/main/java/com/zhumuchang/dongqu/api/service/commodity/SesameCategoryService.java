@@ -1,10 +1,13 @@
 package com.zhumuchang.dongqu.api.service.commodity;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhumuchang.dongqu.api.bean.PageBean;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
@@ -59,4 +62,11 @@ public interface SesameCategoryService extends IService<SesameCategory> {
      * @param openId 品类对外ID
      */
     void delCategoryByOpenId(TokenUser tokenUser, String openId);
+
+    /**
+     * app端获取品类分页列表
+     *
+     * @return 品类分页列表
+     */
+    Page<RespAppCategoryPageDto> appCategoryPage(PageBean param);
 }

@@ -5,9 +5,11 @@ import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhumuchang.dongqu.api.bean.PageBean;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCategory;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
@@ -165,6 +167,18 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
             log.info("根据对外ID删除品类 - 品类不存在或已删除 - openId={}", openId);
         }
         sesameCategoryMapper.delCategoryByOpenId(tokenUser.getUserId(), openId);
+    }
+
+    /**
+     * app端获取品类分页列表
+     *
+     * @return 品类分页列表
+     */
+    @Override
+    public Page<RespAppCategoryPageDto> appCategoryPage(PageBean param) {
+        Page<RespAppCategoryPageDto> page = new Page<>(param.getCurrent(), param.getSize());
+        page = sesameCategoryMapper.appCategoryPage(page);
+        return page;
     }
 
 }
