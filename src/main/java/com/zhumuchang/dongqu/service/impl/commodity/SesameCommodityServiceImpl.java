@@ -17,12 +17,14 @@ import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.mapper.SesameMapper;
 import com.zhumuchang.dongqu.mapper.commodity.SesameCommodityMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ import java.util.regex.Pattern;
  * @author sx
  * @since 2022-07-07
  */
+@Slf4j
 @Service
 public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMapper, SesameCommodity> implements SesameCommodityService {
 
@@ -72,6 +75,14 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
         RespCommodityDetailDto resp = sesameCommodityMapper.commodityDetail(openId);
         if (null == resp) {
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
+        }
+        //图片集合JSON转List
+        String pictureJson = resp.getPictureJson();
+        if (StringUtils.isBlank(pictureJson)) {
+            log.info("根据商品对外ID获取商品详情 - 图片集合JSON为空");
+        } else {
+            List pictureList = JSONObject.parseObject(pictureJson, List.class);
+            resp.setPictureList(pictureList);
         }
         return resp;
     }

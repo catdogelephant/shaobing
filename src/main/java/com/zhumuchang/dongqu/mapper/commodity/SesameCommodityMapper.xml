@@ -18,6 +18,7 @@
             sesame_commodity
         WHERE
             del_flag = 1
+            AND open_id = #{openId}
     </select>
     <select id="countByShopId" resultType="java.lang.Integer">
         SELECT
