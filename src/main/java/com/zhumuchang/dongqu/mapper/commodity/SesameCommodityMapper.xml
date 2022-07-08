@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhumuchang.dongqu.mapper.commodity.SesameCommodityMapper">
+    <update id="updateEnableById">
+        UPDATE sesame_commodity
+        SET `enable` = #{enable} AND updated_id = #{userId} AND updated_name = #{userName}
+        WHERE `id` = #{id}
+    </update>
 
     <select id="commodityDetail"
             resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto">
@@ -28,5 +33,17 @@
         WHERE
             del_flag = 1
             AND sesame_shop_id = #{shopId}
+    </select>
+    <select id="getDtoByOpenId" resultType="com.zhumuchang.dongqu.api.dto.commodity.CommodityDto">
+        SELECT
+            `id`,
+            sesame_shop_id,
+            sesame_category_id,
+            `enable`
+        FROM
+            sesame_commodity
+        WHERE
+            del_flag
+            AND open_id = #{commodityOpenId}
     </select>
 </mapper>

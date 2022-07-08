@@ -42,3 +42,7 @@ jwt:
 #  endpoint:
 #    health:
 #      show-details: always #展示详细信息
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

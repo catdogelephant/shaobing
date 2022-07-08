@@ -5,6 +5,7 @@ import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
+import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -132,6 +134,46 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
     }
 
     /**
+     * 停启用商品
+     *
+     * @param commodityOpenId 商品对外ID
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void enableCommodity(String commodityOpenId, TokenUser tokenUser) {
+        if (StringUtils.isBlank(commodityOpenId)) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.NO_TOKEN);
+        }
+        //查询商品状态，当为null时说明商品不存在
+        CommodityDto commodityDto = sesameCommodityMapper.getDtoByOpenId(commodityOpenId);
+        if (null == commodityDto) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
+        }
+        //判断当前商品所在的店铺，是否包含当前用户店员信息
+        Boolean shopClerkFlag = sesameClerkService.checkShopExistenceClerk(tokenUser.getUserId(), commodityDto.getSesameShopId());
+        if (!Boolean.TRUE.equals(shopClerkFlag)) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
+        }
+        //更新商品状态
+        Integer enable = 0;
+        if (null == commodityDto.getEnable()) {
+            log.info("停启用商品 - 实体数据异常 - commodityOpenId={}, commodityDto={}", commodityOpenId, JSONObject.toJSONString(commodityDto));
+            throw new BusinessException(BusinessEnum.DATA_ERROR);
+        }
+        if (commodityDto.getEnable() == 0) {
+            enable = 1;
+        }
+        Integer update = sesameCommodityMapper.updateEnableById(commodityDto.getId(), enable, tokenUser.getUserId(), tokenUser.getUserName());
+        if (1 != update) {
+            log.info("停启用商品 - 更新状态失败 - commodityOpenId={}, commodityDto={}, enable={}", commodityOpenId, JSONObject.toJSONString(commodityDto), enable);
+            throw new BusinessException(BusinessEnum.FAIL);
+        }
+    }
+
+    /**
      * 创建商品对象
      *
      * @param sesameShopId    店铺主键ID
@@ -164,7 +206,7 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
         commodity.setCreatedId(createdId);
         commodity.setCreatedName(createdName);
         commodity.setCreatedTime(LocalDateTime.now());
-        commodity.setUpdateId(createdId);
+        commodity.setUpdatedId(createdId);
         commodity.setUpdatedName(createdName);
         commodity.setUpdatedTime(LocalDateTime.now());
         return commodity;

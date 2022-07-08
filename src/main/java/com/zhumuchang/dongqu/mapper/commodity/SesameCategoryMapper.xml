@@ -3,13 +3,13 @@
 <mapper namespace="com.zhumuchang.dongqu.mapper.commodity.SesameCategoryMapper">
     <update id="updateEnableById">
         UPDATE sesame_category
-        SET `enable` = #{enable}, update_id = #{updateId}
+        SET `enable` = #{enable}, updated_id = #{updatedId}
         WHERE `id` = #{categoryId}
     </update>
 
     <update id="delCategoryByOpenId">
         UPDATE sesame_category
-        SET del_flag = 0, update_Id = #{updateId}
+        SET del_flag = 0, updated_Id = #{updatedId}
         WHERE open_id = #{openId}
     </update>
 

@@ -39,4 +39,10 @@ public class SesameCommodityController {
         return null;
     }
 
+    @PostMapping(name = "停启用商品", path = "/enableCommodity")
+    public Object enableCommodity(HttpServletRequest request, String commodityId) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameCommodityService.enableCommodity(commodityId, tokenUser);
+        return null;
+    }
 }

@@ -44,10 +44,10 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
      *
      * @param categoryId 品类ID
      * @param enable     停启用状态 0.停用 1.启用
-     * @param updateId   更新人ID
+     * @param updatedId   更新人ID
      * @return true：成功 false：失败
      */
-    Boolean updateEnableById(@Param("categoryId") Integer categoryId, @Param("enable") Integer enable, @Param("updateId") String updateId);
+    Boolean updateEnableById(@Param("categoryId") Integer categoryId, @Param("enable") Integer enable, @Param("updatedId") String updatedId);
 
     /**
      * 根据对外ID获取品类信息
@@ -83,9 +83,9 @@ public interface SesameCategoryMapper extends BaseMapper<SesameCategory> {
      * 根据对外ID删除品类
      *
      * @param openId   品类对外ID
-     * @param updateId 操作人ID
+     * @param updatedId 操作人ID
      */
-    void delCategoryByOpenId(@Param("updateId") String updateId, @Param("openId") String openId);
+    void delCategoryByOpenId(@Param("updatedId") String updatedId, @Param("openId") String openId);
 
     /**
      * app端获取品类分页列表

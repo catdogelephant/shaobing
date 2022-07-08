@@ -75,7 +75,7 @@ public class SesameCategory implements Serializable {
     /**
      * 更新人id
      */
-    private String updateId;
+    private String updatedId;
 
     /**
      * 更新人

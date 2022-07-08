@@ -35,7 +35,9 @@ public enum BusinessEnum {
 
     DATA_NOT_FOUND(403, "数据不存在"),
 
-    DATA_BUSINESS_ERROR(405, "数据业务异常")
+    DATA_BUSINESS_ERROR(405, "数据业务异常"),
+
+    DATA_ERROR(406, "实体数据异常")
     ;
 
     private final Integer code;

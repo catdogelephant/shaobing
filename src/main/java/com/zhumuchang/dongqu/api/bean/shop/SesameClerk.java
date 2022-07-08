@@ -1,9 +1,10 @@
 package com.zhumuchang.dongqu.api.bean.shop;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -69,7 +70,7 @@ public class SesameClerk implements Serializable {
     /**
      * 更新人id
      */
-    private String updateId;
+    private String updatedId;
 
     /**
      * 更新人

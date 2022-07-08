@@ -31,4 +31,11 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @param param 请求参数
      */
     void addCommodity(ReqAddCommodityDto param, TokenUser tokenUser);
+
+    /**
+     * 停启用商品
+     *
+     * @param commodityOpenId 商品对外ID
+     */
+    void enableCommodity(String commodityOpenId, TokenUser tokenUser);
 }

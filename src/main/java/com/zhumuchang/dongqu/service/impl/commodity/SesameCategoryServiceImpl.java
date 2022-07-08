@@ -72,7 +72,7 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
                 .setCreatedId(tokenUser.getUserId())
                 .setCreatedName(tokenUser.getUserName())
                 .setCreatedTime(LocalDateTime.now())
-                .setUpdateId(tokenUser.getUserId())
+                .setUpdatedId(tokenUser.getUserId())
                 .setUpdatedName(tokenUser.getUserName())
                 .setUpdatedTime(LocalDateTime.now());
         boolean save = this.save(category);
