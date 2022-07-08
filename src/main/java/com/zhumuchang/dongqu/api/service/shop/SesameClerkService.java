@@ -14,4 +14,12 @@ import com.zhumuchang.dongqu.api.bean.shop.SesameClerk;
  */
 public interface SesameClerkService extends IService<SesameClerk> {
 
+    /**
+     * 判断当前用户是否是店铺的店员
+     *
+     * @param userId 用户ID
+     * @param shopId 店铺ID
+     * @return 是：true，否：false
+     */
+    Boolean checkShopExistenceClerk(String userId, String shopId);
 }

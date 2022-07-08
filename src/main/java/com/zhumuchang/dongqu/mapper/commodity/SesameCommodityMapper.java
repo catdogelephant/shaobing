@@ -26,4 +26,12 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @return 商品详情
      */
     RespCommodityDetailDto commodityDetail(String openId);
+
+    /**
+     * 根据店铺主键ID获取该店铺下未删除的商品数量
+     *
+     * @param shopId 店铺主键ID
+     * @return 商品数量
+     */
+    Integer countByShopId(String shopId);
 }

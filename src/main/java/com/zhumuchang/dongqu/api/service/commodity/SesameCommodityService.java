@@ -3,7 +3,9 @@ package com.zhumuchang.dongqu.api.service.commodity;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
+import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
 /**
  * <p>
@@ -22,4 +24,11 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @return 商品详情
      */
     RespCommodityDetailDto commodityDetail(String openId);
+
+    /**
+     * 新增商品
+     *
+     * @param param 请求参数
+     */
+    void addCommodity(ReqAddCommodityDto param, TokenUser tokenUser);
 }

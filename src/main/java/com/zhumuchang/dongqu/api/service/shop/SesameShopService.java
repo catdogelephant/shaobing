@@ -14,4 +14,11 @@ import com.zhumuchang.dongqu.api.bean.shop.SesameShop;
  */
 public interface SesameShopService extends IService<SesameShop> {
 
+    /**
+     * 根据店铺ID获取店铺停启用状态
+     *
+     * @param shopId 店铺ID
+     * @return 停启用 0.停用 1.启用（默认停用）
+     */
+    Integer getEnableById(String shopId);
 }

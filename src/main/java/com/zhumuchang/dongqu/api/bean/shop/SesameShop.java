@@ -1,9 +1,10 @@
 package com.zhumuchang.dongqu.api.bean.shop;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -32,7 +33,7 @@ public class SesameShop implements Serializable {
     private String name;
 
     /**
-     * 是否上架 0.未上架或下架 1.上架
+     * 停启用 0.停用 1.启用（默认停用）
      */
     private Integer enable;
 

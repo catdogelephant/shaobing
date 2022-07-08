@@ -19,4 +19,13 @@
         WHERE
             del_flag = 1
     </select>
+    <select id="countByShopId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sesame_commodity
+        WHERE
+            del_flag = 1
+            AND sesame_shop_id = #{shopId}
+    </select>
 </mapper>

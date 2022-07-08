@@ -25,12 +25,17 @@ public enum BusinessEnum {
     /** 操作类型错误 */
     NO_PERMISSION(104, "没有权限操作"),
 
+    /** 操作类型错误 */
+    NO_TOKEN(105, "用户信息为空"),
+
     /** 参数类型错误 */
     PARAM_NULL_FAIL(401, "参数为空"),
 
     PARAM_ERROR(402, "参数错误"),
 
-    DATA_NOT_FOUND(403, "数据不存在")
+    DATA_NOT_FOUND(403, "数据不存在"),
+
+    DATA_BUSINESS_ERROR(405, "数据业务异常")
     ;
 
     private final Integer code;

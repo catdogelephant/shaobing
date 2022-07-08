@@ -1,13 +1,15 @@
 package com.zhumuchang.dongqu.controller.commodity;
 
 
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
+import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 /**
  * <p>
@@ -28,6 +30,13 @@ public class SesameCommodityController {
     public Object commodityDetail(String id) {
         RespCommodityDetailDto resp = sesameCommodityService.commodityDetail(id);
         return resp;
+    }
+
+    @PostMapping(name = "新增商品", value = "/addCommodity")
+    public Object addCommodity(HttpServletRequest request, @Valid @RequestBody ReqAddCommodityDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameCommodityService.addCommodity(param, tokenUser);
+        return null;
     }
 
 }

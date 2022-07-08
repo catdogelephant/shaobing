@@ -1,5 +1,7 @@
 package com.zhumuchang.dongqu.api.bean.commodity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,12 +23,18 @@ public class SesameCommodity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
      * 对外id
      */
     private String openId;
+
+    /**
+     * 店铺主键id
+     */
+    private String sesameShopId;
 
     /**
      * 品类主键id
