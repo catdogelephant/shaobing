@@ -45,4 +45,11 @@ public class SesameCommodityController {
         sesameCommodityService.enableCommodity(commodityId, tokenUser);
         return null;
     }
+
+    @PostMapping(name = "删除商品", path = "/delCommodity")
+    public Object delCommodity(HttpServletRequest request, String commodityId) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameCommodityService.delCommodity(commodityId, tokenUser);
+        return null;
+    }
 }

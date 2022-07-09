@@ -158,7 +158,7 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
         }
         //更新商品状态
-        Integer enable = 0;
+        int enable = 0;
         if (null == commodityDto.getEnable()) {
             log.info("停启用商品 - 实体数据异常 - commodityOpenId={}, commodityDto={}", commodityOpenId, JSONObject.toJSONString(commodityDto));
             throw new BusinessException(BusinessEnum.DATA_ERROR);
@@ -169,6 +169,38 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
         Integer update = sesameCommodityMapper.updateEnableById(commodityDto.getId(), enable, tokenUser.getUserId(), tokenUser.getUserName());
         if (1 != update) {
             log.info("停启用商品 - 更新状态失败 - commodityOpenId={}, commodityDto={}, enable={}", commodityOpenId, JSONObject.toJSONString(commodityDto), enable);
+            throw new BusinessException(BusinessEnum.FAIL);
+        }
+    }
+
+    /**
+     * 删除商品
+     *
+     * @param commodityOpenId 商品对外ID
+     * @param tokenUser       tokenUser
+     */
+    @Override
+    public void delCommodity(String commodityOpenId, TokenUser tokenUser) {
+        if (StringUtils.isBlank(commodityOpenId)) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.NO_TOKEN);
+        }
+        //判断商品是否存在
+        String shopId = sesameCommodityMapper.getShopIdByOpenId(commodityOpenId);
+        if (StringUtils.isBlank(shopId)) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
+        }
+        //判断商品和操作人是否为同一店铺的
+        Boolean shopClerkFlag = sesameClerkService.checkShopExistenceClerk(tokenUser.getUserId(), shopId);
+        if (!Boolean.TRUE.equals(shopClerkFlag)) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
+        }
+        //删除商品
+        Integer del = sesameCommodityMapper.delCommodityByOpenId(commodityOpenId, tokenUser.getUserId(), tokenUser.getUserName());
+        if (1 != del) {
+            log.info("删除商品 - 删除失败 - commodityOpenId={}, tokenUser={}", commodityOpenId, JSONObject.toJSONString(tokenUser));
             throw new BusinessException(BusinessEnum.FAIL);
         }
     }

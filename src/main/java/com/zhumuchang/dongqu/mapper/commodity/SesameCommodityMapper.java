@@ -55,4 +55,22 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @return 更新条数
      */
     Integer updateEnableById(@Param("id") String id, @Param("enable") Integer enable, @Param("userId") String userId, @Param("userName") String userName);
+
+    /**
+     * 根据商品对外ID获取店铺主键ID
+     *
+     * @param commodityOpenId 商品对外ID
+     * @return 店铺主键ID
+     */
+    String getShopIdByOpenId(String commodityOpenId);
+
+    /**
+     * 根据商品对外ID删除商品
+     *
+     * @param commodityOpenId 商品对外ID
+     * @param userId          操作人ID
+     * @param userName        操作人姓名
+     * @return 操作结果
+     */
+    Integer delCommodityByOpenId(@Param("commodityOpenId") String commodityOpenId, @Param("userId") String userId, @Param("userName") String userName);
 }

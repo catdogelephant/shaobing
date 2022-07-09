@@ -6,6 +6,11 @@
         SET `enable` = #{enable} AND updated_id = #{userId} AND updated_name = #{userName}
         WHERE `id` = #{id}
     </update>
+    <update id="delCommodityByOpenId">
+        UPDATE sesame_commodity
+        SET `del_flag` = 0 AND updated_id = #{userId} AND updated_name = #{userName}
+        WHERE open_id = #{commodityOpenId}
+    </update>
 
     <select id="commodityDetail"
             resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto">
@@ -44,6 +49,15 @@
             sesame_commodity
         WHERE
             del_flag
+            AND open_id = #{commodityOpenId}
+    </select>
+    <select id="getShopIdByOpenId" resultType="java.lang.String">
+        SELECT
+            sesame_shop_id
+        FROM
+            sesame_commodity
+        WHERE
+            del_flag = 1
             AND open_id = #{commodityOpenId}
     </select>
 </mapper>

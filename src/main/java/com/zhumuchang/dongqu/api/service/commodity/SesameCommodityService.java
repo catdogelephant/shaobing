@@ -38,4 +38,12 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @param commodityOpenId 商品对外ID
      */
     void enableCommodity(String commodityOpenId, TokenUser tokenUser);
+
+    /**
+     * 删除商品
+     *
+     * @param commodityOpenId 商品对外ID
+     * @param tokenUser       tokenUser
+     */
+    void delCommodity(String commodityOpenId, TokenUser tokenUser);
 }
