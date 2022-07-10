@@ -3,11 +3,14 @@ package com.zhumuchang.dongqu.service.impl.commodity;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.shop.SesameClerkService;
@@ -203,6 +206,38 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             log.info("删除商品 - 删除失败 - commodityOpenId={}, tokenUser={}", commodityOpenId, JSONObject.toJSONString(tokenUser));
             throw new BusinessException(BusinessEnum.FAIL);
         }
+    }
+
+    /**
+     * 商品分页列表
+     *
+     * @param tokenUser tokenUser
+     * @param param     请求参数
+     * @return 商品分页列表
+     */
+    @Override
+    public Page<RespCommodityPageDto> commodityPage(TokenUser tokenUser, ReqCommodityPageDto param) {
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.NO_TOKEN);
+        }
+        if (null == param || StringUtils.isBlank(param.getShopOpenId())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "店铺ID为空");
+        }
+        //获取店铺ID
+        String shopId = sesameMapper.getNotDelIdByOpenId(param.getShopOpenId(), TableConstants.SESAME_SHOP_TABLE_NAME);
+        if (StringUtils.isBlank(shopId)) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "店铺信息错误");
+        }
+        //判断当前用户是否是店铺的店员
+        Boolean shopClerkFlag = sesameClerkService.checkShopExistenceClerk(tokenUser.getUserId(), shopId);
+        if (!Boolean.TRUE.equals(shopClerkFlag)) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
+        }
+        //获取品类ID
+        String categoryId = sesameMapper.getNotDelIdByOpenId(param.getCategoryOpenId(), TableConstants.SESAME_CATEGORY_TABLE_NAME);
+        Page<RespCommodityPageDto> page = new Page<>(param.getCurrent(), param.getSize());
+        page = sesameCommodityMapper.commodityPageByShopId(page, shopId, categoryId);
+        return page;
     }
 
     /**

@@ -8,7 +8,12 @@ package com.zhumuchang.dongqu.commons.constants;
 public class TableConstants {
 
     /**
-     * 商品表
+     * 店铺表
      */
     public static final String SESAME_SHOP_TABLE_NAME = "sesame_shop";
+
+    /**
+     * 品类表
+     */
+    public static final String SESAME_CATEGORY_TABLE_NAME = "sesame_category";
 }

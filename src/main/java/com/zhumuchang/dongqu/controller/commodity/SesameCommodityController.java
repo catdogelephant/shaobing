@@ -1,8 +1,11 @@
 package com.zhumuchang.dongqu.controller.commodity;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +54,12 @@ public class SesameCommodityController {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         sesameCommodityService.delCommodity(commodityId, tokenUser);
         return null;
+    }
+
+    @PostMapping(name = "商品分页列表", path = "/commodityPage")
+    public Object commodityPage(HttpServletRequest request, @RequestBody ReqCommodityPageDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        Page<RespCommodityPageDto> resp = sesameCommodityService.commodityPage(tokenUser, param);
+        return resp;
     }
 }

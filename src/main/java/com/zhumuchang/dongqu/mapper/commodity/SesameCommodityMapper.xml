@@ -60,4 +60,30 @@
             del_flag = 1
             AND open_id = #{commodityOpenId}
     </select>
+    <select id="commodityPageByShopId"
+            resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto">
+        SELECT
+            open_id AS commodityOpenId,
+            thumbnail,
+            `name` AS commodityName,
+            `price`
+        FROM
+            sesame_commodity
+        WHERE
+            del_flag = 1
+            AND sesame_shop_id = #{shopId}
+            <if test="categoryId != null and categoryId != ''">
+                AND sesame_category_id = #{categoryId}
+            </if>
+        ORDER BY
+            <choose>
+                <when test="categoryId != null and categoryId != ''">
+                    `sort`
+                </when>
+                <otherwise>
+                    created_time DESC
+                </otherwise>
+            </choose>
+
+    </select>
 </mapper>
