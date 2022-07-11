@@ -20,6 +20,6 @@ public interface SesameMapper {
      * @param tableName 表名
      * @return 主键ID
      */
-    String getIdByOpenId(@Param("openId") String openId, @Param("tableName") String tableName);
-    String getNotDelIdByOpenId(@Param("openId") String openId, @Param("tableName") String tableName);
+    Integer getIdByOpenId(@Param("openId") String openId, @Param("tableName") String tableName);
+    Integer getNotDelIdByOpenId(@Param("openId") String openId, @Param("tableName") String tableName);
 }

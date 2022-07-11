@@ -15,12 +15,12 @@ public class CommodityDto implements Serializable {
     /**
      * id
      */
-    private String id;
+    private Integer id;
 
     /**
      * 店铺主键id
      */
-    private String sesameShopId;
+    private Integer sesameShopId;
 
     /**
      * 品类主键id

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhumuchang.dongqu.mapper.SesameMapper">
 
-    <select id="getIdByOpenId" resultType="java.lang.String">
+    <select id="getIdByOpenId" resultType="java.lang.Integer">
         SELECT
             `id`
         FROM
@@ -11,7 +11,7 @@
             #{openId}
     </select>
 
-    <select id="getNotDelIdByOpenId" resultType="java.lang.String">
+    <select id="getNotDelIdByOpenId" resultType="java.lang.Integer">
         SELECT
             `id`
         FROM

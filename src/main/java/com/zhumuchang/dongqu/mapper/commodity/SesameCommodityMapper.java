@@ -37,7 +37,7 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @param shopId 店铺主键ID
      * @return 商品数量
      */
-    Integer countByShopId(String shopId);
+    Integer countByShopId(Integer shopId);
 
     /**
      * 根据商品对外ID获取商品信息
@@ -56,7 +56,7 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @param userName 操作人姓名
      * @return 更新条数
      */
-    Integer updateEnableById(@Param("id") String id, @Param("enable") Integer enable, @Param("userId") String userId, @Param("userName") String userName);
+    Integer updateEnableById(@Param("id") Integer id, @Param("enable") Integer enable, @Param("userId") String userId, @Param("userName") String userName);
 
     /**
      * 根据商品对外ID获取店铺主键ID
@@ -64,7 +64,7 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @param commodityOpenId 商品对外ID
      * @return 店铺主键ID
      */
-    String getShopIdByOpenId(String commodityOpenId);
+    Integer getShopIdByOpenId(String commodityOpenId);
 
     /**
      * 根据商品对外ID删除商品
@@ -84,6 +84,15 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @param categoryId 品类ID
      * @return 分页列表
      */
-    Page<RespCommodityPageDto> commodityPageByShopId(@Param("page") Page<RespCommodityPageDto> page, @Param("shopId") String shopId,
-                                                     @Param("categoryId") String categoryId);
+    Page<RespCommodityPageDto> commodityPageByShopId(@Param("page") Page<RespCommodityPageDto> page, @Param("shopId") Integer shopId,
+                                                     @Param("categoryId") Integer categoryId);
+
+    /**
+     * 判断当前用户是否是该店铺的店员
+     *
+     * @param userId          店员userId
+     * @param commodityOpenId 商品对外ID
+     * @return 数量
+     */
+    Integer checkClerkAllowCommodityByOpenId(@Param("userId") String userId, @Param("commodityOpenId") String commodityOpenId);
 }

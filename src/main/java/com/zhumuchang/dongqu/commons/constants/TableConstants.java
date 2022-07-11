@@ -16,4 +16,9 @@ public class TableConstants {
      * 品类表
      */
     public static final String SESAME_CATEGORY_TABLE_NAME = "sesame_category";
+
+    /**
+     * 商品表
+     */
+    public static final String SESAME_COMMODITY_TABLE_NAME = "sesame_commodity";
 }

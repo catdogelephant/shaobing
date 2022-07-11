@@ -21,5 +21,5 @@ public interface SesameClerkService extends IService<SesameClerk> {
      * @param shopId 店铺ID
      * @return 是：true，否：false
      */
-    Boolean checkShopExistenceClerk(String userId, String shopId);
+    Boolean checkShopExistenceClerk(String userId, Integer shopId);
 }

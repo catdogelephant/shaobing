@@ -6,12 +6,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
+import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodityCategorySort;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityCategorySortService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.shop.SesameClerkService;
 import com.zhumuchang.dongqu.api.service.shop.SesameShopService;
@@ -67,6 +70,12 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
     private SesameClerkService sesameClerkService;
 
     /**
+     * 商品品类排序
+     */
+    @Autowired
+    private SesameCommodityCategorySortService sesameCommodityCategorySortService;
+
+    /**
      * 根据商品对外ID获取商品详情
      *
      * @param openId 商品对外ID
@@ -109,8 +118,8 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             throw new BusinessException(BusinessEnum.PARAM_ERROR.getCode(), "商品价格最多两位小数");
         }
         //获取店铺id
-        String shopId = sesameMapper.getNotDelIdByOpenId(param.getShopId(), TableConstants.SESAME_SHOP_TABLE_NAME);
-        if (StringUtils.isBlank(shopId)) {
+        Integer shopId = sesameMapper.getNotDelIdByOpenId(param.getShopId(), TableConstants.SESAME_SHOP_TABLE_NAME);
+        if (null == shopId) {
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "店铺信息错误");
         }
         //判断店铺是否正常
@@ -128,7 +137,7 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
         //获取店铺下的商品数量
         Integer count = sesameCommodityMapper.countByShopId(shopId);
         //创建商品
-        SesameCommodity commodity = this.createCommodity(shopId, param.getCommodityName(), param.getCommodityPrice(), param.getIntroduce(), param.getThumbnail(),
+        SesameCommodity commodity = this.createBean(shopId, param.getCommodityName(), param.getCommodityPrice(), param.getIntroduce(), param.getThumbnail(),
                 pictureListJson, param.getLimitBuy(), count + 1, 1, tokenUser.getUserId(), tokenUser.getUserName());
         boolean save = this.save(commodity);
         if (!save) {
@@ -191,8 +200,8 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             throw new BusinessException(BusinessEnum.NO_TOKEN);
         }
         //判断商品是否存在
-        String shopId = sesameCommodityMapper.getShopIdByOpenId(commodityOpenId);
-        if (StringUtils.isBlank(shopId)) {
+        Integer shopId = sesameCommodityMapper.getShopIdByOpenId(commodityOpenId);
+        if (null == shopId) {
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
         }
         //判断商品和操作人是否为同一店铺的
@@ -224,8 +233,8 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "店铺ID为空");
         }
         //获取店铺ID
-        String shopId = sesameMapper.getNotDelIdByOpenId(param.getShopOpenId(), TableConstants.SESAME_SHOP_TABLE_NAME);
-        if (StringUtils.isBlank(shopId)) {
+        Integer shopId = sesameMapper.getNotDelIdByOpenId(param.getShopOpenId(), TableConstants.SESAME_SHOP_TABLE_NAME);
+        if (null == shopId) {
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "店铺信息错误");
         }
         //判断当前用户是否是店铺的店员
@@ -234,10 +243,53 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
         }
         //获取品类ID
-        String categoryId = sesameMapper.getNotDelIdByOpenId(param.getCategoryOpenId(), TableConstants.SESAME_CATEGORY_TABLE_NAME);
+        Integer categoryId = sesameMapper.getNotDelIdByOpenId(param.getCategoryOpenId(), TableConstants.SESAME_CATEGORY_TABLE_NAME);
         Page<RespCommodityPageDto> page = new Page<>(param.getCurrent(), param.getSize());
         page = sesameCommodityMapper.commodityPageByShopId(page, shopId, categoryId);
         return page;
+    }
+
+    /**
+     * 设置商品所属的品类
+     *
+     * @param tokenUser tokenUser
+     * @param param     请求参数
+     */
+    @Override
+    public void relCommodityToCategory(TokenUser tokenUser, ReqRelCommodityToCategoryDto param) {
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.NO_TOKEN);
+        }
+        //判断商品是否存在
+        CommodityDto commodityDto = sesameCommodityMapper.getDtoByOpenId(param.getCommodityOpenId());
+        if (null == commodityDto) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "商品不存在");
+        }
+        //判断品类是否存在
+        Integer categoryId = sesameMapper.getNotDelIdByOpenId(param.getCategoryOpenId(), TableConstants.SESAME_CATEGORY_TABLE_NAME);
+        if (null == categoryId) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "品类不存在");
+        }
+        //判断当前用户是否是该店铺的店员
+        Integer count = sesameCommodityMapper.checkClerkAllowCommodityByOpenId(tokenUser.getUserId(), param.getCommodityOpenId());
+        if ((null == count || count == 0) ? Boolean.TRUE : Boolean.FALSE) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
+        }
+        //判断该商品是否已在当前品类下
+        Integer relCount = sesameCommodityCategorySortService.countByCommodityIdAndCategoryId(commodityDto.getId(), categoryId);
+        if ((null == relCount || relCount == 0) ? Boolean.FALSE : Boolean.TRUE) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前商品已在当前品类中存在");
+        }
+        //获取该店铺在当前品类下已经有多少个商品
+        Integer commodityCount = sesameCommodityCategorySortService.countByShopIdAndCategoryId(commodityDto.getSesameShopId(), categoryId);
+        //把商品设置到当前品类下
+        SesameCommodityCategorySort sesameCommodityCategorySort = sesameCommodityCategorySortService.createBean(commodityDto.getSesameShopId(), commodityDto.getId(),
+                categoryId, commodityCount + 1, tokenUser.getUserId(), tokenUser.getUserName());
+        boolean save = sesameCommodityCategorySortService.save(sesameCommodityCategorySort);
+        if (!save) {
+            log.info("设置商品所属的品类 - 保存失败 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSON(tokenUser));
+            throw new BusinessException(BusinessEnum.FAIL);
+        }
     }
 
     /**
@@ -256,8 +308,8 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
      * @param createdName     创建人姓名
      * @return 商品对象
      */
-    public SesameCommodity createCommodity(String sesameShopId, String commodityName, BigDecimal commodityPrice, String introduce, String thumbnail, String pictureListJson,
-                                           Integer limitBuy, int sort, int enable, String createdId, String createdName) {
+    public SesameCommodity createBean(Integer sesameShopId, String commodityName, BigDecimal commodityPrice, String introduce, String thumbnail, String pictureListJson,
+                                      Integer limitBuy, int sort, int enable, String createdId, String createdName) {
         SesameCommodity commodity = new SesameCommodity();
         commodity.setOpenId(IdUtil.simpleUUID());
         commodity.setSesameShopId(sesameShopId);

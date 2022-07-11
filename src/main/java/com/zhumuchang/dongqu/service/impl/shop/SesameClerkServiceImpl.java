@@ -33,8 +33,8 @@ public class SesameClerkServiceImpl extends ServiceImpl<SesameClerkMapper, Sesam
      * @return 是：true，否：false
      */
     @Override
-    public Boolean checkShopExistenceClerk(String userId, String shopId) {
-        if (StringUtils.isBlank(userId) || StringUtils.isBlank(shopId)) {
+    public Boolean checkShopExistenceClerk(String userId, Integer shopId) {
+        if (StringUtils.isBlank(userId) || null == shopId) {
             log.info("判断当前用户是否是店铺的店员 - 参数为空 - userId={}, shopId={}", userId, shopId);
             return Boolean.FALSE;
         }

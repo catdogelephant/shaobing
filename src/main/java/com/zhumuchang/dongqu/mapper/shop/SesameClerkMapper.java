@@ -26,5 +26,5 @@ public interface SesameClerkMapper extends BaseMapper<SesameClerk> {
      * @param shopId 店铺ID
      * @return 数量
      */
-    Integer checkShopExistenceClerk(@Param("userId") String userId, @Param("shopId") String shopId);
+    Integer checkShopExistenceClerk(@Param("userId") String userId, @Param("shopId") Integer shopId);
 }

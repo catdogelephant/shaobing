@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumuchang.dongqu.mapper.commodity.SesameCommodityCategorySortMapper">
+
+    <select id="countByCommodityIdAndCategoryId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sesame_commodity_category_sort
+        WHERE
+            del_flag = 1
+            AND sesame_commodity_id = #{commodityId}
+            AND sesame_cayegory_id = #{categoryId}
+    </select>
+    <select id="countByShopIdAndCategoryId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sesame_commodity_category_sort
+        WHERE
+            del_flag = 1
+            AND sesame_shop_id = #{shopId}
+            AND sesame_category_id = #{categoryId}
+    </select>
+</mapper>

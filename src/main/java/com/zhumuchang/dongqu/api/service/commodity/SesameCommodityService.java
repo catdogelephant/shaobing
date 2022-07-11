@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
@@ -58,4 +59,12 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @return 商品分页列表
      */
     Page<RespCommodityPageDto> commodityPage(TokenUser tokenUser, ReqCommodityPageDto param);
+
+    /**
+     * 设置商品所属的品类
+     *
+     * @param tokenUser tokenUser
+     * @param param     请求参数
+     */
+    void relCommodityToCategory(TokenUser tokenUser, ReqRelCommodityToCategoryDto param);
 }

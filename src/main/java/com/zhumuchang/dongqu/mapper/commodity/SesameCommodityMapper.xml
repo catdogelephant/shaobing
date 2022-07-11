@@ -51,7 +51,7 @@
             del_flag
             AND open_id = #{commodityOpenId}
     </select>
-    <select id="getShopIdByOpenId" resultType="java.lang.String">
+    <select id="getShopIdByOpenId" resultType="java.lang.Integer">
         SELECT
             sesame_shop_id
         FROM
@@ -85,5 +85,17 @@
                 </otherwise>
             </choose>
 
+    </select>
+    <select id="checkClerkAllowCommodityByOpenId" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM
+            sesame_commodity sco
+            LEFT JOIN sesame_clerk scl ON sco.sesame_shop_id = scl.sesame_shop_id
+        WHERE
+            sco.del_flag = 1
+            AND scl.del_flag = 1
+            AND sco.open_id = #{commodityOpenId}
+            AND scl.sesame_user_id = #{userId}
     </select>
 </mapper>

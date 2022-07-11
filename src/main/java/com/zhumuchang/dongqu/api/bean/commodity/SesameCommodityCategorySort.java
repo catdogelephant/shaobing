@@ -6,20 +6,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 商品
+ * 商品品类排序表
  * </p>
  *
  * @author sx
- * @since 2022-07-07
+ * @since 2022-07-11
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SesameCommodity implements Serializable {
+public class SesameCommodityCategorySort implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,59 +26,24 @@ public class SesameCommodity implements Serializable {
     private Integer id;
 
     /**
-     * 对外id
-     */
-    private String openId;
-
-    /**
      * 店铺主键id
      */
     private Integer sesameShopId;
 
     /**
-     * 品类主键id
+     * 商品主键id
+     */
+    private Integer sesameCommodityId;
+
+    /**
+     * 品类id
      */
     private Integer sesameCategoryId;
-
-    /**
-     * 商品名称
-     */
-    private String name;
-
-    /**
-     * 商品价格
-     */
-    private BigDecimal price;
-
-    /**
-     * 商品介绍
-     */
-    private String introduce;
-
-    /**
-     * 商品缩略图
-     */
-    private String thumbnail;
-
-    /**
-     * 商品图片集合
-     */
-    private String pictureJson;
-
-    /**
-     * 商品限购数量（为空或者等于0时代表不限制购买数量）
-     */
-    private Integer limitBuy;
 
     /**
      * 序号
      */
     private Integer sort;
-
-    /**
-     * 停启用 0.停用 1.启用
-     */
-    private Integer enable;
 
     /**
      * 删除状态 0.删除 1.正常

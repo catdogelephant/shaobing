@@ -4,6 +4,7 @@ package com.zhumuchang.dongqu.controller.commodity;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
@@ -61,5 +62,12 @@ public class SesameCommodityController {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         Page<RespCommodityPageDto> resp = sesameCommodityService.commodityPage(tokenUser, param);
         return resp;
+    }
+
+    @PostMapping(name = "设置商品所属的品类", path = "/relCommodityToCategory")
+    public Object relCommodityToCategory(HttpServletRequest request, @Valid @RequestBody ReqRelCommodityToCategoryDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameCommodityService.relCommodityToCategory(tokenUser, param);
+        return null;
     }
 }
