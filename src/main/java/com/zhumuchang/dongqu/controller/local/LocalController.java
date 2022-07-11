@@ -1,7 +1,9 @@
 package com.zhumuchang.dongqu.controller.local;
 
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.local.LocalSystemUserService;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
+import com.zhumuchang.dongqu.config.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,5 +27,24 @@ public class LocalController {
     @PostMapping("/tran")
     public void tran() {
         localSystemUserService.tran();
+    }
+
+    @PassToken
+    @PostMapping("/testAspectStr")
+    public String testAspectStr(String name) {
+        throw new BusinessException(BusinessEnum.FAIL);
+//        return name;
+    }
+
+    @PassToken
+    @PostMapping("/testAspectInt")
+    public Integer testAspectInt(Integer name) {
+        return name;
+    }
+
+    @PassToken
+    @PostMapping("/testAspectTwo")
+    public String testAspectTwo(String name) {
+        return "testAspectTwo";
     }
 }

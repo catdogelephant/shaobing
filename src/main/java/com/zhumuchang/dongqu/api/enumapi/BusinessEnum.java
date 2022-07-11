@@ -8,7 +8,7 @@ import lombok.Getter;
  * @Date 2022/3/22 18:36
  */
 @Getter
-public enum ResponseEnum {
+public enum BusinessEnum {
 
     /** 操作成功 */
     SUCCESS(200, "操作成功"),
@@ -32,7 +32,7 @@ public enum ResponseEnum {
 
     private final String msg;
 
-    ResponseEnum(Integer code, String msg) {
+    BusinessEnum(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
     }

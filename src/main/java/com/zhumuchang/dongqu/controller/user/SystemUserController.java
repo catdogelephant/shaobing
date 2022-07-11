@@ -6,7 +6,7 @@ import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
-import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.config.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.config.annotation.PassToken;
@@ -57,9 +57,9 @@ public class SystemUserController {
     public ResultDto register(@Valid @RequestBody RegisterReq param) {
         String errorMsg = systemUserService.register(param);
         if (StringUtils.isEmpty(errorMsg)) {
-            return new ResultDto(ResponseEnum.SUCCESS, null);
+            return new ResultDto(BusinessEnum.SUCCESS, null);
         }
-        return new ResultDto(null, ResponseEnum.FAIL.getCode(), errorMsg);
+        return new ResultDto(null, BusinessEnum.FAIL.getCode(), errorMsg);
     }
 
     @PassToken
@@ -87,7 +87,7 @@ public class SystemUserController {
     @GetMapping(name = "测试Security", path = "/testSecurity")
     public ResultDto testSecurity() {
         System.out.println("----------------->>>testSecurity<<<-----------------");
-        return new ResultDto(ResponseEnum.SUCCESS, null);
+        return new ResultDto(BusinessEnum.SUCCESS, null);
     }
 
     /*public static void main(String[] args) {

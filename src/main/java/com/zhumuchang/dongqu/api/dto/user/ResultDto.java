@@ -1,6 +1,6 @@
 package com.zhumuchang.dongqu.api.dto.user;
 
-import com.zhumuchang.dongqu.api.enumapi.ResponseEnum;
+import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -29,10 +29,10 @@ public class ResultDto implements Serializable {
      */
     private String msg;
 
-    public ResultDto(ResponseEnum responseEnum, Object resp) {
+    public ResultDto(BusinessEnum businessEnum, Object resp) {
         this.resp = resp;
-        this.code = responseEnum.getCode();
-        this.msg = responseEnum.getMsg();
+        this.code = businessEnum.getCode();
+        this.msg = businessEnum.getMsg();
     }
 
     public ResultDto(){}
