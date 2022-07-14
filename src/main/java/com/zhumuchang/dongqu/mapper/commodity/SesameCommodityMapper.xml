@@ -63,25 +63,28 @@
     <select id="commodityPageByShopId"
             resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto">
         SELECT
-            open_id AS commodityOpenId,
-            thumbnail,
-            `name` AS commodityName,
-            `price`
+            sc.open_id AS commodityOpenId,
+            sc.thumbnail,
+            sc.`name` AS commodityName,
+            sc.`price`
         FROM
-            sesame_commodity
+            sesame_commodity sc
+            <if test="categoryId != null">
+                LEFT JOIN sesame_commodity_category_sort cs ON sc.`id` = cs.sesame_commodity_id
+            </if>
         WHERE
-            del_flag = 1
-            AND sesame_shop_id = #{shopId}
-            <if test="categoryId != null and categoryId != ''">
-                AND sesame_category_id = #{categoryId}
+            sc.del_flag = 1
+            AND sc.sesame_shop_id = #{shopId}
+            <if test="categoryId != null">
+                AND cs.sesame_category_id = #{categoryId}
             </if>
         ORDER BY
             <choose>
-                <when test="categoryId != null and categoryId != ''">
-                    `sort`
+                <when test="categoryId != null">
+                    cs.`sort`
                 </when>
                 <otherwise>
-                    created_time DESC
+                    sc.created_time DESC
                 </otherwise>
             </choose>
 
