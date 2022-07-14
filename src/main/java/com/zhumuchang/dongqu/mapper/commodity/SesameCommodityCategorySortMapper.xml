@@ -10,7 +10,7 @@
         WHERE
             del_flag = 1
             AND sesame_commodity_id = #{commodityId}
-            AND sesame_cayegory_id = #{categoryId}
+            AND sesame_category_id = #{categoryId}
     </select>
     <select id="countByShopIdAndCategoryId" resultType="java.lang.Integer">
         SELECT
