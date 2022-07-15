@@ -17,27 +17,27 @@ public enum BusinessEnum {
     FAIL(0, "操作失败"),
 
     /** 登陆失败 */
-    LOGIN_FAIL(102, "用户名或密码错误"),
+    LOGIN_FAIL(10002, "用户名或密码错误"),
 
     /** token 失效 */
-    TOKEN_FAIL(103, "你的认证信息已失效，请重新登陆"),
+    TOKEN_FAIL(10003, "你的认证信息已失效，请重新登陆"),
 
     /** 操作类型错误 */
-    NO_PERMISSION(104, "没有权限操作"),
+    NO_PERMISSION(10004, "没有权限操作"),
 
     /** 操作类型错误 */
-    NO_TOKEN(105, "用户信息为空"),
+    NO_TOKEN(10005, "用户信息为空"),
 
     /** 参数类型错误 */
-    PARAM_NULL_FAIL(401, "参数为空"),
+    PARAM_NULL_FAIL(10011, "参数为空"),
 
-    PARAM_ERROR(402, "参数错误"),
+    PARAM_ERROR(10012, "参数错误"),
 
-    DATA_NOT_FOUND(403, "数据不存在"),
+    DATA_NOT_FOUND(10013, "数据不存在"),
 
-    DATA_BUSINESS_ERROR(405, "数据业务异常"),
+    DATA_BUSINESS_ERROR(10015, "数据业务异常"),
 
-    DATA_ERROR(406, "实体数据异常")
+    DATA_ERROR(10016, "实体数据异常")
     ;
 
     private final Integer code;
