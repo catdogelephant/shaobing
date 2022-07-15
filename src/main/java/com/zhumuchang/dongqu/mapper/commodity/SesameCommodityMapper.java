@@ -90,9 +90,9 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
     /**
      * 判断当前用户是否是该店铺的店员
      *
-     * @param userId          店员userId
-     * @param commodityOpenId 商品对外ID
+     * @param userId      店员userId
+     * @param commodityId 商品ID
      * @return 数量
      */
-    Integer checkClerkAllowCommodityByOpenId(@Param("userId") String userId, @Param("commodityOpenId") String commodityOpenId);
+    Integer checkClerkAllowCommodityById(@Param("userId") String userId, @Param("commodityId") Integer commodityId);
 }

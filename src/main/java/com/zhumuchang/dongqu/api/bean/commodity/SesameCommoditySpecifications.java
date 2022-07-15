@@ -49,7 +49,7 @@ public class SesameCommoditySpecifications implements Serializable {
     /**
      * 价格浮动
      */
-    private BigDecimal priceFloat;
+    private Integer priceFloat;
 
     /**
      * 库存
@@ -65,6 +65,11 @@ public class SesameCommoditySpecifications implements Serializable {
      * 商品限购数量（为空或者等于0时代表不限制购买数量）
      */
     private Integer limitBuy;
+
+    /**
+     * 删除状态 0.删除 1.正常
+     */
+    private Integer delFlag;
 
     /**
      * 创建人id

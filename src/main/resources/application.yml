@@ -29,7 +29,7 @@ server:
 jwt:
   token:
     secret: seeSSSEEE
-    timeout: 600
+    timeout: 1800
 
 # management 是所有actuator的配置
 # management.endpoints.端口名.xxxx 对某个端点的具体配置

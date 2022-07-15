@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.api.dto.commodity;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @Author sx
@@ -31,4 +32,9 @@ public class CommodityDto implements Serializable {
      * 停启用 0.停用 1.启用
      */
     private Integer enable;
+
+    /**
+     * 商品价格
+     */
+    private BigDecimal price;
 }

@@ -271,7 +271,7 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "品类不存在");
         }
         //判断当前用户是否是该店铺的店员
-        Integer count = sesameCommodityMapper.checkClerkAllowCommodityByOpenId(tokenUser.getUserId(), param.getCommodityOpenId());
+        Integer count = sesameCommodityMapper.checkClerkAllowCommodityById(tokenUser.getUserId(), commodityDto.getId());
         if ((null == count || count == 0) ? Boolean.TRUE : Boolean.FALSE) {
             throw new BusinessException(BusinessEnum.FAIL.getCode(), "当前用户不是该店铺的店员，不可进行操作");
         }
@@ -290,6 +290,31 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             log.info("设置商品所属的品类 - 保存失败 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSON(tokenUser));
             throw new BusinessException(BusinessEnum.FAIL);
         }
+    }
+
+    /**
+     * 判断当前用户是否是该店铺的店员
+     *
+     * @param userId      店员userId
+     * @param commodityId 商品ID
+     * @return 数量
+     */
+    @Override
+    public Integer checkClerkAllowCommodityById(String userId, Integer commodityId) {
+        Integer count = sesameCommodityMapper.checkClerkAllowCommodityById(userId, commodityId);
+        return count;
+    }
+
+    /**
+     * 根据商品对外ID获取商品信息
+     *
+     * @param openId 商品对外ID
+     * @return 商品信息
+     */
+    @Override
+    public CommodityDto getDtoByOpenId(String openId) {
+        CommodityDto commodityDto = sesameCommodityMapper.getDtoByOpenId(openId);
+        return commodityDto;
     }
 
     /**

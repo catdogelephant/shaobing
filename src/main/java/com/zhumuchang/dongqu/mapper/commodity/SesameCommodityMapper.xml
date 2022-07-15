@@ -44,7 +44,8 @@
             `id`,
             sesame_shop_id,
             sesame_category_id,
-            `enable`
+            `enable`,
+            `price`
         FROM
             sesame_commodity
         WHERE
@@ -89,7 +90,7 @@
             </choose>
 
     </select>
-    <select id="checkClerkAllowCommodityByOpenId" resultType="java.lang.Integer">
+    <select id="checkClerkAllowCommodityById" resultType="java.lang.Integer">
         SELECT
             COUNT(1)
         FROM
@@ -98,7 +99,7 @@
         WHERE
             sco.del_flag = 1
             AND scl.del_flag = 1
-            AND sco.open_id = #{commodityOpenId}
+            AND sco.`id` = #{commodityId}
             AND scl.sesame_user_id = #{userId}
     </select>
 </mapper>
