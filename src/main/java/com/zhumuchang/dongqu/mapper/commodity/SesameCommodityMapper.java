@@ -103,5 +103,6 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @param categoryId 品类主键ID
      * @return 分页列表
      */
-    Page<RespCommodityPageDto> appCommodityPage(@Param("page") Page<RespCommodityPageDto> page, @Param("categoryId") Integer categoryId);
+    Page<RespCommodityPageDto> appCommodityPage(@Param("page") Page<RespCommodityPageDto> page, @Param("categoryId") Integer categoryId,
+                                                @Param("shopId") Integer shopId);
 }

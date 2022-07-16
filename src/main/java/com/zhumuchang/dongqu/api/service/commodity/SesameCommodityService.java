@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
@@ -94,4 +95,12 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @return 商品分页列表
      */
     Page<RespCommodityPageDto> appCommodityPage(StringPageDto param);
+
+    /**
+     * 获取店铺里对应品类下的商品分页列表
+     *
+     * @param param 请求参数
+     * @return 商品分页列表
+     */
+    Page<RespCommodityPageDto> appShopCommodityPage(ReqAppCommodityPageDto param);
 }

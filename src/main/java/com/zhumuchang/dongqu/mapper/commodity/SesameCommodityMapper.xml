@@ -118,6 +118,9 @@
             cs.sesame_category_id = #{categoryId}
             AND cs.del_flag = 1
             AND sc.del_flag = 1
+            <if test="shopId != null">
+                AND cs.sesame_shop_id = #{shopId}
+            </if>
         ORDER BY
             sc.`sale` DESC, cs.created_time DESC
     </select>

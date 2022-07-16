@@ -9,6 +9,7 @@ import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodityCategorySort;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
@@ -324,7 +325,35 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             log.info("获取商品分页列表 - 品类不存在 - param={}", JSONObject.toJSONString(param));
             return page;
         }
-        page = sesameCommodityMapper.appCommodityPage(page, categoryId);
+        page = sesameCommodityMapper.appCommodityPage(page, categoryId, null);
+        return page;
+    }
+
+    /**
+     * 获取店铺里对应品类下的商品分页列表
+     *
+     * @param param 请求参数
+     * @return 商品分页列表
+     */
+    @Override
+    public Page<RespCommodityPageDto> appShopCommodityPage(ReqAppCommodityPageDto param) {
+        if (null == param || StringUtils.isBlank(param.getShopOpenId()) || StringUtils.isBlank(param.getCategoryOpenID())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Page<RespCommodityPageDto> page = new Page<>(param.getCurrent(), param.getSize());
+        //获取品类信息
+        Integer categoryId = sesameMapper.getNotDelIdByOpenId(param.getCategoryOpenID(), TableConstants.SESAME_CATEGORY_TABLE_NAME);
+        if (null == categoryId) {
+            log.info("获取店铺里对应品类下的商品分页列表 - 品类不存在 - param={}", JSONObject.toJSONString(param));
+            return page;
+        }
+        //获取店铺信息
+        Integer shopId = sesameMapper.getNotDelIdByOpenId(param.getShopOpenId(), TableConstants.SESAME_SHOP_TABLE_NAME);
+        if (null == shopId) {
+            log.info("获取店铺里对应品类下的商品分页列表 - 店铺不存在 - param={}", JSONObject.toJSONString(param));
+            return page;
+        }
+        page = sesameCommodityMapper.appCommodityPage(page, categoryId, shopId);
         return page;
     }
 
