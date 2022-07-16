@@ -13,6 +13,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
+import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityCategorySortService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
@@ -303,6 +304,28 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
     public Integer checkClerkAllowCommodityById(String userId, Integer commodityId) {
         Integer count = sesameCommodityMapper.checkClerkAllowCommodityById(userId, commodityId);
         return count;
+    }
+
+    /**
+     * 获取商品分页列表
+     *
+     * @param param 品类对外ID
+     * @return 商品分页列表
+     */
+    @Override
+    public Page<RespCommodityPageDto> appCommodityPage(StringPageDto param) {
+        if (null == param || StringUtils.isBlank(param.getStrParam())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Page<RespCommodityPageDto> page = new Page<>(param.getCurrent(), param.getSize());
+        //获取品类信息
+        Integer categoryId = sesameMapper.getNotDelIdByOpenId(param.getStrParam(), TableConstants.SESAME_CATEGORY_TABLE_NAME);
+        if (null == categoryId) {
+            log.info("获取商品分页列表 - 品类不存在 - param={}", JSONObject.toJSONString(param));
+            return page;
+        }
+        page = sesameCommodityMapper.appCommodityPage(page, categoryId);
+        return page;
     }
 
     /**

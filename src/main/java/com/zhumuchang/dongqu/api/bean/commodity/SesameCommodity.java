@@ -77,6 +77,11 @@ public class SesameCommodity implements Serializable {
     private Integer sort;
 
     /**
+     * 销量
+     */
+    private Integer sale;
+
+    /**
      * 停启用 0.停用 1.启用
      */
     private Integer enable;

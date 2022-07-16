@@ -33,4 +33,9 @@ public class RespCommodityPageDto implements Serializable {
      * 商品价格
      */
     private BigDecimal price;
+
+    /**
+     * 商品介绍
+     */
+    private String introduce;
 }

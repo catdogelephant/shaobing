@@ -95,4 +95,13 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @return 数量
      */
     Integer checkClerkAllowCommodityById(@Param("userId") String userId, @Param("commodityId") Integer commodityId);
+
+    /**
+     * 获取商品分页列表
+     *
+     * @param page       分页参数
+     * @param categoryId 品类主键ID
+     * @return 分页列表
+     */
+    Page<RespCommodityPageDto> appCommodityPage(@Param("page") Page<RespCommodityPageDto> page, @Param("categoryId") Integer categoryId);
 }

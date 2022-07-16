@@ -10,6 +10,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
+import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
 /**
@@ -85,4 +86,12 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @return 数量
      */
     Integer checkClerkAllowCommodityById(String userId, Integer commodityId);
+
+    /**
+     * 获取商品分页列表
+     *
+     * @param param 品类对外ID
+     * @return 商品分页列表
+     */
+    Page<RespCommodityPageDto> appCommodityPage(StringPageDto param);
 }

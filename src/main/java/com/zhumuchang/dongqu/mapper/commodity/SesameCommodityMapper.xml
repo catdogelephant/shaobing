@@ -67,7 +67,8 @@
             sc.open_id AS commodityOpenId,
             sc.thumbnail,
             sc.`name` AS commodityName,
-            sc.`price`
+            sc.`price`,
+            sc.`introduce`
         FROM
             sesame_commodity sc
             <if test="categoryId != null">
@@ -101,5 +102,23 @@
             AND scl.del_flag = 1
             AND sco.`id` = #{commodityId}
             AND scl.sesame_user_id = #{userId}
+    </select>
+    <select id="appCommodityPage"
+            resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto">
+        SELECT
+            sc.open_id AS commodityOpenId,
+            sc.`thumbnail`,
+            sc.`name` AS commodityName,
+            sc.`price`,
+            sc.`introduce`
+        FROM
+            sesame_commodity sc
+            LEFT JOIN sesame_commodity_category_sort cs ON sc.`id` = cs.sesame_commodity_id
+        WHERE
+            cs.sesame_category_id = #{categoryId}
+            AND cs.del_flag = 1
+            AND sc.del_flag = 1
+        ORDER BY
+            sc.`sale` DESC, cs.created_time DESC
     </select>
 </mapper>
