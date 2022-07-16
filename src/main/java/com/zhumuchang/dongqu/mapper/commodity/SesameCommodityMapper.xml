@@ -45,7 +45,8 @@
             sesame_shop_id,
             sesame_category_id,
             `enable`,
-            `price`
+            `price`,
+            `name` AS commodityName
         FROM
             sesame_commodity
         WHERE

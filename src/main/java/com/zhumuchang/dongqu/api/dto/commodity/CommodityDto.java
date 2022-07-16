@@ -37,4 +37,9 @@ public class CommodityDto implements Serializable {
      * 商品价格
      */
     private BigDecimal price;
+
+    /**
+     * 商品名称
+     */
+    private String commodityName;
 }

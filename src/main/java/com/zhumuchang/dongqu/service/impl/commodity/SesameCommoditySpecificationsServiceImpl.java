@@ -51,8 +51,9 @@ public class SesameCommoditySpecificationsServiceImpl extends ServiceImpl<Sesame
      */
     @Override
     public void addCommoditySpecifications(TokenUser tokenUser, ReqAddCommoditySpecificationsDto param) {
-        this.checkAddCommoditySpecificationsParam(tokenUser, param);
-        SesameCommoditySpecifications specifications = this.createBean(param.getCommodityId(), param.getSpecificationsName(), param.getPrice(), param.getPriceFloat(),
+        CommodityDto commodityDto = this.checkAddCommoditySpecificationsParam(tokenUser, param);
+        SesameCommoditySpecifications specifications = this.createBean(param.getCommodityId(), param.getSpecificationsName(),
+                commodityDto.getCommodityName(), param.getPrice(), commodityDto.getPrice(), param.getPriceFloat(),
                 param.getStock(), param.getThumbnail(), param.getLimitBuy(), tokenUser.getUserId(), tokenUser.getUserName());
         boolean save = this.save(specifications);
         if (!save) {
@@ -66,7 +67,9 @@ public class SesameCommoditySpecificationsServiceImpl extends ServiceImpl<Sesame
      *
      * @param commodityId        商品主键ID
      * @param specificationsName 规格名称
+     * @param commodityName      商品名称
      * @param price              商品规格价格
+     * @param commodityPrice     商品主价格
      * @param priceFloat         价格浮动
      * @param stock              库存
      * @param thumbnail          规格缩略图
@@ -75,13 +78,16 @@ public class SesameCommoditySpecificationsServiceImpl extends ServiceImpl<Sesame
      * @param userName           创建人姓名
      * @return 规格对象
      */
-    private SesameCommoditySpecifications createBean(Integer commodityId, String specificationsName, BigDecimal price, Integer priceFloat, Integer stock,
+    private SesameCommoditySpecifications createBean(Integer commodityId, String specificationsName, String commodityName,
+                                                     BigDecimal price, BigDecimal commodityPrice, Integer priceFloat, Integer stock,
                                                      String thumbnail, Integer limitBuy, String userId, String userName) {
         SesameCommoditySpecifications specifications = new SesameCommoditySpecifications();
         specifications.setOpenId(IdUtil.simpleUUID());
         specifications.setSesameCommodityId(commodityId);
         specifications.setName(specificationsName);
+        specifications.setCommodityName(commodityName);
         specifications.setPrice(price);
+        specifications.setCommodityPrice(commodityPrice);
         specifications.setPriceFloat(priceFloat);
         specifications.setStock(stock);
         specifications.setThumbnail(thumbnail);
@@ -95,7 +101,7 @@ public class SesameCommoditySpecificationsServiceImpl extends ServiceImpl<Sesame
         return specifications;
     }
 
-    private void checkAddCommoditySpecificationsParam(TokenUser tokenUser, ReqAddCommoditySpecificationsDto param) {
+    private CommodityDto checkAddCommoditySpecificationsParam(TokenUser tokenUser, ReqAddCommoditySpecificationsDto param) {
         if (null == tokenUser || null == param) {
             throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
         }
@@ -153,5 +159,6 @@ public class SesameCommoditySpecificationsServiceImpl extends ServiceImpl<Sesame
             //更新规格价格
             param.setPrice(param.getPrice().add(new BigDecimal(String.valueOf(param.getPriceFloat()))));
         }
+        return dtoByOpenId;
     }
 }

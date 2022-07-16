@@ -42,9 +42,19 @@ public class SesameCommoditySpecifications implements Serializable {
     private String name;
 
     /**
-     * 商品价格
+     * 商品名称
+     */
+    private String commodityName;
+
+    /**
+     * 规格价格
      */
     private BigDecimal price;
+
+    /**
+     * 商品价格
+     */
+    private BigDecimal commodityPrice;
 
     /**
      * 价格浮动
