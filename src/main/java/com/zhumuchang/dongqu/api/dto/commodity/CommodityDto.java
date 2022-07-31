@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @Data
 public class CommodityDto implements Serializable {
 
+    private static final long serialVersionUID = -2857344731282626975L;
     /**
      * id
      */
