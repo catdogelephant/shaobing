@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumuchang.dongqu.mapper.testmapper.TestMapper">
+
+    <update id="updateEncryptUserPhone">
+        UPDATE sesame_system_user
+        SET `phone` = #{phone}
+        WHERE `id` = #{userId}
+    </update>
+    <select id="findSesameSystemUserDtoByPhone"
+            resultType="com.zhumuchang.dongqu.api.dto.user.resp.SystemUserEncryptPhoneDto">
+        SELECT
+            `name`,
+            `phone`
+        FROM
+            `sesame_system_user`
+        WHERE
+            `phone` = #{phone}
+    </select>
+</mapper>
