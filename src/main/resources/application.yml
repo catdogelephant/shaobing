@@ -47,3 +47,7 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   type-handlers-package: com.zhumuchang.dongqu.commons.handle.typehandler
+
+shaobing:
+  intercept:
+    tableNames: sesame_system_user

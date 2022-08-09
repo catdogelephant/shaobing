@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.commons.interceptor;
 import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.annotation.PassToken;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
+import com.zhumuchang.dongqu.commons.utils.RequestLocal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
@@ -65,6 +66,9 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         //把tokenUser放到请求中，在controller上可以拿到
         request.setAttribute("tokenUser", tokenUser);
+        RequestLocal.setTokenUserId(tokenUser.getUserId());
+        RequestLocal.setTokenUserName(tokenUser.getUserName());
+        RequestLocal.setTokenUser(tokenUser);
         return true;
     }
 }
