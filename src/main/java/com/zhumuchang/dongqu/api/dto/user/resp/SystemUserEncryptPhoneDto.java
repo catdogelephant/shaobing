@@ -1,6 +1,6 @@
 package com.zhumuchang.dongqu.api.dto.user.resp;
 
-import com.zhumuchang.dongqu.api.dto.testdto.Encrypt;
+import com.zhumuchang.dongqu.api.dto.testdto.EncryptDto;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ public class SystemUserEncryptPhoneDto implements Serializable {
     /**
      * 管理员手机号
      */
-    private Encrypt phone;
+    private EncryptDto phone;
 
     /**
      * 管理员账号

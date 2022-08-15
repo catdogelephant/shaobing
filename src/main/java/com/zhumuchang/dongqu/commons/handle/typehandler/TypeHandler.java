@@ -2,7 +2,7 @@ package com.zhumuchang.dongqu.commons.handle.typehandler;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
-import com.zhumuchang.dongqu.api.dto.testdto.Encrypt;
+import com.zhumuchang.dongqu.api.dto.testdto.EncryptDto;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -23,8 +23,8 @@ import java.sql.SQLException;
  * @Date 2022/8/8 10:28
  */
 @MappedJdbcTypes(JdbcType.VARCHAR)
-@MappedTypes(Encrypt.class)
-public class TypeHandler extends BaseTypeHandler<Encrypt> {
+@MappedTypes(EncryptDto.class)
+public class TypeHandler extends BaseTypeHandler<EncryptDto> {
 
     /**
      * 密钥
@@ -36,18 +36,18 @@ public class TypeHandler extends BaseTypeHandler<Encrypt> {
      *
      * @param preparedStatement
      * @param i
-     * @param encrypt
+     * @param encryptDto
      * @param jdbcType
      * @throws SQLException sql异常
      */
     @Override
-    public void setNonNullParameter(PreparedStatement preparedStatement, int i, Encrypt encrypt, JdbcType jdbcType) throws SQLException {
-        if (encrypt == null || StringUtils.isBlank(encrypt.getValue())) {
+    public void setNonNullParameter(PreparedStatement preparedStatement, int i, EncryptDto encryptDto, JdbcType jdbcType) throws SQLException {
+        if (encryptDto == null || StringUtils.isBlank(encryptDto.getValue())) {
             preparedStatement.setString(i, null);
             return;
         }
         AES aes = SecureUtil.aes(KEYS);
-        String encryptHex = aes.encryptHex(encrypt.getValue());
+        String encryptHex = aes.encryptHex(encryptDto.getValue());
         preparedStatement.setString(i, encryptHex);
     }
 
@@ -60,7 +60,7 @@ public class TypeHandler extends BaseTypeHandler<Encrypt> {
      * @throws SQLException sql异常
      */
     @Override
-    public Encrypt getNullableResult(ResultSet resultSet, String columnName) throws SQLException {
+    public EncryptDto getNullableResult(ResultSet resultSet, String columnName) throws SQLException {
         return decrypt(resultSet.getString(columnName));
     }
 
@@ -73,7 +73,7 @@ public class TypeHandler extends BaseTypeHandler<Encrypt> {
      * @throws SQLException
      */
     @Override
-    public Encrypt getNullableResult(ResultSet resultSet, int columnIndex) throws SQLException {
+    public EncryptDto getNullableResult(ResultSet resultSet, int columnIndex) throws SQLException {
         return decrypt(resultSet.getString(columnIndex));
     }
 
@@ -86,7 +86,7 @@ public class TypeHandler extends BaseTypeHandler<Encrypt> {
      * @throws SQLException
      */
     @Override
-    public Encrypt getNullableResult(CallableStatement callableStatement, int columnIndex) throws SQLException {
+    public EncryptDto getNullableResult(CallableStatement callableStatement, int columnIndex) throws SQLException {
         return decrypt(callableStatement.getString(columnIndex));
     }
 
@@ -96,10 +96,10 @@ public class TypeHandler extends BaseTypeHandler<Encrypt> {
      * @param encryptString 加密串
      * @return 加解密类，value值为解密后的值
      */
-    public Encrypt decrypt(String encryptString) {
+    public EncryptDto decrypt(String encryptString) {
         if (StringUtils.isBlank(encryptString)) {
             return null;
         }
-        return new Encrypt(SecureUtil.aes(KEYS).decryptStr(encryptString));
+        return new EncryptDto(SecureUtil.aes(KEYS).decryptStr(encryptString));
     }
 }

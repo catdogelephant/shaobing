@@ -1,6 +1,6 @@
 package com.zhumuchang.dongqu.mapper.testmapper;
 
-import com.zhumuchang.dongqu.api.dto.testdto.Encrypt;
+import com.zhumuchang.dongqu.api.dto.testdto.EncryptDto;
 import com.zhumuchang.dongqu.api.dto.user.resp.SystemUserEncryptPhoneDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -22,7 +22,7 @@ public interface TestMapper {
      * @param phone  用户未加密手机号
      * @return 更新条数
      */
-    Integer updateEncryptUserPhone(@Param("userId") Integer userId, @Param("phone") Encrypt phone);
+    Integer updateEncryptUserPhone(@Param("userId") Integer userId, @Param("phone") EncryptDto phone);
 
     /**
      * 根据手机号获取系统用户
@@ -30,5 +30,5 @@ public interface TestMapper {
      * @param phone 手机号加密类
      * @return 系统用户
      */
-    SystemUserEncryptPhoneDto findSesameSystemUserDtoByPhone(@Param("phone") Encrypt phone);
+    SystemUserEncryptPhoneDto findSesameSystemUserDtoByPhone(@Param("phone") EncryptDto phone);
 }

@@ -2,8 +2,11 @@ package com.zhumuchang.dongqu.controller.testcontroller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
-import com.zhumuchang.dongqu.api.dto.testdto.Encrypt;
+import com.zhumuchang.dongqu.api.dto.testdto.EncryptDto;
+import com.zhumuchang.dongqu.api.dto.testdto.EncryptUser;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
+import com.zhumuchang.dongqu.commons.annotation.Decrypt;
+import com.zhumuchang.dongqu.commons.annotation.Encrypt;
 import com.zhumuchang.dongqu.commons.annotation.PassToken;
 import com.zhumuchang.dongqu.mapper.testmapper.TestMapper;
 import com.zhumuchang.dongqu.service.impl.AsyncServiceImpl;
@@ -12,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -108,10 +109,25 @@ public class TestController {
     @GetMapping(name = "测试mybatis加解密", path = "/testMybatisEncrypt")
     @PassToken
     public Object testMybatisEncrypt() {
-        Encrypt phone = new Encrypt("13666666666");
+        EncryptDto phone = new EncryptDto("13666666666");
         Integer integer = testMapper.updateEncryptUserPhone(1, phone);
         return integer;
 //        SystemUserEncryptPhoneDto resp = testMapper.findSesameSystemUserDtoByPhone(phone);
 //        return resp;
+    }
+
+    @PostMapping(name = "测试加密注解", path = "/testEncryptAn")
+    @PassToken
+    @Encrypt
+    public Object testEncryptAn(@RequestBody EncryptUser param) {
+        param.setName(null);
+        param.setPhone("1333333333333");
+        return param;
+    }
+
+    @PostMapping(name = "测试解密注解", path = "/testDecryptAn")
+    @PassToken
+    public Object testDecryptAn(@RequestBody @Decrypt EncryptUser param) {
+        return param;
     }
 }
