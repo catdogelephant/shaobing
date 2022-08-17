@@ -9,7 +9,7 @@ import com.zhumuchang.dongqu.api.bean.user.SesameSystemUser;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.JwtUtil;

@@ -15,7 +15,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityCategorySortService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.shop.SesameClerkService;

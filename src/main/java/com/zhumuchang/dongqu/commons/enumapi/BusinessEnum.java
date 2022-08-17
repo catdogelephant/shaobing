@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.api.enumapi;
+package com.zhumuchang.dongqu.commons.enumapi;
 
 import lombok.Getter;
 
@@ -29,15 +29,20 @@ public enum BusinessEnum {
     NO_TOKEN(10005, "用户信息为空"),
 
     /** 参数类型错误 */
-    PARAM_NULL_FAIL(10011, "参数为空"),
+    PARAM_NULL_FAIL(10101, "参数为空"),
 
-    PARAM_ERROR(10012, "参数错误"),
+    PARAM_ERROR(10102, "参数错误"),
 
-    DATA_NOT_FOUND(10013, "数据不存在"),
+    DATA_NOT_FOUND(10103, "数据不存在"),
 
-    DATA_BUSINESS_ERROR(10015, "数据业务异常"),
+    DATA_BUSINESS_ERROR(10105, "数据业务异常"),
 
-    DATA_ERROR(10016, "实体数据异常")
+    DATA_ERROR(10106, "实体数据异常"),
+
+    /** 访问类型错误 */
+    FREQUENT_VISITS(10201, "访问过于频繁，请稍候再试"),
+
+    REPEAT_ACCESS(10202, "请勿重复访问")
     ;
 
     private final Integer code;

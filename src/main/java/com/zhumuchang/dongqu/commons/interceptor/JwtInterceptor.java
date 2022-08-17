@@ -1,6 +1,6 @@
 package com.zhumuchang.dongqu.commons.interceptor;
 
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.annotation.PassToken;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.utils.RequestLocal;

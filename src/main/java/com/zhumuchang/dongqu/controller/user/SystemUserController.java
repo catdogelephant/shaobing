@@ -6,7 +6,7 @@ import com.zhumuchang.dongqu.api.dto.user.ResultDto;
 import com.zhumuchang.dongqu.api.dto.user.req.LoginDto;
 import com.zhumuchang.dongqu.api.dto.user.req.RegisterReq;
 import com.zhumuchang.dongqu.api.dto.user.resp.LoginTokenDto;
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.user.SystemUserService;
 import com.zhumuchang.dongqu.commons.annotation.ApiIdempotent;
 import com.zhumuchang.dongqu.commons.annotation.PassToken;

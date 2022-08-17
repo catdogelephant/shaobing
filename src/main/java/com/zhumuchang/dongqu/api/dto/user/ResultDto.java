@@ -1,6 +1,6 @@
 package com.zhumuchang.dongqu.api.dto.user;
 
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import lombok.Data;
 

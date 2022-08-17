@@ -12,7 +12,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;

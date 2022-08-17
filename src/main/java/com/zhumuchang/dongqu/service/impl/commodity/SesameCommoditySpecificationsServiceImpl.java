@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommoditySpecifications;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommoditySpecificationsDto;
-import com.zhumuchang.dongqu.api.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
