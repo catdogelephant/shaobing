@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.PageBean;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppSpecificationsListDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
@@ -13,7 +14,10 @@ import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -60,6 +64,12 @@ public class SesameCommodityAppController {
     @GetMapping(name = "获取商品详情", path = "/appCommodityDetail")
     public Object appCommodityDetail(String commodityOpenId) {
         AppCommodityDetailDto resp = sesameCommodityService.appCommodityDetail(commodityOpenId);
+        return resp;
+    }
+
+    @GetMapping(name = "获取商品规格列表", path = "/appCommoditySpecificationsList")
+    public Object appCommoditySpecificationsList(@RequestParam String commodityOpenId) {
+        List<AppSpecificationsListDto> resp = sesameCommodityService.appCommoditySpecificationsList(commodityOpenId);
         return resp;
     }
 }

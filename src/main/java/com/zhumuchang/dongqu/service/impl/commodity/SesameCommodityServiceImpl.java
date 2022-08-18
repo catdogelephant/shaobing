@@ -13,6 +13,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppSpecificationsListDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
@@ -378,6 +379,22 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
             List list = JSONObject.parseObject(pictureJson, List.class);
             resp.setPictureList(list);
         }
+        return resp;
+    }
+
+    /**
+     * 获取商品规格列表
+     *
+     * @param commodityOpenId 商品对外ID
+     * @return 商品规格列表
+     */
+    @Override
+    public List<AppSpecificationsListDto> appCommoditySpecificationsList(String commodityOpenId) {
+        if (StringUtils.isBlank(commodityOpenId)) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Integer commodityId = sesameMapper.getNotDelIdByOpenId(commodityOpenId, TableConstants.SESAME_COMMODITY_TABLE_NAME);
+        List<AppSpecificationsListDto> resp = sesameCommodityMapper.appCommoditySpecificationsList(commodityId);
         return resp;
     }
 

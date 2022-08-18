@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppSpecificationsListDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -114,4 +117,12 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @return 商品详情
      */
     AppCommodityDetailDto appCommodityDetail(String commodityOpenId);
+
+    /**
+     * 获取商品规格列表
+     *
+     * @param commodityId 商品主键ID
+     * @return 商品规格集合
+     */
+    List<AppSpecificationsListDto> appCommoditySpecificationsList(Integer commodityId);
 }
