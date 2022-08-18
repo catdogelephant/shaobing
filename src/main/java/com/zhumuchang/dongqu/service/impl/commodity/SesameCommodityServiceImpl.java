@@ -12,6 +12,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
@@ -355,6 +356,29 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
         }
         page = sesameCommodityMapper.appCommodityPage(page, categoryId, shopId);
         return page;
+    }
+
+    /**
+     * 获取商品详情
+     *
+     * @param commodityOpenId 商品对外ID
+     * @return 商品详情
+     */
+    @Override
+    public AppCommodityDetailDto appCommodityDetail(String commodityOpenId) {
+        if (StringUtils.isBlank(commodityOpenId)) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        AppCommodityDetailDto resp = sesameCommodityMapper.appCommodityDetail(commodityOpenId);
+        if (null == resp) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
+        }
+        String pictureJson = resp.getPictureJson();
+        if (StringUtils.isNotBlank(pictureJson)) {
+            List list = JSONObject.parseObject(pictureJson, List.class);
+            resp.setPictureList(list);
+        }
+        return resp;
     }
 
     /**

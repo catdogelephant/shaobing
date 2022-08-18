@@ -125,4 +125,20 @@
         ORDER BY
             sc.`sale` DESC, cs.created_time DESC
     </select>
+    <select id="appCommodityDetail"
+            resultType="com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto">
+        SELECT
+            open_id AS commodityOpenId,
+            `name` AS commodityName,
+            `price`,
+            `introduce`,
+            picture_json AS pictureJson,
+            `sale`
+        FROM
+            sesame_commodity
+        WHERE
+            open_id = #{commodityOpenId}
+            AND `enable` = 1
+            AND del_flag = 1
+    </select>
 </mapper>

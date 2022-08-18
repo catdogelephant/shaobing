@@ -4,6 +4,7 @@ package com.zhumuchang.dongqu.controller.commodity;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.PageBean;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
@@ -53,6 +54,12 @@ public class SesameCommodityAppController {
     @GetMapping(name = "获取店铺里对应品类下的商品分页列表", path = "/appShopCommodityPage")
     public Object appShopCommodityPage(ReqAppCommodityPageDto param) {
         Page<RespCommodityPageDto> resp = sesameCommodityService.appShopCommodityPage(param);
+        return resp;
+    }
+
+    @GetMapping(name = "获取商品详情", path = "/appCommodityDetail")
+    public Object appCommodityDetail(String commodityOpenId) {
+        AppCommodityDetailDto resp = sesameCommodityService.appCommodityDetail(commodityOpenId);
         return resp;
     }
 }

@@ -9,6 +9,7 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAppCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqRelCommodityToCategoryDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
@@ -103,4 +104,12 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @return 商品分页列表
      */
     Page<RespCommodityPageDto> appShopCommodityPage(ReqAppCommodityPageDto param);
+
+    /**
+     * 获取商品详情
+     *
+     * @param commodityOpenId 商品对外ID
+     * @return 商品详情
+     */
+    AppCommodityDetailDto appCommodityDetail(String commodityOpenId);
 }

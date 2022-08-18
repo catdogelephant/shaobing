@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommodity;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.resp.AppCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityDetailDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCommodityPageDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -105,4 +106,12 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      */
     Page<RespCommodityPageDto> appCommodityPage(@Param("page") Page<RespCommodityPageDto> page, @Param("categoryId") Integer categoryId,
                                                 @Param("shopId") Integer shopId);
+
+    /**
+     * 获取商品详情
+     *
+     * @param commodityOpenId 商品对外ID
+     * @return 商品详情
+     */
+    AppCommodityDetailDto appCommodityDetail(String commodityOpenId);
 }

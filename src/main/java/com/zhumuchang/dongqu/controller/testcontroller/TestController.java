@@ -2,9 +2,11 @@ package com.zhumuchang.dongqu.controller.testcontroller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommodityDto;
 import com.zhumuchang.dongqu.api.dto.testdto.EncryptDto;
 import com.zhumuchang.dongqu.api.dto.testdto.EncryptUser;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
+import com.zhumuchang.dongqu.commons.annotation.CommodityVisitUV;
 import com.zhumuchang.dongqu.commons.annotation.Decrypt;
 import com.zhumuchang.dongqu.commons.annotation.Encrypt;
 import com.zhumuchang.dongqu.commons.annotation.PassToken;
@@ -128,6 +130,12 @@ public class TestController {
     @PostMapping(name = "测试解密注解", path = "/testDecryptAn")
     @PassToken
     public Object testDecryptAn(@RequestBody @Decrypt EncryptUser param) {
+        return param;
+    }
+
+    @PostMapping(name = "测试统计注解", path = "/testStatisticsAnnotation")
+    @CommodityVisitUV
+    public Object testStatisticsAnnotation(@RequestBody ReqAddCommodityDto param) {
         return param;
     }
 }
