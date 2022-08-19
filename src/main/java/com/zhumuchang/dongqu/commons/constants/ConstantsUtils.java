@@ -49,6 +49,7 @@ public class ConstantsUtils {
     public static final Integer CODE_70 = 70;
     public static final Integer CODE_80 = 80;
     public static final Integer CODE_90 = 90;
+    public static final Integer CODE_99 = 99;
     public static final Integer CODE_100 = 100;
     public static final Integer CODE_200 = 200;
     public static final Integer CODE_300 = 300;

@@ -399,6 +399,18 @@ public class SesameCommodityServiceImpl extends ServiceImpl<SesameCommodityMappe
     }
 
     /**
+     * 根据商品主键ID获取商品名称
+     *
+     * @param sesameCommodityId 商品主键ID
+     * @return 商品名称
+     */
+    @Override
+    public String getNameById(Integer sesameCommodityId) {
+        String name = sesameCommodityMapper.getNameById(sesameCommodityId);
+        return name;
+    }
+
+    /**
      * 根据商品对外ID获取商品信息
      *
      * @param openId 商品对外ID

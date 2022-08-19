@@ -32,9 +32,24 @@ public class SesameCommoditySpecifications implements Serializable {
     private String openId;
 
     /**
+     * 店铺主键id
+     */
+    private Integer sesameShopId;
+
+    /**
+     * 店铺对外id
+     */
+    private String sesameShopOpenId;
+
+    /**
      * 商品主键id
      */
     private Integer sesameCommodityId;
+
+    /**
+     * 商品对外id
+     */
+    private String sesameCommodityOpenId;
 
     /**
      * 规格名称

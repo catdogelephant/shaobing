@@ -11,4 +11,22 @@
             del_flag = 1
             AND sesame_commodity_id = #{commodityId}
     </select>
+
+    <select id="getByOpenId" resultType="com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto">
+        SELECT
+            `id`,
+            open_id AS openId,
+            sesame_commodity_id AS sesameCommodityId,
+            sesame_commodity_open_id AS sesameCommodityOpenId,
+            sesame_shop_id AS sesameShopId,
+            sesame_shop_open_id AS sesameShopOpenId,
+            `price`,
+            `name`,
+            `thumbnail`
+        FROM
+            sesame_commodity_specifications
+        WHERE
+            del_flag = 1
+            AND open_id = #{specificationsOpenId}
+    </select>
 </mapper>

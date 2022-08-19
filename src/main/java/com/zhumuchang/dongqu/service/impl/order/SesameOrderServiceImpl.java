@@ -1,14 +1,37 @@
 package com.zhumuchang.dongqu.service.impl.order;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Lists;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
+import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
+import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespCartCommodityListDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
+import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
+import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
+import com.zhumuchang.dongqu.api.service.shop.SesameShopService;
+import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
+import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
+import com.zhumuchang.dongqu.commons.utils.RedisUtils;
+import com.zhumuchang.dongqu.mapper.SesameMapper;
 import com.zhumuchang.dongqu.mapper.order.SesameOrderMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author sx
@@ -17,4 +40,90 @@ import org.springframework.stereotype.Service;
 @Service
 public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, SesameOrder> implements SesameOrderService {
 
+    @Autowired
+    private SesameCommoditySpecificationsService sesameCommoditySpecificationsService;
+
+    @Autowired
+    private SesameMapper sesameMapper;
+
+    /**
+     * 店铺
+     */
+    @Autowired
+    private SesameShopService sesameShopService;
+
+    /**
+     * 商品
+     */
+    @Autowired
+    private SesameCommodityService sesameCommodityService;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    /**
+     * 添加购物车
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     */
+    @Override
+    public void addCart(TokenUser tokenUser, ReqCartDto param) {
+        if (null == tokenUser || null == param || StringUtils.isBlank(param.getSpecificationsOpenId()) || null == param.getNum()) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        if (param.getNum().compareTo(ConstantsUtils.CODE_0) < 0 || param.getNum().compareTo(ConstantsUtils.CODE_99) > 0) {
+            throw new BusinessException(BusinessEnum.PARAM_ERROR.getCode(), "最多添加99个");
+        }
+        SpecificationsDto specificationsDto = sesameCommoditySpecificationsService.getByOpenId(param.getSpecificationsOpenId());
+        if (null == specificationsDto) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND);
+        }
+        String shopName = sesameShopService.getNameById(specificationsDto.getSesameShopId());
+        String commodityName = sesameCommodityService.getNameById(specificationsDto.getSesameCommodityId());
+        //判断redis中是否有对应的商品
+        String cartKey = RedisUtils.getKey(RedisUtils.CART_KEY, tokenUser.getUserId());
+        Object redisObj = stringRedisTemplate.opsForHash().get(cartKey, specificationsDto.getSesameShopOpenId());
+        RespCartDto respCartDto = null;
+        //是否新建数据标识
+        Boolean addRedisFlag = Boolean.TRUE;
+        if (Objects.nonNull(redisObj)) {
+            if (redisObj instanceof String) {
+                String redisJson = (String) redisObj;
+                respCartDto = JSONObject.parseObject(redisJson, RespCartDto.class);
+                List<RespCartCommodityListDto> cartCommodityList = respCartDto.getCartCommodityList();
+                for (RespCartCommodityListDto redisListDto : cartCommodityList) {
+                    if (redisListDto.getCommodityOpenId().equals(specificationsDto.getSesameCommodityOpenId()) &&
+                            redisListDto.getSpecificationsOpenId().equals(specificationsDto.getOpenId())) {
+                        //redis中有完全一样的商品，则增加数量
+                        redisListDto.setCommodityNum(redisListDto.getCommodityNum() + param.getNum());
+                        addRedisFlag = Boolean.FALSE;
+                        break;
+                    }
+                }
+            }
+        }
+        if (null == respCartDto) {
+            respCartDto = new RespCartDto();
+            respCartDto.setUserId(tokenUser.getUserId());
+            respCartDto.setShopName(shopName);
+            respCartDto.setShopOpenId(specificationsDto.getSesameShopOpenId());
+            respCartDto.setUpdateTime(LocalDateTime.now());
+            ArrayList<RespCartCommodityListDto> commodityList = Lists.newArrayList();
+            respCartDto.setCartCommodityList(commodityList);
+        }
+        if (addRedisFlag) {
+            RespCartCommodityListDto commodityListDto = new RespCartCommodityListDto();
+            commodityListDto.setCommodityName(commodityName);
+            commodityListDto.setCommodityNum(param.getNum());
+            commodityListDto.setCommodityOpenId(specificationsDto.getSesameCommodityOpenId());
+            commodityListDto.setCommodityPrice(specificationsDto.getPrice());
+            commodityListDto.setSpecificationsName(specificationsDto.getName());
+            commodityListDto.setSpecificationsOpenId(specificationsDto.getOpenId());
+            List<RespCartCommodityListDto> cartCommodityList = respCartDto.getCartCommodityList();
+            cartCommodityList.add(commodityListDto);
+        }
+        String redisValue = JSONObject.toJSONString(respCartDto);
+        stringRedisTemplate.opsForHash().put(cartKey, specificationsDto.getSesameShopOpenId(), redisValue);
+    }
 }

@@ -2,6 +2,7 @@ package com.zhumuchang.dongqu.mapper.commodity;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommoditySpecifications;
+import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +27,12 @@ public interface SesameCommoditySpecificationsMapper extends BaseMapper<SesameCo
      * @return 规格名称集合
      */
     List<String> getSpecificationsNameListByCommodityId(Integer commodityId);
+
+    /**
+     * 根据规格对外ID获取规格信息
+     *
+     * @param specificationsOpenId 商品规格对外ID
+     * @return 规格信息
+     */
+    SpecificationsDto getByOpenId(String specificationsOpenId);
 }

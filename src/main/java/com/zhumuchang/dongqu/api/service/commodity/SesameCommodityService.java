@@ -123,4 +123,12 @@ public interface SesameCommodityService extends IService<SesameCommodity> {
      * @return 商品规格列表
      */
     List<AppSpecificationsListDto> appCommoditySpecificationsList(String commodityOpenId);
+
+    /**
+     * 根据商品主键ID获取商品名称
+     *
+     * @param sesameCommodityId 商品主键ID
+     * @return 商品名称
+     */
+    String getNameById(Integer sesameCommodityId);
 }

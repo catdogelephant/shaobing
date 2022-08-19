@@ -11,4 +11,14 @@
             `id` = #{shopId}
     </select>
 
+    <select id="getNameById" resultType="java.lang.String">
+        SELECT
+            `name`
+        FROM
+            sesame_shop
+        WHERE
+            del_flag = 1
+            AND `id` = #{sesameShopId}
+    </select>
+
 </mapper>

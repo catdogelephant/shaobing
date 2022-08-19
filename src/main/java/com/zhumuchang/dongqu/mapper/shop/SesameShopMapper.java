@@ -25,4 +25,12 @@ public interface SesameShopMapper extends BaseMapper<SesameShop> {
      * @return 停启用 0.停用 1.启用（默认停用）
      */
     Integer getEnableById(Integer shopId);
+
+    /**
+     * 根据ID获取店铺名称
+     *
+     * @param sesameShopId 店铺主键ID
+     * @return 店铺名称
+     */
+    String getNameById(Integer sesameShopId);
 }
