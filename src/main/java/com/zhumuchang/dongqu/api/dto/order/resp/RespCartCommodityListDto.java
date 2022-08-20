@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @Author sx
@@ -43,4 +44,9 @@ public class RespCartCommodityListDto implements Serializable {
      * 规格名称
      */
     private String specificationsName;
+
+    /**
+     * 商品更新时间
+     */
+    private LocalDateTime commodityUpdateTime;
 }

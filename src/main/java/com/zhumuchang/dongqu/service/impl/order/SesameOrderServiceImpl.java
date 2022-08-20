@@ -28,9 +28,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -102,6 +104,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                             redisListDto.getSpecificationsOpenId().equals(specificationsDto.getOpenId())) {
                         //redis中有完全一样的商品，则增加数量
                         redisListDto.setCommodityNum(redisListDto.getCommodityNum() + param.getNum());
+                        redisListDto.setCommodityUpdateTime(LocalDateTime.now());
                         addRedisFlag = Boolean.FALSE;
                         break;
                     }
@@ -125,6 +128,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             commodityListDto.setCommodityPrice(specificationsDto.getPrice());
             commodityListDto.setSpecificationsName(specificationsDto.getName());
             commodityListDto.setSpecificationsOpenId(specificationsDto.getOpenId());
+            commodityListDto.setCommodityUpdateTime(LocalDateTime.now());
             List<RespCartCommodityListDto> cartCommodityList = respCartDto.getCartCommodityList();
             cartCommodityList.add(commodityListDto);
         }
@@ -134,5 +138,38 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         if (!Boolean.TRUE.equals(expire)) {
             log.info("添加购物车 - 设置过期时间 - 失败 - cartKey={}", cartKey);
         }
+    }
+
+    /**
+     * 获取购物车列表
+     *
+     * @param tokenUser 用户信息
+     * @return 购物车列表
+     */
+    @Override
+    public List<RespCartDto> getCart(TokenUser tokenUser) {
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        String userId = tokenUser.getUserId();
+        String cartKey = RedisUtils.getKey(RedisUtils.CART_KEY, userId);
+        HashOperations<String, Object, Object> hash = stringRedisTemplate.opsForHash();
+        List<Object> values = hash.values(cartKey);
+        List<RespCartDto> resp = Lists.newArrayList();
+        for (Object value : values) {
+            if (value instanceof String) {
+                String redisJson = (String) value;
+                RespCartDto respCartDto = JSONObject.parseObject(redisJson, RespCartDto.class);
+                resp.add(respCartDto);
+            }
+        }
+        List<RespCartDto> collect = resp.stream().sorted(Comparator.comparing(RespCartDto::getUpdateTime).reversed()).collect(Collectors.toList());
+        for (RespCartDto respCartDto : collect) {
+            List<RespCartCommodityListDto> cartCommodityList = respCartDto.getCartCommodityList();
+            List<RespCartCommodityListDto> commodityCollection = cartCommodityList.stream()
+                    .sorted(Comparator.comparing(RespCartCommodityListDto::getCommodityUpdateTime).reversed()).collect(Collectors.toList());
+            respCartDto.setCartCommodityList(commodityCollection);
+        }
+        return collect;
     }
 }

@@ -3,7 +3,10 @@ package com.zhumuchang.dongqu.api.service.order;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,4 +25,12 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @param param     请求参数
      */
     void addCart(TokenUser tokenUser, ReqCartDto param);
+
+    /**
+     * 获取购物车列表
+     *
+     * @param tokenUser 用户信息
+     * @return 购物车列表
+     */
+    List<RespCartDto> getCart(TokenUser tokenUser);
 }
