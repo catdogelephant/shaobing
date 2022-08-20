@@ -19,8 +19,10 @@ import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.commons.utils.RedisUtils;
 import com.zhumuchang.dongqu.mapper.SesameMapper;
 import com.zhumuchang.dongqu.mapper.order.SesameOrderMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -37,6 +40,7 @@ import java.util.Objects;
  * @author sx
  * @since 2022-08-19
  */
+@Slf4j
 @Service
 public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, SesameOrder> implements SesameOrderService {
 
@@ -82,8 +86,9 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         String shopName = sesameShopService.getNameById(specificationsDto.getSesameShopId());
         String commodityName = sesameCommodityService.getNameById(specificationsDto.getSesameCommodityId());
         //判断redis中是否有对应的商品
+        HashOperations<String, Object, Object> hash = stringRedisTemplate.opsForHash();
         String cartKey = RedisUtils.getKey(RedisUtils.CART_KEY, tokenUser.getUserId());
-        Object redisObj = stringRedisTemplate.opsForHash().get(cartKey, specificationsDto.getSesameShopOpenId());
+        Object redisObj = hash.get(cartKey, specificationsDto.getSesameShopOpenId());
         RespCartDto respCartDto = null;
         //是否新建数据标识
         Boolean addRedisFlag = Boolean.TRUE;
@@ -124,6 +129,10 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             cartCommodityList.add(commodityListDto);
         }
         String redisValue = JSONObject.toJSONString(respCartDto);
-        stringRedisTemplate.opsForHash().put(cartKey, specificationsDto.getSesameShopOpenId(), redisValue);
+        hash.put(cartKey, specificationsDto.getSesameShopOpenId(), redisValue);
+        Boolean expire = stringRedisTemplate.expire(cartKey, 3, TimeUnit.DAYS);
+        if (!Boolean.TRUE.equals(expire)) {
+            log.info("添加购物车 - 设置过期时间 - 失败 - cartKey={}", cartKey);
+        }
     }
 }
