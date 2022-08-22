@@ -29,4 +29,38 @@
             del_flag = 1
             AND open_id = #{specificationsOpenId}
     </select>
+
+    <resultMap id="testListMap" type="com.zhumuchang.dongqu.api.dto.order.resp.ConfirmOrderShopListDto">
+        <result property="shopName" column="shopName"/>
+        <collection property="commodityList" ofType="com.zhumuchang.dongqu.api.dto.order.resp.ConfirmOrderCommodityListDto">
+            <result property="commodityThumbnail" column="commodityThumbnail"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="commodityPrice" column="commodityPrice"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDtoByOpenId" resultMap="testListMap">
+        SELECT
+            scs.`thumbnail` AS commodityThumbnail,
+            sc.`name` AS commodityName,
+            sc.`price` AS commodityPrice,
+            scs.`name` AS specificationsName,
+            ss.`name` AS shopName,
+            scs.`open_id` AS specificationsOpenId
+        FROM
+            sesame_commodity_specifications scs
+            LEFT JOIN sesame_commodity sc ON scs.sesame_commodity_id = sc.`id`
+            LEFT JOIN sesame_shop ss ON scs.sesame_shop_id = ss.`id`
+        WHERE
+            scs.del_flag = 1
+            AND sc.del_flag = 1
+            AND sc.`enable` = 1
+            AND scs.open_id IN
+            <foreach collection="param" item="item" separator="," open="(" close=")">
+                #{item.specificationsOpenId}
+            </foreach>
+
+    </select>
 </mapper>

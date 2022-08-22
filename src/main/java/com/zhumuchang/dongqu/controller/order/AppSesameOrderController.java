@@ -2,7 +2,9 @@ package com.zhumuchang.dongqu.controller.order;
 
 
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
+import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,13 @@ public class AppSesameOrderController {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         sesameOrderService.delCart(tokenUser);
         return null;
+    }
+
+    @PostMapping(name = "确认订单页", path = "/confirmOrder")
+    public Object confirmOrder(HttpServletRequest request, @RequestBody List<ReqConfirmOrderDto> param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        RespConfirmOrderDto resp = sesameOrderService.confirmOrder(tokenUser, param);
+        return resp;
     }
 
 }

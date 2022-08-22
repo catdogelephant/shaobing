@@ -6,8 +6,8 @@ import com.google.common.collect.Lists;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
 import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
-import com.zhumuchang.dongqu.api.dto.order.resp.RespCartCommodityListDto;
-import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
+import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.*;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
@@ -17,7 +17,7 @@ import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.commons.utils.RedisUtils;
-import com.zhumuchang.dongqu.mapper.SesameMapper;
+import com.zhumuchang.dongqu.mapper.commodity.SesameCommoditySpecificationsMapper;
 import com.zhumuchang.dongqu.mapper.order.SesameOrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +26,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,7 +51,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
     private SesameCommoditySpecificationsService sesameCommoditySpecificationsService;
 
     @Autowired
-    private SesameMapper sesameMapper;
+    private SesameCommoditySpecificationsMapper specificationsMapper;
 
     /**
      * 店铺
@@ -194,5 +195,45 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 throw new BusinessException(BusinessEnum.FAIL);
             }
         }
+    }
+
+    /**
+     * 确认订单页
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     * @return 订单页商品列表
+     */
+    @Override
+    public RespConfirmOrderDto confirmOrder(TokenUser tokenUser, List<ReqConfirmOrderDto> param) {
+        if (null == tokenUser || null == param || param.isEmpty()) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        //获取规格集合
+        List<ConfirmOrderShopListDto> specificationsDtoList = specificationsMapper.getDtoByOpenId(param);
+        Integer totalNum = 0;
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        //设置单个商品数量
+        for (ConfirmOrderShopListDto respDto : specificationsDtoList) {
+            List<ConfirmOrderCommodityListDto> commodityList = respDto.getCommodityList();
+            for (ConfirmOrderCommodityListDto commodity : commodityList) {
+                for (ReqConfirmOrderDto requestParam : param) {
+                    if (commodity.getSpecificationsOpenId().equals(requestParam.getSpecificationsOpenId())) {
+                        commodity.setCommodityNum(requestParam.getNum());
+                        totalNum += requestParam.getNum();
+                        totalPrice = totalPrice.add(commodity.getCommodityPrice());
+                        break;
+                    }
+                }
+            }
+        }
+        RespConfirmOrderDto resp = new RespConfirmOrderDto();
+        //设置商品总数量
+        resp.setTotalNum(totalNum);
+        resp.setTotalPrice(totalPrice);
+        resp.setPayPrice(totalPrice);
+        resp.setFavorablePrice(totalPrice.subtract(totalPrice));
+        resp.setShopList(specificationsDtoList);
+        return resp;
     }
 }

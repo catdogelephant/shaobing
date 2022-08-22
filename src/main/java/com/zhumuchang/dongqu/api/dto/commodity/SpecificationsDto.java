@@ -55,4 +55,19 @@ public class SpecificationsDto implements Serializable {
      * 规格缩略图
      */
     private String thumbnail;
+
+    /**
+     * 商品数量
+     */
+    private Integer specificationsNum;
+
+    /**
+     * 商品价格
+     */
+    private BigDecimal commodityPrice;
+
+    /**
+     * 店铺名称
+     */
+    private String shopName;
 }
