@@ -33,4 +33,11 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @return 购物车列表
      */
     List<RespCartDto> getCart(TokenUser tokenUser);
+
+    /**
+     * 清空购物车
+     *
+     * @param tokenUser 用户信息
+     */
+    void delCart(TokenUser tokenUser);
 }

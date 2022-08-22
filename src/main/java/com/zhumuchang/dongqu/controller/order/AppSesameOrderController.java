@@ -40,4 +40,11 @@ public class AppSesameOrderController {
         return resp;
     }
 
+    @PostMapping(name = "清空购物车", path = "/delCart")
+    public Object delCart(HttpServletRequest request) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameOrderService.delCart(tokenUser);
+        return null;
+    }
+
 }

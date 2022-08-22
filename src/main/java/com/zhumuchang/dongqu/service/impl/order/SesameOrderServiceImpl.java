@@ -172,4 +172,27 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         }
         return collect;
     }
+
+    /**
+     * 清空购物车
+     *
+     * @param tokenUser 用户信息
+     */
+    @Override
+    public void delCart(TokenUser tokenUser) {
+        if (null == tokenUser || StringUtils.isBlank(tokenUser.getUserId())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        //组装redis的key
+        String cartKey = RedisUtils.getKey(RedisUtils.CART_KEY, tokenUser.getUserId());
+        Boolean hasKey = stringRedisTemplate.hasKey(cartKey);
+        if (Boolean.TRUE.equals(hasKey)) {
+            List<Object> values = stringRedisTemplate.opsForHash().values(cartKey);
+            log.info("清空购物车 - 购物车数据={}", JSONObject.toJSONString(values));
+            Boolean delete = stringRedisTemplate.delete(cartKey);
+            if (Boolean.FALSE.equals(delete)) {
+                throw new BusinessException(BusinessEnum.FAIL);
+            }
+        }
+    }
 }
