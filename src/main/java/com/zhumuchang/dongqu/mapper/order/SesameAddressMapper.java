@@ -17,4 +17,11 @@ import org.springframework.stereotype.Repository;
 @Mapper
 public interface SesameAddressMapper extends BaseMapper<SesameAddress> {
 
+    /**
+     * 将指定的默认地址改为非默认地址
+     *
+     * @param userId 会员ID
+     * @return 成功失败
+     */
+    Boolean updateToNotDefaultAddrByUserId(String userId);
 }
