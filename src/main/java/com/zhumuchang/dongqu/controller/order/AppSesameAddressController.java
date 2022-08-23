@@ -1,6 +1,7 @@
 package com.zhumuchang.dongqu.controller.order;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqAddAddressDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto;
 import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
@@ -46,6 +47,16 @@ public class AppSesameAddressController {
             throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
         }
         RespAddressDetailDto resp = sesameAddressService.getAddressDetail(tokenUser, addressOpenId);
+        return resp;
+    }
+
+    @GetMapping(name = "查询收货地址列表", path = "/pageAddress")
+    public Object listAddress(HttpServletRequest request) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Page<RespAddressDetailDto> resp = sesameAddressService.pageAddress(tokenUser);
         return resp;
     }
 

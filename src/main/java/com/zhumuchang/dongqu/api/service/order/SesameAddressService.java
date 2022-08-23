@@ -1,5 +1,6 @@
 package com.zhumuchang.dongqu.api.service.order;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.order.SesameAddress;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqAddAddressDto;
@@ -32,4 +33,12 @@ public interface SesameAddressService extends IService<SesameAddress> {
      * @return 收货地址详情
      */
     RespAddressDetailDto getAddressDetail(TokenUser tokenUser, String addressOpenId);
+
+    /**
+     * 查询收货地址列表
+     *
+     * @param tokenUser 用户信息
+     * @return 收货地址列表
+     */
+    Page<RespAddressDetailDto> pageAddress(TokenUser tokenUser);
 }

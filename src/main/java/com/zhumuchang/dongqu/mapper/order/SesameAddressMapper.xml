@@ -28,4 +28,24 @@
             AND user_id = #{userId}
             AND open_id = #{addressOpenId}
     </select>
+
+    <select id="pageAddress" resultType="com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto">
+        SELECT
+            open_id AS addressOpenId,
+            consignee_name,
+            consignee_phone,
+            `province`,
+            `city`,
+            `area`,
+            `street`,
+            detailed_address,
+            is_default
+        FROM
+            sesame_address
+        WHERE
+            del_flag = 1
+            AND user_id = #{userId}
+        ORDER BY
+            updated_time DESC
+    </select>
 </mapper>
