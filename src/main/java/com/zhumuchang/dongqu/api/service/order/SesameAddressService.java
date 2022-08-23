@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.api.service.order;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.order.SesameAddress;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqAddAddressDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
 /**
@@ -22,4 +23,13 @@ public interface SesameAddressService extends IService<SesameAddress> {
      * @param param     请求参数
      */
     void addAddress(TokenUser tokenUser, ReqAddAddressDto param);
+
+    /**
+     * 获取收货地址详情
+     *
+     * @param tokenUser     用户信息
+     * @param addressOpenId 收货地址对外ID
+     * @return 收货地址详情
+     */
+    RespAddressDetailDto getAddressDetail(TokenUser tokenUser, String addressOpenId);
 }

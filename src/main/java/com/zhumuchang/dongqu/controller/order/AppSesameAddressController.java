@@ -2,13 +2,14 @@ package com.zhumuchang.dongqu.controller.order;
 
 
 import com.zhumuchang.dongqu.api.dto.order.req.ReqAddAddressDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto;
 import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -33,6 +34,19 @@ public class AppSesameAddressController {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         sesameAddressService.addAddress(tokenUser, param);
         return null;
+    }
+
+    @GetMapping(name = "查看收货地址详情", path = "/getAddressDetail")
+    public Object getAddressDetail(HttpServletRequest request, @RequestParam String addressOpenId) {
+        if (StringUtils.isBlank(addressOpenId)) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        RespAddressDetailDto resp = sesameAddressService.getAddressDetail(tokenUser, addressOpenId);
+        return resp;
     }
 
 }

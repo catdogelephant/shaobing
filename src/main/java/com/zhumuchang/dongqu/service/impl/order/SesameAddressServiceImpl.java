@@ -5,8 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.order.SesameAddress;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqAddAddressDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto;
 import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.mapper.order.SesameAddressMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -69,5 +72,21 @@ public class SesameAddressServiceImpl extends ServiceImpl<SesameAddressMapper, S
         if (!save) {
             log.info("添加收货地址 - 新增失败 - sesameAddress={}", JSONObject.toJSONString(sesameAddress));
         }
+    }
+
+    /**
+     * 获取收货地址详情
+     *
+     * @param tokenUser     用户信息
+     * @param addressOpenId 收货地址对外ID
+     * @return 收货地址详情
+     */
+    @Override
+    public RespAddressDetailDto getAddressDetail(TokenUser tokenUser, String addressOpenId) {
+        RespAddressDetailDto resp = sesameAddressMapper.getAddressDetail(tokenUser.getUserId(), addressOpenId);
+        if (null == resp) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "未查询到数据，请稍后重试");
+        }
+        return resp;
     }
 }
