@@ -17,7 +17,7 @@ public class ConfirmOrderCommodityListDto implements Serializable {
     /**
      * 商品缩略图
      */
-    private String commodityThumbnail;
+    private String specificationsThumbnail;
 
     /**
      * 商品名称

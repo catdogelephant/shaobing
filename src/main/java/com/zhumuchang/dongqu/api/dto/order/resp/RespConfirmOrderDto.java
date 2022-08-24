@@ -38,5 +38,5 @@ public class RespConfirmOrderDto implements Serializable {
     /**
      * 店铺集合
      */
-    private List<ConfirmOrderShopListDto> shopList;
+    private List<RespCartDto> shopList;
 }

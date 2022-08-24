@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.api.dto.order.req;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Author sx
@@ -14,12 +15,12 @@ public class ReqConfirmOrderDto implements Serializable {
     private static final long serialVersionUID = -5053187216242348756L;
 
     /**
-     * 规格外对ID
+     * 店铺对外ID
      */
-    private String specificationsOpenId;
+    private String shopOpenId;
 
     /**
-     * 商品数量
+     * 规格对外ID集合
      */
-    private Integer num;
+    private List<String> speOpenIdList;
 }

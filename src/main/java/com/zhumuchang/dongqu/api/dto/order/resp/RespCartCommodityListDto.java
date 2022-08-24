@@ -49,4 +49,9 @@ public class RespCartCommodityListDto implements Serializable {
      * 商品更新时间
      */
     private LocalDateTime commodityUpdateTime;
+
+    /**
+     * 规格缩略图
+     */
+    private String specificationsThumbnail;
 }

@@ -7,7 +7,9 @@ import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
 import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
-import com.zhumuchang.dongqu.api.dto.order.resp.*;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespCartCommodityListDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
@@ -130,6 +132,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             commodityListDto.setSpecificationsName(specificationsDto.getName());
             commodityListDto.setSpecificationsOpenId(specificationsDto.getOpenId());
             commodityListDto.setCommodityUpdateTime(LocalDateTime.now());
+            commodityListDto.setSpecificationsThumbnail(specificationsDto.getThumbnail());
             List<RespCartCommodityListDto> cartCommodityList = respCartDto.getCartCommodityList();
             cartCommodityList.add(commodityListDto);
         }
@@ -209,31 +212,84 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         if (null == tokenUser || null == param || param.isEmpty()) {
             throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
         }
-        //获取规格集合
-        List<ConfirmOrderShopListDto> specificationsDtoList = specificationsMapper.getDtoByOpenId(param);
+        //获取规格id集合
+        List<String> specificationsOpenIdList = Lists.newArrayList();
+        for (ReqConfirmOrderDto dto : param) {
+            List<String> speList = dto.getSpeOpenIdList();
+            specificationsOpenIdList.addAll(speList);
+        }
+        //获取店铺id集合
+        List<Object> shopOpenIdList = param.stream().map(ReqConfirmOrderDto::getShopOpenId).collect(Collectors.toList());
+        //获取redis中对应的店铺数据
+        String cartKey = RedisUtils.getKey(RedisUtils.CART_KEY, tokenUser.getUserId());
+        List<Object> objectList = stringRedisTemplate.opsForHash().multiGet(cartKey, shopOpenIdList);
+        List<RespCartDto> respShopList = Lists.newArrayList();
         Integer totalNum = 0;
         BigDecimal totalPrice = BigDecimal.ZERO;
-        //设置单个商品数量
-        for (ConfirmOrderShopListDto respDto : specificationsDtoList) {
-            List<ConfirmOrderCommodityListDto> commodityList = respDto.getCommodityList();
-            for (ConfirmOrderCommodityListDto commodity : commodityList) {
-                for (ReqConfirmOrderDto requestParam : param) {
-                    if (commodity.getSpecificationsOpenId().equals(requestParam.getSpecificationsOpenId())) {
-                        commodity.setCommodityNum(requestParam.getNum());
-                        totalNum += requestParam.getNum();
-                        totalPrice = totalPrice.add(commodity.getCommodityPrice());
-                        break;
+        for (Object value : objectList) {
+            if (value instanceof String) {
+                String redisJson = (String) value;
+                RespCartDto respCartDto = JSONObject.parseObject(redisJson, RespCartDto.class);
+                List<RespCartCommodityListDto> cartCommodityList = respCartDto.getCartCommodityList();
+                Boolean createShopFlag = Boolean.TRUE;
+                RespCartDto shopDto = new RespCartDto();
+                List<RespCartCommodityListDto> respCommodityList = Lists.newArrayList();
+                shopDto.setCartCommodityList(respCommodityList);
+                for (RespCartCommodityListDto commodityDto : cartCommodityList) {
+                    if (specificationsOpenIdList.contains(commodityDto.getSpecificationsOpenId())) {
+                        if (createShopFlag) {
+                            shopDto.setShopName(respCartDto.getShopName());
+                            createShopFlag = Boolean.FALSE;
+                        }
+                        respCommodityList.add(commodityDto);
+                        totalNum += commodityDto.getCommodityNum();
+                        BigDecimal commodityPrice = commodityDto.getCommodityPrice().multiply(new BigDecimal(String.valueOf(commodityDto.getCommodityNum())));
+                        totalPrice = totalPrice.add(commodityPrice);
                     }
+                }
+                if (Boolean.FALSE.equals(createShopFlag)) {
+                    respShopList.add(shopDto);
                 }
             }
         }
         RespConfirmOrderDto resp = new RespConfirmOrderDto();
-        //设置商品总数量
         resp.setTotalNum(totalNum);
         resp.setTotalPrice(totalPrice);
         resp.setPayPrice(totalPrice);
         resp.setFavorablePrice(totalPrice.subtract(totalPrice));
-        resp.setShopList(specificationsDtoList);
+        resp.setShopList(respShopList);
         return resp;
     }
+//    @Override
+//    public RespConfirmOrderDto confirmOrder(TokenUser tokenUser, List<ReqConfirmOrderDto> param) {
+//        if (null == tokenUser || null == param || param.isEmpty()) {
+//            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+//        }
+//        //获取规格集合
+//        List<ConfirmOrderShopListDto> specificationsDtoList = specificationsMapper.getDtoByOpenId(param);
+//        Integer totalNum = 0;
+//        BigDecimal totalPrice = BigDecimal.ZERO;
+//        //设置单个商品数量
+//        for (ConfirmOrderShopListDto respDto : specificationsDtoList) {
+//            List<ConfirmOrderCommodityListDto> commodityList = respDto.getCommodityList();
+//            for (ConfirmOrderCommodityListDto commodity : commodityList) {
+//                for (ReqConfirmOrderDto requestParam : param) {
+//                    if (commodity.getSpecificationsOpenId().equals(requestParam.getSpecificationsOpenId())) {
+//                        commodity.setCommodityNum(requestParam.getNum());
+//                        totalNum += requestParam.getNum();
+//                        totalPrice = totalPrice.add(commodity.getCommodityPrice());
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//        RespConfirmOrderDto resp = new RespConfirmOrderDto();
+//        //设置商品总数量
+//        resp.setTotalNum(totalNum);
+//        resp.setTotalPrice(totalPrice);
+//        resp.setPayPrice(totalPrice);
+//        resp.setFavorablePrice(totalPrice.subtract(totalPrice));
+//        resp.setShopList(specificationsDtoList);
+//        return resp;
+//    }
 }
