@@ -47,6 +47,11 @@ public class SesameOrderCommodity implements Serializable {
     private Integer sesameShopId;
 
     /**
+     * 店铺对外id
+     */
+    private String sesameShopOpenId;
+
+    /**
      * 店铺名称
      */
     private String sesameShopName;
@@ -95,6 +100,11 @@ public class SesameOrderCommodity implements Serializable {
      * 商品数量
      */
     private Integer num;
+
+    /**
+     * 商品状态：1.正常 2.退款成功
+     */
+    private Integer status;
 
     /**
      * 删除状态 0.删除 1.正常

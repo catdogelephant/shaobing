@@ -375,9 +375,10 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             String orderNo = "SES" + format + random;
             SesameOrder sesameOrder = this.createBean(IdUtil.simpleUUID(), Integer.valueOf(tokenUser.getUserId()), orderNo, null, null,
                     totalPrice, totalPrice, BigDecimal.ZERO, null, addressDto.getConsigneeName(), addressDto.getConsigneePhone(), addressDto.getProvince(),
-                    addressDto.getCity(), addressDto.getArea(), addressDto.getStreet(), addressDto.getDetailedAddress(), consigneeAddress, orderCommodityJson,
-                    remarks, OrderStatusEnum.TO_BE_PAID.getCode(), null, null, 1, Integer.valueOf(tokenUser.getUserId()),
-                    tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), null);
+                    addressDto.getCity(), addressDto.getArea(), addressDto.getStreet(), addressDto.getDetailedAddress(), consigneeAddress, commodityDto.getShopId(),
+                    commodityDto.getShopOpenId(), commodityDto.getShopName(), orderCommodityJson, remarks, OrderStatusEnum.TO_BE_PAID.getCode(), null,
+                    null, 1, Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), LocalDateTime.now(),
+                    Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), null);
             Integer insert = sesameOrderMapper.saveRetureId(sesameOrder);
             if (null == insert || insert != 1) {
                 log.info("创建订单 - 保存订单失败 - sesameOrder={}", JSONObject.toJSONString(sesameOrder));
@@ -386,7 +387,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             //设置订单商品信息
             for (OrderSpeJsonDto orderSpe : orderSpeList) {
                 SesameOrderCommodity sesameOrderCommodity = this.createSesameOrderCommodity(IdUtil.simpleUUID(), sesameOrder.getId(), sesameOrder.getOrderNo(),
-                        commodityDto.getShopId(), commodityDto.getShopName(), orderSpe.getCommodityId(), orderSpe.getCommodityOpenId(),
+                        commodityDto.getShopId(), commodityDto.getShopOpenId(), commodityDto.getShopName(), orderSpe.getCommodityId(), orderSpe.getCommodityOpenId(),
                         orderSpe.getCommodityName(), orderSpe.getSpecificationsId(), orderSpe.getSpecificationsOpenId(), orderSpe.getSpecificationsName(),
                         orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1, Integer.valueOf(tokenUser.getUserId()),
                         tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), null);
@@ -404,9 +405,10 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
 
     public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,
                                   BigDecimal payPrice, BigDecimal favorablePrice, BigDecimal discount, String consigneeName, String consigneePhone,
-                                  String province, String city, String area, String street, String detailedAddress, String consigneeAddress, String commodityJson,
-                                  String remarks, Integer status, LocalDateTime payTime, LocalDateTime deliveryTime, Integer delFlag, Integer createdId,
-                                  String createdName, LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
+                                  String province, String city, String area, String street, String detailedAddress, String consigneeAddress,
+                                  Integer shopId, String shopOpenId, String shopName, String commodityJson, String remarks, Integer status,
+                                  LocalDateTime payTime, LocalDateTime deliveryTime, Integer delFlag, Integer createdId, String createdName,
+                                  LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
         SesameOrder sesameOrder = new SesameOrder();
         sesameOrder.setOpenId(openId);
         sesameOrder.setUserId(userId);
@@ -425,6 +427,9 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         sesameOrder.setConsigneeStreet(street);
         sesameOrder.setConsigneeDetailedAddress(detailedAddress);
         sesameOrder.setConsigneeAddress(consigneeAddress);
+        sesameOrder.setSesameShopId(shopId);
+        sesameOrder.setSesameShopOpenId(shopOpenId);
+        sesameOrder.setSesameShopName(shopName);
         sesameOrder.setCommodityJson(commodityJson);
         sesameOrder.setRemarks(remarks);
         sesameOrder.setStatus(status);
@@ -440,7 +445,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         return sesameOrder;
     }
 
-    public SesameOrderCommodity createSesameOrderCommodity(String openId, Integer sesameOrderId, String sesameOrderNo, Integer sesameShopId,
+    public SesameOrderCommodity createSesameOrderCommodity(String openId, Integer sesameOrderId, String sesameOrderNo, Integer sesameShopId, String sesameShopOpenId,
                                                            String sesameShopName, Integer sesameCommodityId, String sesameCommodityOpenId,
                                                            String sesameCommodityName, Integer sesameSpecificationsId, String sesameSpecificationsOpenId,
                                                            String sesameSpecificationsName, BigDecimal originalPrice, BigDecimal payPrice, Integer num,
@@ -451,6 +456,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         sesameOrderCommodity.setSesameOrderId(sesameOrderId);
         sesameOrderCommodity.setSesameOrderNo(sesameOrderNo);
         sesameOrderCommodity.setSesameShopId(sesameShopId);
+        sesameOrderCommodity.setSesameShopOpenId(sesameShopOpenId);
         sesameOrderCommodity.setSesameShopName(sesameShopName);
         sesameOrderCommodity.setSesameCommodityId(sesameCommodityId);
         sesameOrderCommodity.setSesameCommodityOpenId(sesameCommodityOpenId);

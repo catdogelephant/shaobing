@@ -115,6 +115,21 @@ public class SesameOrder implements Serializable {
     private String consigneeAddress;
 
     /**
+     * 店铺id
+     */
+    private Integer sesameShopId;
+
+    /**
+     * 店铺对外id
+     */
+    private String sesameShopOpenId;
+
+    /**
+     * 店铺名称
+     */
+    private String sesameShopName;
+
+    /**
      * 商品信息json串
      */
     private String commodityJson;
