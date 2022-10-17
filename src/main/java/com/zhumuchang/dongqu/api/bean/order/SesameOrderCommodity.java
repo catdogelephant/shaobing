@@ -87,6 +87,11 @@ public class SesameOrderCommodity implements Serializable {
     private String sesameSpecificationsName;
 
     /**
+     * 规格缩略图
+     */
+    private String sesameSpecificationsThumbnail;
+
+    /**
      * 原价
      */
     private BigDecimal originalPrice;

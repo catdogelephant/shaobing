@@ -389,8 +389,9 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 SesameOrderCommodity sesameOrderCommodity = this.createSesameOrderCommodity(IdUtil.simpleUUID(), sesameOrder.getId(), sesameOrder.getOrderNo(),
                         commodityDto.getShopId(), commodityDto.getShopOpenId(), commodityDto.getShopName(), orderSpe.getCommodityId(), orderSpe.getCommodityOpenId(),
                         orderSpe.getCommodityName(), orderSpe.getSpecificationsId(), orderSpe.getSpecificationsOpenId(), orderSpe.getSpecificationsName(),
-                        orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1, Integer.valueOf(tokenUser.getUserId()),
-                        tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), null);
+                        orderSpe.getSpecificationsThumbnail(), orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1,
+                        Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()),
+                        tokenUser.getUserName(), null);
                 insertSesameOrderCommodityList.add(sesameOrderCommodity);
             }
         }
@@ -448,9 +449,9 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
     public SesameOrderCommodity createSesameOrderCommodity(String openId, Integer sesameOrderId, String sesameOrderNo, Integer sesameShopId, String sesameShopOpenId,
                                                            String sesameShopName, Integer sesameCommodityId, String sesameCommodityOpenId,
                                                            String sesameCommodityName, Integer sesameSpecificationsId, String sesameSpecificationsOpenId,
-                                                           String sesameSpecificationsName, BigDecimal originalPrice, BigDecimal payPrice, Integer num,
-                                                           Integer delFlag, Integer createdId, String createdName, LocalDateTime createdTime,
-                                                           Integer updatedId, String updatedName, LocalDateTime updatedTime) {
+                                                           String sesameSpecificationsName, String sesameSpecificationsThumbnail, BigDecimal originalPrice,
+                                                           BigDecimal payPrice, Integer num, Integer delFlag, Integer createdId, String createdName,
+                                                           LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
         SesameOrderCommodity sesameOrderCommodity = new SesameOrderCommodity();
         sesameOrderCommodity.setOpenId(openId);
         sesameOrderCommodity.setSesameOrderId(sesameOrderId);
@@ -464,6 +465,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         sesameOrderCommodity.setSesameSpecificationsId(sesameSpecificationsId);
         sesameOrderCommodity.setSesameSpecificationsOpenId(sesameSpecificationsOpenId);
         sesameOrderCommodity.setSesameSpecificationsName(sesameSpecificationsName);
+        sesameOrderCommodity.setSesameSpecificationsThumbnail(sesameSpecificationsThumbnail);
         sesameOrderCommodity.setOriginalPrice(originalPrice);
         sesameOrderCommodity.setPayPrice(payPrice);
         sesameOrderCommodity.setNum(num);
