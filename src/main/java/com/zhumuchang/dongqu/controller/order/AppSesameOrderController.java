@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.controller.order;
 
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -54,6 +56,13 @@ public class AppSesameOrderController {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         RespConfirmOrderDto resp = sesameOrderService.confirmOrder(tokenUser, param);
         return resp;
+    }
+
+    @PostMapping(name = "创建订单", path = "/createOrder")
+    public Object createOrder(HttpServletRequest request, @Valid @RequestBody ReqCreateOrderDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameOrderService.createOrder(tokenUser, param);
+        return null;
     }
 
 }

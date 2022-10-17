@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhumuchang.dongqu.mapper.order.SesameOrderMapper">
 
+    <insert id="saveRetureId" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.zhumuchang.dongqu.api.bean.order.SesameOrder">
+        INSERT INTO sesame_order(open_id, user_id, order_no, total_price, pay_price, `favorable_price`, consignee_name, consignee_phone, consignee_province,
+        consignee_city, consignee_area, consignee_street, consignee_detailed_address, consignee_address, commodity_json, remarks,
+        `status`, del_flag, created_id, created_name, created_time, updated_id, updated_name)
+        VALUES (#{sesameOrder.openId}, #{sesameOrder.userId}, #{sesameOrder.orderNo}, #{sesameOrder.totalPrice}, #{sesameOrder.payPrice},
+        #{sesameOrder.favorablePrice}, #{sesameOrder.consigneeName}, #{sesameOrder.consigneePhone}, #{sesameOrder.consigneeProvince}, #{sesameOrder.consigneeCity},
+        #{sesameOrder.consigneeArea}, #{sesameOrder.consigneeStreet}, #{sesameOrder.consigneeDetailedAddress}, #{sesameOrder.consigneeAddress},
+        #{sesameOrder.commodityJson}, #{sesameOrder.remarks}, #{sesameOrder.status}, #{sesameOrder.delFlag}, #{sesameOrder.createdId},
+        #{sesameOrder.createdName}, #{sesameOrder.createdTime}, #{sesameOrder.updatedId}, #{sesameOrder.updatedName})
+    </insert>
 </mapper>

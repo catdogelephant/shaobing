@@ -1,21 +1,28 @@
 package com.zhumuchang.dongqu.service.impl.order;
 
+import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
+import com.zhumuchang.dongqu.api.bean.order.SesameOrderCommodity;
 import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
-import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
-import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.other.AddressDto;
+import com.zhumuchang.dongqu.api.dto.order.other.OrderCommodityJsonDto;
+import com.zhumuchang.dongqu.api.dto.order.other.OrderSpeJsonDto;
+import com.zhumuchang.dongqu.api.dto.order.req.*;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartCommodityListDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
+import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
+import com.zhumuchang.dongqu.api.service.order.SesameOrderCommodityService;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
 import com.zhumuchang.dongqu.api.service.shop.SesameShopService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
 import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
+import com.zhumuchang.dongqu.commons.enumapi.OrderStatusEnum;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.commons.utils.RedisUtils;
@@ -27,13 +34,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -48,6 +57,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, SesameOrder> implements SesameOrderService {
+
+    @Autowired
+    private SesameOrderMapper sesameOrderMapper;
 
     @Autowired
     private SesameCommoditySpecificationsService sesameCommoditySpecificationsService;
@@ -69,6 +81,18 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    /**
+     * 收货地址
+     */
+    @Autowired
+    private SesameAddressService sesameAddressService;
+
+    /**
+     * 订单商品
+     */
+    @Autowired
+    private SesameOrderCommodityService sesameOrderCommodityService;
 
     /**
      * 添加购物车
@@ -260,6 +284,192 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         resp.setShopList(respShopList);
         return resp;
     }
+
+    /**
+     * 创建订单
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createOrder(TokenUser tokenUser, ReqCreateOrderDto param) {
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "用户信息为空");
+        }
+        List<ReqCreateOrderSpeDto> speList = param.getSpeList();
+        List<ReqCreateOrderSpeNumDto> allSpeNumList = new ArrayList<>();
+        for (ReqCreateOrderSpeDto speDto : speList) {
+            List<ReqCreateOrderSpeNumDto> speNumList = speDto.getSpeNumList();
+            if (speNumList.isEmpty()) {
+                log.info("创建订单 - 校验商品集合为空 - param={}", JSONObject.toJSONString(param));
+                throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "商品信息为空，请稍后重试");
+            }
+            for (ReqCreateOrderSpeNumDto speNumDto : speNumList) {
+                if (StringUtils.isBlank(speNumDto.getSpecificationsOpenId())) {
+                    log.info("创建订单 - 校验商品集合 - 规格ID为空 - speNumList={}", JSONObject.toJSONString(speNumList));
+                    throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "商品信息为空，请稍后重试");
+                }
+                if (null == speNumDto.getNum() || ConstantsUtils.CODE_1.compareTo(speNumDto.getNum()) > 0 || ConstantsUtils.CODE_99.compareTo(speNumDto.getNum()) < 0) {
+                    log.info("创建订单 - 校验商品集合 - 数量异常 - speNumList={}", JSONObject.toJSONString(speNumList));
+                    throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "商品数量错误，请稍后重试");
+                }
+            }
+            allSpeNumList.addAll(speNumList);
+        }
+        //获取收货地址信息
+        AddressDto addressDto = sesameAddressService.getDtoByOpenIdAndUserId(param.getAddressOpenId(), tokenUser.getUserId());
+        String consigneeAddress = String.join(ConstantsUtils.COMMA, addressDto.getProvince(), addressDto.getCity(), addressDto.getArea(),
+                addressDto.getStreet(), addressDto.getDetailedAddress());
+        //根据店铺ID分组
+//        speList.stream().collect(Collectors.groupingBy());
+        //设置商品信息
+        String speOpenIds = allSpeNumList.stream().map(ReqCreateOrderSpeNumDto::getSpecificationsOpenId).collect(Collectors.joining(ConstantsUtils.COMMA));
+        List<OrderCommodityJsonDto> orderCommodityList = specificationsMapper.listOrderCommodity(speOpenIds);
+        if (null == orderCommodityList || orderCommodityList.isEmpty()) {
+            log.info("创建订单 - 查询商品规格为空 - speOpenIds={}", speOpenIds);
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "商品信息错误，请刷新后重试");
+        }
+        int orderCommoditySpeSize = 0;
+        for (OrderCommodityJsonDto dto : orderCommodityList) {
+            List<OrderSpeJsonDto> orderSpeList = dto.getOrderSpeList();
+            orderCommoditySpeSize = orderCommoditySpeSize + orderSpeList.size();
+            for (OrderSpeJsonDto orderSpe : orderSpeList) {
+                for (ReqCreateOrderSpeNumDto allSpeNum : allSpeNumList) {
+                    if (orderSpe.getSpecificationsOpenId().equals(allSpeNum.getSpecificationsOpenId())) {
+                        orderSpe.setCommodityNum(allSpeNum.getNum());
+                        break;
+                    }
+                }
+            }
+        }
+        if (allSpeNumList.size() != orderCommoditySpeSize) {
+            log.info("创建订单 - 查询商品规格数量缺少 - speOpenIdList.size={}, orderCommoditySpeSize={}", orderCommoditySpeSize, orderCommodityList.size());
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "商品信息错误，请刷新后重试");
+        }
+        List<SesameOrderCommodity> insertSesameOrderCommodityList = new ArrayList<>();
+        //拆单
+        for (OrderCommodityJsonDto commodityDto : orderCommodityList) {
+            String orderCommodityJson = JSONObject.toJSONString(commodityDto);
+            List<OrderSpeJsonDto> orderSpeList = commodityDto.getOrderSpeList();
+            List<String> speOpenIdContainsList = orderSpeList.stream().map(OrderSpeJsonDto::getSpecificationsOpenId).collect(Collectors.toList());
+            //设置总价
+            BigDecimal totalPrice = BigDecimal.ZERO;
+            for (OrderSpeJsonDto totalPriceDto : orderSpeList) {
+                totalPrice = totalPrice.add(totalPriceDto.getSpecificationsPrice().multiply(new BigDecimal(String.valueOf(totalPriceDto.getCommodityNum()))));
+            }
+            //设置备注
+            String remarks = null;
+            for (ReqCreateOrderSpeDto speDto : speList) {
+                List<ReqCreateOrderSpeNumDto> speNumList = speDto.getSpeNumList();
+                ReqCreateOrderSpeNumDto speNumDto = speNumList.get(0);
+                if (speOpenIdContainsList.contains(speNumDto.getSpecificationsOpenId())) {
+                    remarks = speDto.getRemarks();
+                    break;
+                }
+            }
+            //设置订单信息
+            int random = (int) ((Math.random() * 9 + 1) * 10000000);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+            String format = sdf.format(new Date());
+            String orderNo = "SES" + format + random;
+            SesameOrder sesameOrder = this.createBean(IdUtil.simpleUUID(), Integer.valueOf(tokenUser.getUserId()), orderNo, null, null,
+                    totalPrice, totalPrice, BigDecimal.ZERO, null, addressDto.getConsigneeName(), addressDto.getConsigneePhone(), addressDto.getProvince(),
+                    addressDto.getCity(), addressDto.getArea(), addressDto.getStreet(), addressDto.getDetailedAddress(), consigneeAddress, orderCommodityJson,
+                    remarks, OrderStatusEnum.TO_BE_PAID.getCode(), null, null, 1, Integer.valueOf(tokenUser.getUserId()),
+                    tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), null);
+            Integer insert = sesameOrderMapper.saveRetureId(sesameOrder);
+            if (null == insert || insert != 1) {
+                log.info("创建订单 - 保存订单失败 - sesameOrder={}", JSONObject.toJSONString(sesameOrder));
+                throw new BusinessException(BusinessEnum.FAIL.getCode(), "创建订单失败");
+            }
+            //设置订单商品信息
+            for (OrderSpeJsonDto orderSpe : orderSpeList) {
+                SesameOrderCommodity sesameOrderCommodity = this.createSesameOrderCommodity(IdUtil.simpleUUID(), sesameOrder.getId(), sesameOrder.getOrderNo(),
+                        commodityDto.getShopId(), commodityDto.getShopName(), orderSpe.getCommodityId(), orderSpe.getCommodityOpenId(),
+                        orderSpe.getCommodityName(), orderSpe.getSpecificationsId(), orderSpe.getSpecificationsOpenId(), orderSpe.getSpecificationsName(),
+                        orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1, Integer.valueOf(tokenUser.getUserId()),
+                        tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), null);
+                insertSesameOrderCommodityList.add(sesameOrderCommodity);
+            }
+        }
+        if (!insertSesameOrderCommodityList.isEmpty()) {
+            boolean flag = sesameOrderCommodityService.saveBatch(insertSesameOrderCommodityList);
+            if (!flag) {
+                log.info("创建订单 - 保存订单商品集合失败 - insertSesameOrderCommodityList={}", JSONObject.toJSONString(insertSesameOrderCommodityList));
+                throw new BusinessException(BusinessEnum.FAIL.getCode(), "创建订单失败");
+            }
+        }
+    }
+
+    public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,
+                                  BigDecimal payPrice, BigDecimal favorablePrice, BigDecimal discount, String consigneeName, String consigneePhone,
+                                  String province, String city, String area, String street, String detailedAddress, String consigneeAddress, String commodityJson,
+                                  String remarks, Integer status, LocalDateTime payTime, LocalDateTime deliveryTime, Integer delFlag, Integer createdId,
+                                  String createdName, LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
+        SesameOrder sesameOrder = new SesameOrder();
+        sesameOrder.setOpenId(openId);
+        sesameOrder.setUserId(userId);
+        sesameOrder.setOrderNo(orderNo);
+        sesameOrder.setTransactionNo(transactionNo);
+        sesameOrder.setPayType(payType);
+        sesameOrder.setTotalPrice(totalPrice);
+        sesameOrder.setPayPrice(payPrice);
+        sesameOrder.setFavorablePrice(favorablePrice);
+        sesameOrder.setDiscount(discount);
+        sesameOrder.setConsigneeName(consigneeName);
+        sesameOrder.setConsigneePhone(consigneePhone);
+        sesameOrder.setConsigneeProvince(province);
+        sesameOrder.setConsigneeCity(city);
+        sesameOrder.setConsigneeArea(area);
+        sesameOrder.setConsigneeStreet(street);
+        sesameOrder.setConsigneeDetailedAddress(detailedAddress);
+        sesameOrder.setConsigneeAddress(consigneeAddress);
+        sesameOrder.setCommodityJson(commodityJson);
+        sesameOrder.setRemarks(remarks);
+        sesameOrder.setStatus(status);
+        sesameOrder.setPayTime(payTime);
+        sesameOrder.setDeliveryTime(deliveryTime);
+        sesameOrder.setDelFlag(delFlag);
+        sesameOrder.setCreatedId(createdId);
+        sesameOrder.setCreatedName(createdName);
+        sesameOrder.setCreatedTime(createdTime);
+        sesameOrder.setUpdatedId(updatedId);
+        sesameOrder.setUpdatedName(updatedName);
+        sesameOrder.setUpdatedTime(updatedTime);
+        return sesameOrder;
+    }
+
+    public SesameOrderCommodity createSesameOrderCommodity(String openId, Integer sesameOrderId, String sesameOrderNo, Integer sesameShopId,
+                                                           String sesameShopName, Integer sesameCommodityId, String sesameCommodityOpenId,
+                                                           String sesameCommodityName, Integer sesameSpecificationsId, String sesameSpecificationsOpenId,
+                                                           String sesameSpecificationsName, BigDecimal originalPrice, BigDecimal payPrice, Integer num,
+                                                           Integer delFlag, Integer createdId, String createdName, LocalDateTime createdTime,
+                                                           Integer updatedId, String updatedName, LocalDateTime updatedTime) {
+        SesameOrderCommodity sesameOrderCommodity = new SesameOrderCommodity();
+        sesameOrderCommodity.setOpenId(openId);
+        sesameOrderCommodity.setSesameOrderId(sesameOrderId);
+        sesameOrderCommodity.setSesameOrderNo(sesameOrderNo);
+        sesameOrderCommodity.setSesameShopId(sesameShopId);
+        sesameOrderCommodity.setSesameShopName(sesameShopName);
+        sesameOrderCommodity.setSesameCommodityId(sesameCommodityId);
+        sesameOrderCommodity.setSesameCommodityOpenId(sesameCommodityOpenId);
+        sesameOrderCommodity.setSesameCommodityName(sesameCommodityName);
+        sesameOrderCommodity.setSesameSpecificationsId(sesameSpecificationsId);
+        sesameOrderCommodity.setSesameSpecificationsOpenId(sesameSpecificationsOpenId);
+        sesameOrderCommodity.setSesameSpecificationsName(sesameSpecificationsName);
+        sesameOrderCommodity.setOriginalPrice(originalPrice);
+        sesameOrderCommodity.setPayPrice(payPrice);
+        sesameOrderCommodity.setNum(num);
+        sesameOrderCommodity.setDelFlag(delFlag);
+        sesameOrderCommodity.setCreatedId(createdId);
+        sesameOrderCommodity.setCreatedName(createdName);
+        sesameOrderCommodity.setCreatedTime(createdTime);
+        sesameOrderCommodity.setUpdatedId(updatedId);
+        sesameOrderCommodity.setUpdatedName(updatedName);
+        sesameOrderCommodity.setUpdatedTime(updatedTime);
+        return sesameOrderCommodity;
+    }
 //    @Override
 //    public RespConfirmOrderDto confirmOrder(TokenUser tokenUser, List<ReqConfirmOrderDto> param) {
 //        if (null == tokenUser || null == param || param.isEmpty()) {
@@ -292,4 +502,19 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
 //        resp.setShopList(specificationsDtoList);
 //        return resp;
 //    }
+
+    public static void main(String[] args) {
+        String times = "1663151544000";
+        long time = Long.parseLong(times);
+        Instant instant = Instant.ofEpochMilli(time);
+        LocalDateTime timeLocal = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        System.out.println(timeLocal);
+        System.out.println(timeLocal.getYear());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String timeFormat = formatter.format(timeLocal);
+        System.out.println(timeFormat);
+        String nowFormat = formatter.format(LocalDateTime.now());
+        System.out.println(nowFormat);
+        System.out.println(nowFormat.equals(timeFormat));
+    }
 }

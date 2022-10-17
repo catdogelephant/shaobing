@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.mapper.order;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.order.SesameAddress;
+import com.zhumuchang.dongqu.api.dto.order.other.AddressDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -44,4 +45,12 @@ public interface SesameAddressMapper extends BaseMapper<SesameAddress> {
      * @return 收货地址列表
      */
     Page<RespAddressDetailDto> pageAddress(@Param("userId") String userId, @Param("page") Page<RespAddressDetailDto> page);
+
+    /**
+     * 根据对外ID收货地址信息
+     *
+     * @param addressOpenId 对外ID
+     * @return 收货地址信息
+     */
+    AddressDto getDtoByOpenIdAndUserId(@Param("addressOpenId") String addressOpenId, @Param("userId") String userId);
 }

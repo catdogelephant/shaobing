@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.order.SesameAddress;
+import com.zhumuchang.dongqu.api.dto.order.other.AddressDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqAddAddressDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespAddressDetailDto;
 import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
@@ -102,5 +103,17 @@ public class SesameAddressServiceImpl extends ServiceImpl<SesameAddressMapper, S
         Page<RespAddressDetailDto> page = new Page<>(1, 10);
         page = sesameAddressMapper.pageAddress(tokenUser.getUserId(), page);
         return page;
+    }
+
+    /**
+     * 根据对外ID收货地址信息
+     *
+     * @param addressOpenId 对外ID
+     * @return 收货地址信息
+     */
+    @Override
+    public AddressDto getDtoByOpenIdAndUserId(String addressOpenId, String userId) {
+        AddressDto resp = sesameAddressMapper.getDtoByOpenIdAndUserId(addressOpenId, userId);
+        return resp;
     }
 }

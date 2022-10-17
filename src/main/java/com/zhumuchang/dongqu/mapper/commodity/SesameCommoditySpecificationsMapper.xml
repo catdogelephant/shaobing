@@ -63,4 +63,44 @@
             </foreach>
 
     </select>
+
+    <resultMap id="listOrderCommodityMap" type="com.zhumuchang.dongqu.api.dto.order.other.OrderCommodityJsonDto">
+        <result column="shopId" property="shopId"/>
+        <result column="shopName" property="shopName"/>
+        <result column="shopOpenId" property="shopOpenId"/>
+        <collection property="orderSpeList" ofType="com.zhumuchang.dongqu.api.dto.order.other.OrderSpeJsonDto">
+            <result property="specificationsId" column="specificationsId"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+            <result property="specificationsPrice" column="specificationsPrice"/>
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="commodityId" column="commodityId"/>
+            <result property="commodityOpenId" column="commodityOpenId"/>
+            <result property="commodityName" column="commodityName"/>
+        </collection>
+    </resultMap>
+    <select id="listOrderCommodity" resultMap="listOrderCommodityMap">
+        SELECT
+            ss.`id` AS shopId,
+            ss.open_id AS shopOpenId,
+            ss.`name` AS shopName,
+            scs.`id` AS specificationsId,
+            scs.`name` AS specificationsName,
+            scs.open_id AS specificationsOpenId,
+            scs.`thumbnail` AS specificationsThumbnail,
+            scs.`price` AS specificationsPrice,
+            sc.`id` AS commodityId,
+            sc.open_id AS commodityOpenId,
+            sc.`name` AS commodityName
+        FROM
+            sesame_commodity_specifications scs
+            LEFT JOIN sesame_commodity sc ON scs.sesame_commodity_id = sc.`id`
+            LEFT JOIN sesame_shop ss ON scs.sesame_shop_id = ss.`id`
+        WHERE
+            scs.del_flag = 1
+            AND sc.del_flag = 1
+            AND ss.del_flag = 1
+            AND ss.`enable` = 1
+            AND FIND_IN_SET(scs.open_id, #{speOpenIds})
+    </select>
 </mapper>

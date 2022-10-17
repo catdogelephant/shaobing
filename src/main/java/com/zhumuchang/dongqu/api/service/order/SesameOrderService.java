@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
@@ -51,4 +52,12 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @return 订单页商品列表
      */
     RespConfirmOrderDto confirmOrder(TokenUser tokenUser, List<ReqConfirmOrderDto> param);
+
+    /**
+     * 创建订单
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     */
+    void createOrder(TokenUser tokenUser, ReqCreateOrderDto param);
 }

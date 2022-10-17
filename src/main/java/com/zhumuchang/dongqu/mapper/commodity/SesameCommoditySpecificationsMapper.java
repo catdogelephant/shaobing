@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.mapper.commodity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommoditySpecifications;
 import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
+import com.zhumuchang.dongqu.api.dto.order.other.OrderCommodityJsonDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.ConfirmOrderShopListDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -46,4 +47,12 @@ public interface SesameCommoditySpecificationsMapper extends BaseMapper<SesameCo
      * @return 规格集合
      */
     List<ConfirmOrderShopListDto> getDtoByOpenId(@Param("param") List<ReqConfirmOrderDto> param);
+
+    /**
+     * 获取订单的商品信息
+     *
+     * @param speOpenIds 规格对外IDs
+     * @return 商品信息
+     */
+    List<OrderCommodityJsonDto> listOrderCommodity(String speOpenIds);
 }
