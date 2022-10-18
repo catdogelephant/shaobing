@@ -1,5 +1,6 @@
 package com.zhumuchang.dongqu.api.service.order;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
@@ -7,6 +8,8 @@ import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
+import com.zhumuchang.dongqu.api.dto.page.IntegerPageDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
 import java.util.List;
@@ -60,4 +63,13 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @param param     请求参数
      */
     void createOrder(TokenUser tokenUser, ReqCreateOrderDto param);
+
+    /**
+     * 获取订单分页列表
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     * @return 订单列表
+     */
+    Page<RespOrderPageDto> getOrderPage(TokenUser tokenUser, IntegerPageDto param);
 }

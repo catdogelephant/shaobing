@@ -2,6 +2,7 @@ package com.zhumuchang.dongqu.service.impl.order;
 
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
@@ -14,6 +15,8 @@ import com.zhumuchang.dongqu.api.dto.order.req.*;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartCommodityListDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
+import com.zhumuchang.dongqu.api.dto.page.IntegerPageDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
 import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
@@ -389,7 +392,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 SesameOrderCommodity sesameOrderCommodity = this.createSesameOrderCommodity(IdUtil.simpleUUID(), sesameOrder.getId(), sesameOrder.getOrderNo(),
                         commodityDto.getShopId(), commodityDto.getShopOpenId(), commodityDto.getShopName(), orderSpe.getCommodityId(), orderSpe.getCommodityOpenId(),
                         orderSpe.getCommodityName(), orderSpe.getSpecificationsId(), orderSpe.getSpecificationsOpenId(), orderSpe.getSpecificationsName(),
-                        orderSpe.getSpecificationsThumbnail(), orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1,
+                        orderSpe.getSpecificationsThumbnail(), orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1, 1,
                         Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()),
                         tokenUser.getUserName(), null);
                 insertSesameOrderCommodityList.add(sesameOrderCommodity);
@@ -402,6 +405,23 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 throw new BusinessException(BusinessEnum.FAIL.getCode(), "创建订单失败");
             }
         }
+    }
+
+    /**
+     * 获取订单分页列表
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     * @return 订单列表
+     */
+    @Override
+    public Page<RespOrderPageDto> getOrderPage(TokenUser tokenUser, IntegerPageDto param) {
+        if (null == tokenUser) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "用户信息为空");
+        }
+        Page<RespOrderPageDto> page = new Page<>(param.getCurrent(), param.getSize());
+        page = sesameOrderMapper.getOredrPage(page, param.getIntParam(), tokenUser.getUserId());
+        return page;
     }
 
     public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,
@@ -450,7 +470,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                                                            String sesameShopName, Integer sesameCommodityId, String sesameCommodityOpenId,
                                                            String sesameCommodityName, Integer sesameSpecificationsId, String sesameSpecificationsOpenId,
                                                            String sesameSpecificationsName, String sesameSpecificationsThumbnail, BigDecimal originalPrice,
-                                                           BigDecimal payPrice, Integer num, Integer delFlag, Integer createdId, String createdName,
+                                                           BigDecimal payPrice, Integer num, Integer status, Integer delFlag, Integer createdId, String createdName,
                                                            LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
         SesameOrderCommodity sesameOrderCommodity = new SesameOrderCommodity();
         sesameOrderCommodity.setOpenId(openId);
@@ -469,6 +489,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         sesameOrderCommodity.setOriginalPrice(originalPrice);
         sesameOrderCommodity.setPayPrice(payPrice);
         sesameOrderCommodity.setNum(num);
+        sesameOrderCommodity.setStatus(status);
         sesameOrderCommodity.setDelFlag(delFlag);
         sesameOrderCommodity.setCreatedId(createdId);
         sesameOrderCommodity.setCreatedName(createdName);

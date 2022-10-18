@@ -13,4 +13,52 @@
         #{sesameOrder.commodityJson}, #{sesameOrder.remarks}, #{sesameOrder.status}, #{sesameOrder.delFlag}, #{sesameOrder.createdId},
         #{sesameOrder.createdName}, #{sesameOrder.createdTime}, #{sesameOrder.updatedId}, #{sesameOrder.updatedName})
     </insert>
+
+    <resultMap id="getOredrPageMap" type="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto">
+        <result column="shopOpenId" property="shopOpenId"/>
+        <result column="shopName" property="shopName"/>
+        <result column="payPrice" property="payPrice"/>
+        <result column="orderOpenId" property="orderOpenId"/>
+        <collection property="commodityList" ofType="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageCommodityDto">
+            <result property="commodityOpenId" column="commodityOpenId"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="num" column="num"/>
+            <result property="spePayPrice" column="spePayPrice"/>
+            <result property="status" column="status"/>
+            <result property="orderCommodityId" column="orderCommodityId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getOredrPage" resultMap="getOredrPageMap">
+        SELECT
+        o.open_id AS orderOpenId,
+        o.sesame_shop_open_id AS shopOpenId,
+        o.sesame_shop_name AS shopName,
+            oc.sesame_commodity_open_id AS commodityOpenId,
+            oc.sesame_commodity_name AS commodityName,
+            oc.sesame_specifications_open_id AS specificationsOpenId,
+            oc.sesame_specifications_name AS specificationsName,
+            oc.sesame_specifications_thumbnail AS specificationsThumbnail,
+            oc.num,
+            oc.pay_price AS spePayPrice,
+            oc.`status`,
+            o.pay_price,
+            oc.`id` AS orderCommodityId
+        FROM
+            sesame_order o
+            LEFT JOIN sesame_order_commodity oc ON o.`id` = oc.sesame_order_id
+        WHERE
+            o.created_id = #{userId}
+            AND o.del_flag = 1
+            AND o.sesame_shop_id IS NOT NULL
+            <if test="status != null">
+                AND o.`status` = #{status}
+            </if>
+        ORDER BY
+            o.created_time DESC,
+            o.sesame_shop_name
+    </select>
 </mapper>

@@ -1,11 +1,14 @@
 package com.zhumuchang.dongqu.controller.order;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCartDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
+import com.zhumuchang.dongqu.api.dto.page.IntegerPageDto;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +65,15 @@ public class AppSesameOrderController {
     public Object createOrder(HttpServletRequest request, @Valid @RequestBody ReqCreateOrderDto param) {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         sesameOrderService.createOrder(tokenUser, param);
+        //TODO 这里应该要返回支付接口需要的参数，目前不做处理
         return null;
+    }
+
+    @PostMapping(name = "获取订单分页列表", path = "getOrderPage")
+    public Object getOrderPage(HttpServletRequest request, @RequestBody IntegerPageDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        Page<RespOrderPageDto> resp = sesameOrderService.getOrderPage(tokenUser, param);
+        return resp;
     }
 
 }
