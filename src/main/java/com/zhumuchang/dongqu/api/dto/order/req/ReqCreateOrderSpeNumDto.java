@@ -22,4 +22,9 @@ public class ReqCreateOrderSpeNumDto implements Serializable {
      * 商品数量
      */
     private Integer num;
+
+    /**
+     * 规格序号
+     */
+    private Integer sort;
 }

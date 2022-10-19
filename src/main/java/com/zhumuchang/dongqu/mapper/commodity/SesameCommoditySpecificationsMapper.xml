@@ -77,6 +77,7 @@
             <result property="commodityId" column="commodityId"/>
             <result property="commodityOpenId" column="commodityOpenId"/>
             <result property="commodityName" column="commodityName"/>
+            <result property="sort" column="sort"/>
         </collection>
     </resultMap>
     <select id="listOrderCommodity" resultMap="listOrderCommodityMap">
@@ -91,7 +92,12 @@
             scs.`price` AS specificationsPrice,
             sc.`id` AS commodityId,
             sc.open_id AS commodityOpenId,
-            sc.`name` AS commodityName
+            sc.`name` AS commodityName,
+            CASE scs.open_id
+            <foreach collection="allSpeNumList" item="item">
+                WHEN #{item.specificationsOpenId} THEN #{item.sort}
+            </foreach>
+            END AS sort
         FROM
             sesame_commodity_specifications scs
             LEFT JOIN sesame_commodity sc ON scs.sesame_commodity_id = sc.`id`
@@ -101,6 +107,9 @@
             AND sc.del_flag = 1
             AND ss.del_flag = 1
             AND ss.`enable` = 1
-            AND FIND_IN_SET(scs.open_id, #{speOpenIds})
+            AND scs.open_id IN
+            <foreach collection="allSpeNumList" open="(" close=")" item="item" separator=",">
+                #{item.specificationsOpenId}
+            </foreach>
     </select>
 </mapper>

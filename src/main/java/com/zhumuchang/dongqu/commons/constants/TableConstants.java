@@ -26,4 +26,9 @@ public class TableConstants {
      * 商品规格表
      */
     public static final String SESAME_COMMODITY_SPECIFICATIONS_TABLE_NAME = "sesame_commodity_specifications";
+
+    /**
+     * 订单表
+     */
+    public static final String SESAME_ORDER_TABLE_NAME = "sesame_order";
 }

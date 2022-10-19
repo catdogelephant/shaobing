@@ -3,6 +3,7 @@ package com.zhumuchang.dongqu.mapper.order;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zhumuchang.dongqu.api.bean.order.SesameOrder;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,13 @@ public interface SesameOrderMapper extends BaseMapper<SesameOrder> {
      * @return 订单分页列表
      */
     Page<RespOrderPageDto> getOredrPage(@Param("page") Page<RespOrderPageDto> page, @Param("status") Integer status, @Param("userId") String userId);
+
+    /**
+     * 获取订单详情
+     *
+     * @param userId  用户id
+     * @param orderId 订单id
+     * @return 订单详情
+     */
+    RespOrderDetailDto getOrderDetail(@Param("userId") String userId, @Param("orderId") Integer orderId);
 }

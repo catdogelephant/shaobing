@@ -39,4 +39,6 @@ public class OrderCommodityJsonDto implements Serializable {
      */
     private String remarks;
 
+    private String strList;
+
 }

@@ -58,4 +58,9 @@ public class OrderSpeJsonDto implements Serializable {
      * 规格缩略图
      */
     private String specificationsThumbnail;
+
+    /**
+     * 序号
+     */
+    private Integer sort;
 }

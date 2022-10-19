@@ -5,6 +5,7 @@ import com.zhumuchang.dongqu.api.bean.commodity.SesameCommoditySpecifications;
 import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
 import com.zhumuchang.dongqu.api.dto.order.other.OrderCommodityJsonDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderSpeNumDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.ConfirmOrderShopListDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -51,8 +52,8 @@ public interface SesameCommoditySpecificationsMapper extends BaseMapper<SesameCo
     /**
      * 获取订单的商品信息
      *
-     * @param speOpenIds 规格对外IDs
+     * @param allSpeNumList 所有商品规格集合
      * @return 商品信息
      */
-    List<OrderCommodityJsonDto> listOrderCommodity(String speOpenIds);
+    List<OrderCommodityJsonDto> listOrderCommodity(@Param("allSpeNumList") List<ReqCreateOrderSpeNumDto> allSpeNumList);
 }

@@ -12,11 +12,9 @@ import com.zhumuchang.dongqu.api.dto.order.other.AddressDto;
 import com.zhumuchang.dongqu.api.dto.order.other.OrderCommodityJsonDto;
 import com.zhumuchang.dongqu.api.dto.order.other.OrderSpeJsonDto;
 import com.zhumuchang.dongqu.api.dto.order.req.*;
-import com.zhumuchang.dongqu.api.dto.order.resp.RespCartCommodityListDto;
-import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
-import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
-import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.*;
 import com.zhumuchang.dongqu.api.dto.page.IntegerPageDto;
+import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
 import com.zhumuchang.dongqu.api.service.order.SesameAddressService;
@@ -24,11 +22,13 @@ import com.zhumuchang.dongqu.api.service.order.SesameOrderCommodityService;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
 import com.zhumuchang.dongqu.api.service.shop.SesameShopService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
+import com.zhumuchang.dongqu.commons.constants.TableConstants;
 import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.enumapi.OrderStatusEnum;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.commons.utils.RedisUtils;
+import com.zhumuchang.dongqu.mapper.SesameMapper;
 import com.zhumuchang.dongqu.mapper.commodity.SesameCommoditySpecificationsMapper;
 import com.zhumuchang.dongqu.mapper.order.SesameOrderMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +60,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, SesameOrder> implements SesameOrderService {
+
+    @Autowired
+    private SesameMapper sesameMapper;
 
     @Autowired
     private SesameOrderMapper sesameOrderMapper;
@@ -301,6 +304,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL.getCode(), "用户信息为空");
         }
         List<ReqCreateOrderSpeDto> speList = param.getSpeList();
+        //全部规格数量集合
         List<ReqCreateOrderSpeNumDto> allSpeNumList = new ArrayList<>();
         for (ReqCreateOrderSpeDto speDto : speList) {
             List<ReqCreateOrderSpeNumDto> speNumList = speDto.getSpeNumList();
@@ -324,17 +328,16 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         AddressDto addressDto = sesameAddressService.getDtoByOpenIdAndUserId(param.getAddressOpenId(), tokenUser.getUserId());
         String consigneeAddress = String.join(ConstantsUtils.COMMA, addressDto.getProvince(), addressDto.getCity(), addressDto.getArea(),
                 addressDto.getStreet(), addressDto.getDetailedAddress());
-        //根据店铺ID分组
-//        speList.stream().collect(Collectors.groupingBy());
         //设置商品信息
         String speOpenIds = allSpeNumList.stream().map(ReqCreateOrderSpeNumDto::getSpecificationsOpenId).collect(Collectors.joining(ConstantsUtils.COMMA));
-        List<OrderCommodityJsonDto> orderCommodityList = specificationsMapper.listOrderCommodity(speOpenIds);
-        if (null == orderCommodityList || orderCommodityList.isEmpty()) {
+        List<OrderCommodityJsonDto> orderCommodityJsonList = specificationsMapper.listOrderCommodity(allSpeNumList);
+        if (null == orderCommodityJsonList || orderCommodityJsonList.isEmpty()) {
             log.info("创建订单 - 查询商品规格为空 - speOpenIds={}", speOpenIds);
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "商品信息错误，请刷新后重试");
         }
         int orderCommoditySpeSize = 0;
-        for (OrderCommodityJsonDto dto : orderCommodityList) {
+        //订单商品集合
+        for (OrderCommodityJsonDto dto : orderCommodityJsonList) {
             List<OrderSpeJsonDto> orderSpeList = dto.getOrderSpeList();
             orderCommoditySpeSize = orderCommoditySpeSize + orderSpeList.size();
             for (OrderSpeJsonDto orderSpe : orderSpeList) {
@@ -347,12 +350,12 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             }
         }
         if (allSpeNumList.size() != orderCommoditySpeSize) {
-            log.info("创建订单 - 查询商品规格数量缺少 - speOpenIdList.size={}, orderCommoditySpeSize={}", orderCommoditySpeSize, orderCommodityList.size());
+            log.info("创建订单 - 查询商品规格数量缺少 - speOpenIdList.size={}, orderCommoditySpeSize={}", orderCommoditySpeSize, orderCommodityJsonList.size());
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "商品信息错误，请刷新后重试");
         }
         List<SesameOrderCommodity> insertSesameOrderCommodityList = new ArrayList<>();
         //拆单
-        for (OrderCommodityJsonDto commodityDto : orderCommodityList) {
+        for (OrderCommodityJsonDto commodityDto : orderCommodityJsonList) {
             String orderCommodityJson = JSONObject.toJSONString(commodityDto);
             List<OrderSpeJsonDto> orderSpeList = commodityDto.getOrderSpeList();
             List<String> speOpenIdContainsList = orderSpeList.stream().map(OrderSpeJsonDto::getSpecificationsOpenId).collect(Collectors.toList());
@@ -392,8 +395,8 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 SesameOrderCommodity sesameOrderCommodity = this.createSesameOrderCommodity(IdUtil.simpleUUID(), sesameOrder.getId(), sesameOrder.getOrderNo(),
                         commodityDto.getShopId(), commodityDto.getShopOpenId(), commodityDto.getShopName(), orderSpe.getCommodityId(), orderSpe.getCommodityOpenId(),
                         orderSpe.getCommodityName(), orderSpe.getSpecificationsId(), orderSpe.getSpecificationsOpenId(), orderSpe.getSpecificationsName(),
-                        orderSpe.getSpecificationsThumbnail(), orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1, 1,
-                        Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()),
+                        orderSpe.getSpecificationsThumbnail(), orderSpe.getSpecificationsPrice(), null, orderSpe.getCommodityNum(), 1, orderSpe.getSort(),
+                        1, Integer.valueOf(tokenUser.getUserId()), tokenUser.getUserName(), LocalDateTime.now(), Integer.valueOf(tokenUser.getUserId()),
                         tokenUser.getUserName(), null);
                 insertSesameOrderCommodityList.add(sesameOrderCommodity);
             }
@@ -422,6 +425,23 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         Page<RespOrderPageDto> page = new Page<>(param.getCurrent(), param.getSize());
         page = sesameOrderMapper.getOredrPage(page, param.getIntParam(), tokenUser.getUserId());
         return page;
+    }
+
+    /**
+     * 获取订单详情
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     * @return 订单详情
+     */
+    @Override
+    public RespOrderDetailDto getOrderDetail(TokenUser tokenUser, StringPageDto param) {
+        if (null == tokenUser || null == param || StringUtils.isBlank(param.getStrParam())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Integer orderId = sesameMapper.getNotDelIdByOpenId(param.getStrParam(), TableConstants.SESAME_ORDER_TABLE_NAME);
+        RespOrderDetailDto resp = sesameOrderMapper.getOrderDetail(tokenUser.getUserId(), orderId);
+        return resp;
     }
 
     public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,
@@ -470,8 +490,8 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                                                            String sesameShopName, Integer sesameCommodityId, String sesameCommodityOpenId,
                                                            String sesameCommodityName, Integer sesameSpecificationsId, String sesameSpecificationsOpenId,
                                                            String sesameSpecificationsName, String sesameSpecificationsThumbnail, BigDecimal originalPrice,
-                                                           BigDecimal payPrice, Integer num, Integer status, Integer delFlag, Integer createdId, String createdName,
-                                                           LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
+                                                           BigDecimal payPrice, Integer num, Integer status, Integer sort, Integer delFlag, Integer createdId,
+                                                           String createdName, LocalDateTime createdTime, Integer updatedId, String updatedName, LocalDateTime updatedTime) {
         SesameOrderCommodity sesameOrderCommodity = new SesameOrderCommodity();
         sesameOrderCommodity.setOpenId(openId);
         sesameOrderCommodity.setSesameOrderId(sesameOrderId);
@@ -490,6 +510,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         sesameOrderCommodity.setPayPrice(payPrice);
         sesameOrderCommodity.setNum(num);
         sesameOrderCommodity.setStatus(status);
+        sesameOrderCommodity.setSort(sort);
         sesameOrderCommodity.setDelFlag(delFlag);
         sesameOrderCommodity.setCreatedId(createdId);
         sesameOrderCommodity.setCreatedName(createdName);

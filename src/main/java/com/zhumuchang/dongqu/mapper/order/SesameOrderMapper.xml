@@ -34,9 +34,9 @@
 
     <select id="getOredrPage" resultMap="getOredrPageMap">
         SELECT
-        o.open_id AS orderOpenId,
-        o.sesame_shop_open_id AS shopOpenId,
-        o.sesame_shop_name AS shopName,
+            o.open_id AS orderOpenId,
+            o.sesame_shop_open_id AS shopOpenId,
+            o.sesame_shop_name AS shopName,
             oc.sesame_commodity_open_id AS commodityOpenId,
             oc.sesame_commodity_name AS commodityName,
             oc.sesame_specifications_open_id AS specificationsOpenId,
@@ -59,6 +59,73 @@
             </if>
         ORDER BY
             o.created_time DESC,
-            o.sesame_shop_name
+            o.sesame_shop_name,
+            oc.`sort`
+    </select>
+
+    <resultMap id="getOrderDetailMap" type="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailDto">
+        <result column="shopOpenId" property="shopOpenId"/>
+        <result column="shopName" property="shopName"/>
+        <result column="payPrice" property="payPrice"/>
+        <result column="totalPrice" property="totalPrice"/>
+        <result column="orderStatus" property="orderStatus"/>
+        <result column="consigneeName" property="consigneeName"/>
+        <result column="consigneePhone" property="consigneePhone"/>
+        <result column="orderNo" property="orderNo"/>
+        <result column="transactionNo" property="transactionNo"/>
+        <result column="payType" property="payType"/>
+        <result column="createdTime" property="createdTime"/>
+        <result column="payTime" property="payTime"/>
+        <result column="deliveryTime" property="deliveryTime"/>
+        <result column="transactionTime" property="transactionTime"/>
+        <collection property="commodityList" ofType="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailCommodityDto">
+            <result property="orderCommodityId" column="orderCommodityId"/>
+            <result property="commodityOpenId" column="commodityOpenId"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="num" column="num"/>
+            <result property="spePayPrice" column="spePayPrice"/>
+            <result property="originalPrice" column="originalPrice"/>
+            <result property="speStatus" column="speStatus"/>
+        </collection>
+    </resultMap>
+    <select id="getOrderDetail" resultMap="getOrderDetailMap">
+        SELECT
+            o.sesame_shop_open_id AS shopOpenId,
+            o.sesame_shop_name AS shopName,
+            o.pay_price AS payPrice,
+            o.total_price AS totalPrice,
+            o.`status` AS orderStatus,
+            o.consignee_name AS consigneeName,
+            o.consignee_phone AS consigneePhone,
+            o.order_no AS orderNo,
+            o.transaction_no AS transactionNo,
+            o.pay_type AS payType,
+            o.created_time AS createdTime,
+            o.pay_time AS payTime,
+            o.delivery_time AS deliveryTime,
+            o.transaction_time AS transactionTime,
+            oc.`id` AS orderCommodityId,
+            oc.open_id AS commodityOpenId,
+            oc.sesame_commodity_name AS commodityName,
+            oc.sesame_specifications_open_id AS specificationsOpenId,
+            oc.sesame_specifications_name AS specificationsName,
+            oc.sesame_specifications_thumbnail AS specificationsThumbnail,
+            oc.`num`,
+            oc.pay_price AS spePayPrice,
+            oc.original_price AS originalPrice,
+            oc.`status` AS speStatus
+        FROM
+         sesame_order o
+         LEFT JOIN sesame_order_commodity oc ON o.`id` = oc.sesame_order_id
+        WHERE
+            o.del_flag = 1
+            AND oc.del_flag = 1
+            AND o.`id` = #{orderId}
+            AND o.created_id = #{userId}
+        ORDER BY
+            oc.`sort`
     </select>
 </mapper>

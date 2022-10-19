@@ -8,8 +8,10 @@ import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
 import com.zhumuchang.dongqu.api.dto.page.IntegerPageDto;
+import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 
 import java.util.List;
@@ -72,4 +74,13 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @return 订单列表
      */
     Page<RespOrderPageDto> getOrderPage(TokenUser tokenUser, IntegerPageDto param);
+
+    /**
+     * 获取订单详情
+     *
+     * @param tokenUser 用户信息
+     * @param param     请求参数
+     * @return 订单详情
+     */
+    RespOrderDetailDto getOrderDetail(TokenUser tokenUser, StringPageDto param);
 }

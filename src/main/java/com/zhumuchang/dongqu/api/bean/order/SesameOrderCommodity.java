@@ -112,6 +112,11 @@ public class SesameOrderCommodity implements Serializable {
     private Integer status;
 
     /**
+     * 序号
+     */
+    private Integer sort;
+
+    /**
      * 删除状态 0.删除 1.正常
      */
     private Integer delFlag;

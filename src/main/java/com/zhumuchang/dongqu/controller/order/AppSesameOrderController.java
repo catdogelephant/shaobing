@@ -7,8 +7,10 @@ import com.zhumuchang.dongqu.api.dto.order.req.ReqConfirmOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.req.ReqCreateOrderDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespCartDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespConfirmOrderDto;
+import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailDto;
 import com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto;
 import com.zhumuchang.dongqu.api.dto.page.IntegerPageDto;
+import com.zhumuchang.dongqu.api.dto.page.StringPageDto;
 import com.zhumuchang.dongqu.api.service.order.SesameOrderService;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,10 +71,17 @@ public class AppSesameOrderController {
         return null;
     }
 
-    @PostMapping(name = "获取订单分页列表", path = "getOrderPage")
+    @PostMapping(name = "获取订单分页列表", path = "/getOrderPage")
     public Object getOrderPage(HttpServletRequest request, @RequestBody IntegerPageDto param) {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         Page<RespOrderPageDto> resp = sesameOrderService.getOrderPage(tokenUser, param);
+        return resp;
+    }
+
+    @PostMapping(name = "获取订单详情", path = "/getOrderDetail")
+    public Object getOrderDetail(HttpServletRequest request, @RequestBody StringPageDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        RespOrderDetailDto resp = sesameOrderService.getOrderDetail(tokenUser, param);
         return resp;
     }
 
