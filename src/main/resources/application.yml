@@ -50,4 +50,4 @@ mybatis-plus:
 
 shaobing:
   intercept:
-    tableNames: sesame_system_user
+    tableNames: sesame_system_user,sesame_order,sesame_order_commodity

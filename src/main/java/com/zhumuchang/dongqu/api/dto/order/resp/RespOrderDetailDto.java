@@ -94,5 +94,5 @@ public class RespOrderDetailDto implements Serializable {
     /**
      * 成交时间
      */
-    private LocalDateTime transactionTime;
+    private LocalDateTime TransactionTime;
 }

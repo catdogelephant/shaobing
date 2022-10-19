@@ -46,4 +46,21 @@ public interface SesameOrderMapper extends BaseMapper<SesameOrder> {
      * @return 订单详情
      */
     RespOrderDetailDto getOrderDetail(@Param("userId") String userId, @Param("orderId") Integer orderId);
+
+    /**
+     * 根据用户id和订单id获取订单id，用来校验该订单是否是该用户的
+     *
+     * @param userId  用户id
+     * @param orderId 订单id
+     * @return 订单id
+     */
+    Integer checkOrderIdToUser(@Param("userId") String userId, @Param("orderId") Integer orderId);
+
+    /**
+     * 删除订单
+     *
+     * @param orderId 订单id
+     * @return 操作数
+     */
+    Integer delOrderById(Integer orderId);
 }

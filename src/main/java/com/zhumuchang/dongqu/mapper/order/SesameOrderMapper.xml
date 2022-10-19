@@ -13,6 +13,9 @@
         #{sesameOrder.commodityJson}, #{sesameOrder.remarks}, #{sesameOrder.status}, #{sesameOrder.delFlag}, #{sesameOrder.createdId},
         #{sesameOrder.createdName}, #{sesameOrder.createdTime}, #{sesameOrder.updatedId}, #{sesameOrder.updatedName})
     </insert>
+    <update id="delOrderById">
+        UPDATE sesame_order SET del_flag = 0 WHERE `id` = #{orderId}
+    </update>
 
     <resultMap id="getOredrPageMap" type="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto">
         <result column="shopOpenId" property="shopOpenId"/>
@@ -127,5 +130,16 @@
             AND o.created_id = #{userId}
         ORDER BY
             oc.`sort`
+    </select>
+
+    <select id="checkOrderIdToUser" resultType="java.lang.Integer">
+        SELECT
+            `id`
+        FROM
+            sesame_order
+        WHERE
+            del_flag = 1
+            AND `id` = #{orderId}
+            AND created_id = #{userId}
     </select>
 </mapper>

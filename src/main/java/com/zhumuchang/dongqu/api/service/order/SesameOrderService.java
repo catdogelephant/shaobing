@@ -83,4 +83,12 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @return 订单详情
      */
     RespOrderDetailDto getOrderDetail(TokenUser tokenUser, StringPageDto param);
+
+    /**
+     * 删除订单
+     *
+     * @param tokenUser 用户信息
+     * @param param     订单openId
+     */
+    void delOrder(TokenUser tokenUser, StringPageDto param);
 }

@@ -444,6 +444,28 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         return resp;
     }
 
+    /**
+     * 删除订单
+     *
+     * @param tokenUser 用户信息
+     * @param param     订单openId
+     */
+    @Override
+    public void delOrder(TokenUser tokenUser, StringPageDto param) {
+        if (null == tokenUser || null == param || StringUtils.isBlank(param.getStrParam())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Integer orderId = sesameMapper.getNotDelIdByOpenId(param.getStrParam(), TableConstants.SESAME_ORDER_TABLE_NAME);
+        Integer queryId = sesameOrderMapper.checkOrderIdToUser(tokenUser.getUserId(), orderId);
+        if (null == queryId) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "订单不存在");
+        }
+        Integer del = sesameOrderMapper.delOrderById(orderId);
+        if (null == del || del != 1) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "删除订单失败");
+        }
+    }
+
     public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,
                                   BigDecimal payPrice, BigDecimal favorablePrice, BigDecimal discount, String consigneeName, String consigneePhone,
                                   String province, String city, String area, String street, String detailedAddress, String consigneeAddress,
