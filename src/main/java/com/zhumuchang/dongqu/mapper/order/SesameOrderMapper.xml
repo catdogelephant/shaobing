@@ -16,6 +16,13 @@
     <update id="delOrderById">
         UPDATE sesame_order SET del_flag = 0 WHERE `id` = #{orderId}
     </update>
+    <update id="queueCancelOrderByList">
+        UPDATE sesame_order SET `status` = 5 WHERE `status` = 0 AND del_flag = 1
+        AND `id` IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
 
     <resultMap id="getOredrPageMap" type="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto">
         <result column="shopOpenId" property="shopOpenId"/>

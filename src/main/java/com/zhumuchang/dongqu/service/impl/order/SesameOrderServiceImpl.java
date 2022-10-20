@@ -33,6 +33,7 @@ import com.zhumuchang.dongqu.mapper.commodity.SesameCommoditySpecificationsMappe
 import com.zhumuchang.dongqu.mapper.order.SesameOrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -60,6 +61,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, SesameOrder> implements SesameOrderService {
+
+    /**
+     * rabbitmq
+     */
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private SesameMapper sesameMapper;
@@ -354,6 +361,8 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
             throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "商品信息错误，请刷新后重试");
         }
         List<SesameOrderCommodity> insertSesameOrderCommodityList = new ArrayList<>();
+        //取消订单消息队列用的订单id集合
+        List<Integer> orderIdList = new ArrayList<>();
         //拆单
         for (OrderCommodityJsonDto commodityDto : orderCommodityJsonList) {
             String orderCommodityJson = JSONObject.toJSONString(commodityDto);
@@ -390,6 +399,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 log.info("创建订单 - 保存订单失败 - sesameOrder={}", JSONObject.toJSONString(sesameOrder));
                 throw new BusinessException(BusinessEnum.FAIL.getCode(), "创建订单失败");
             }
+            orderIdList.add(sesameOrder.getId());
             //设置订单商品信息
             for (OrderSpeJsonDto orderSpe : orderSpeList) {
                 SesameOrderCommodity sesameOrderCommodity = this.createSesameOrderCommodity(IdUtil.simpleUUID(), sesameOrder.getId(), sesameOrder.getOrderNo(),
@@ -407,6 +417,14 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
                 log.info("创建订单 - 保存订单商品集合失败 - insertSesameOrderCommodityList={}", JSONObject.toJSONString(insertSesameOrderCommodityList));
                 throw new BusinessException(BusinessEnum.FAIL.getCode(), "创建订单失败");
             }
+        }
+        if (!orderIdList.isEmpty()) {
+            String message = JSONObject.toJSONString(orderIdList);
+            log.info("创建订单 - 订单id不为空 - 给mq发送消息取消订单 - 订单id集合={}", message);
+            rabbitTemplate.convertAndSend("normalExchange", "normalKey", message, msg -> {
+                msg.getMessageProperties().setExpiration("10000");
+                return msg;
+            });
         }
     }
 
@@ -464,6 +482,16 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         if (null == del || del != 1) {
             throw new BusinessException(BusinessEnum.FAIL.getCode(), "删除订单失败");
         }
+    }
+
+    /**
+     * 消息队列取消订单
+     *
+     * @param list 订单id集合
+     */
+    @Override
+    public void queueCancelOrderByList(List<Integer> list) {
+        sesameOrderMapper.queueCancelOrderByList(list);
     }
 
     public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,

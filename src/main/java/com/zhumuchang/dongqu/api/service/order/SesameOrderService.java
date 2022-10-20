@@ -91,4 +91,11 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @param param     订单openId
      */
     void delOrder(TokenUser tokenUser, StringPageDto param);
+
+    /**
+     * 消息队列取消订单
+     *
+     * @param list 订单id集合
+     */
+    void queueCancelOrderByList(List<Integer> list);
 }

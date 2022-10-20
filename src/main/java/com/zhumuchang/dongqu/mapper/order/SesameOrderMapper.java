@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -63,4 +65,11 @@ public interface SesameOrderMapper extends BaseMapper<SesameOrder> {
      * @return 操作数
      */
     Integer delOrderById(Integer orderId);
+
+    /**
+     * 消息队列取消订单
+     *
+     * @param list 订单id集合
+     */
+    void queueCancelOrderByList(@Param("list") List<Integer> list);
 }
