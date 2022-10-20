@@ -125,4 +125,12 @@ public interface SesameCommodityMapper extends BaseMapper<SesameCommodity> {
      * @return 商品规格集合
      */
     List<AppSpecificationsListDto> appCommoditySpecificationsList(Integer commodityId);
+
+    /**
+     * 根据商品主键ID获取商品名称
+     *
+     * @param sesameCommodityId 商品主键ID
+     * @return 商品名称
+     */
+    String getNameById(Integer sesameCommodityId);
 }

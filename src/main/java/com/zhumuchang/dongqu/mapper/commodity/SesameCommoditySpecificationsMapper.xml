@@ -11,4 +11,105 @@
             del_flag = 1
             AND sesame_commodity_id = #{commodityId}
     </select>
+
+    <select id="getByOpenId" resultType="com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto">
+        SELECT
+            `id`,
+            open_id AS openId,
+            sesame_commodity_id AS sesameCommodityId,
+            sesame_commodity_open_id AS sesameCommodityOpenId,
+            sesame_shop_id AS sesameShopId,
+            sesame_shop_open_id AS sesameShopOpenId,
+            `price`,
+            `name`,
+            `thumbnail`
+        FROM
+            sesame_commodity_specifications
+        WHERE
+            del_flag = 1
+            AND open_id = #{specificationsOpenId}
+    </select>
+
+    <resultMap id="testListMap" type="com.zhumuchang.dongqu.api.dto.order.resp.ConfirmOrderShopListDto">
+        <result property="shopName" column="shopName"/>
+        <collection property="commodityList" ofType="com.zhumuchang.dongqu.api.dto.order.resp.ConfirmOrderCommodityListDto">
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="commodityPrice" column="commodityPrice"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDtoByOpenId" resultMap="testListMap">
+        SELECT
+            scs.`thumbnail` AS specificationsThumbnail,
+            sc.`name` AS commodityName,
+            sc.`price` AS commodityPrice,
+            scs.`name` AS specificationsName,
+            ss.`name` AS shopName,
+            scs.`open_id` AS specificationsOpenId
+        FROM
+            sesame_commodity_specifications scs
+            LEFT JOIN sesame_commodity sc ON scs.sesame_commodity_id = sc.`id`
+            LEFT JOIN sesame_shop ss ON scs.sesame_shop_id = ss.`id`
+        WHERE
+            scs.del_flag = 1
+            AND sc.del_flag = 1
+            AND sc.`enable` = 1
+            AND scs.open_id IN
+            <foreach collection="param" item="item" separator="," open="(" close=")">
+                #{item.specificationsOpenId}
+            </foreach>
+
+    </select>
+
+    <resultMap id="listOrderCommodityMap" type="com.zhumuchang.dongqu.api.dto.order.other.OrderCommodityJsonDto">
+        <result column="shopId" property="shopId"/>
+        <result column="shopName" property="shopName"/>
+        <result column="shopOpenId" property="shopOpenId"/>
+        <collection property="orderSpeList" ofType="com.zhumuchang.dongqu.api.dto.order.other.OrderSpeJsonDto">
+            <result property="specificationsId" column="specificationsId"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+            <result property="specificationsPrice" column="specificationsPrice"/>
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="commodityId" column="commodityId"/>
+            <result property="commodityOpenId" column="commodityOpenId"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="sort" column="sort"/>
+        </collection>
+    </resultMap>
+    <select id="listOrderCommodity" resultMap="listOrderCommodityMap">
+        SELECT
+            ss.`id` AS shopId,
+            ss.open_id AS shopOpenId,
+            ss.`name` AS shopName,
+            scs.`id` AS specificationsId,
+            scs.`name` AS specificationsName,
+            scs.open_id AS specificationsOpenId,
+            scs.`thumbnail` AS specificationsThumbnail,
+            scs.`price` AS specificationsPrice,
+            sc.`id` AS commodityId,
+            sc.open_id AS commodityOpenId,
+            sc.`name` AS commodityName,
+            CASE scs.open_id
+            <foreach collection="allSpeNumList" item="item">
+                WHEN #{item.specificationsOpenId} THEN #{item.sort}
+            </foreach>
+            END AS sort
+        FROM
+            sesame_commodity_specifications scs
+            LEFT JOIN sesame_commodity sc ON scs.sesame_commodity_id = sc.`id`
+            LEFT JOIN sesame_shop ss ON scs.sesame_shop_id = ss.`id`
+        WHERE
+            scs.del_flag = 1
+            AND sc.del_flag = 1
+            AND ss.del_flag = 1
+            AND ss.`enable` = 1
+            AND scs.open_id IN
+            <foreach collection="allSpeNumList" open="(" close=")" item="item" separator=",">
+                #{item.specificationsOpenId}
+            </foreach>
+    </select>
 </mapper>

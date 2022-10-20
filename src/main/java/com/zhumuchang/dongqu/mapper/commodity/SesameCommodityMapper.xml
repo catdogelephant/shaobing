@@ -156,4 +156,14 @@
             sesame_commodity_id = #{commodityId}
             AND del_flag = 1
     </select>
+
+    <select id="getNameById" resultType="java.lang.String">
+        SELECT
+            `name`
+        FROM
+            sesame_commodity
+        WHERE
+            del_flag = 1
+            AND `id` = #{sesameCommodityId}
+    </select>
 </mapper>

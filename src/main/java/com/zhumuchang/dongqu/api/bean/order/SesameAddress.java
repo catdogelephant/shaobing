@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.api.bean.commodity;
+package com.zhumuchang.dongqu.api.bean.order;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -6,20 +6,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- * 商品规格
+ * 收货地址
  * </p>
  *
  * @author sx
- * @since 2022-07-14
+ * @since 2022-08-23
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SesameCommoditySpecifications implements Serializable {
+public class SesameAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,64 +31,49 @@ public class SesameCommoditySpecifications implements Serializable {
     private String openId;
 
     /**
-     * 店铺主键id
+     * 会员id
      */
-    private Integer sesameShopId;
+    private Integer userId;
 
     /**
-     * 店铺对外id
+     * 收货人姓名
      */
-    private String sesameShopOpenId;
+    private String consigneeName;
 
     /**
-     * 商品主键id
+     * 收货人手机号
      */
-    private Integer sesameCommodityId;
+    private String consigneePhone;
 
     /**
-     * 商品对外id
+     * 省
      */
-    private String sesameCommodityOpenId;
+    private String province;
 
     /**
-     * 规格名称
+     * 市
      */
-    private String name;
+    private String city;
 
     /**
-     * 商品名称
+     * 区
      */
-    private String commodityName;
+    private String area;
 
     /**
-     * 规格价格
+     * 街道
      */
-    private BigDecimal price;
+    private String street;
 
     /**
-     * 商品价格
+     * 详细地址
      */
-    private BigDecimal commodityPrice;
+    private String detailedAddress;
 
     /**
-     * 价格浮动
+     * 是否默认 0.否 1.是
      */
-    private Integer priceFloat;
-
-    /**
-     * 库存
-     */
-    private Integer stock;
-
-    /**
-     * 规格缩略图
-     */
-    private String thumbnail;
-
-    /**
-     * 商品限购数量（为空或者等于0时代表不限制购买数量）
-     */
-    private Integer limitBuy;
+    private Integer isDefault;
 
     /**
      * 删除状态 0.删除 1.正常

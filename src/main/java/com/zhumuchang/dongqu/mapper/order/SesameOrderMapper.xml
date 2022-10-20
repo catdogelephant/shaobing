@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhumuchang.dongqu.mapper.order.SesameOrderMapper">
+
+    <insert id="saveRetureId" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.zhumuchang.dongqu.api.bean.order.SesameOrder">
+        INSERT INTO sesame_order(open_id, user_id, order_no, total_price, pay_price, `favorable_price`, consignee_name, consignee_phone, consignee_province,
+        consignee_city, consignee_area, consignee_street, consignee_detailed_address, consignee_address, sesame_shop_id, sesame_shop_open_id, sesame_shop_name,
+        commodity_json, remarks, `status`, del_flag, created_id, created_name, created_time, updated_id, updated_name)
+        VALUES (#{sesameOrder.openId}, #{sesameOrder.userId}, #{sesameOrder.orderNo}, #{sesameOrder.totalPrice}, #{sesameOrder.payPrice},
+        #{sesameOrder.favorablePrice}, #{sesameOrder.consigneeName}, #{sesameOrder.consigneePhone}, #{sesameOrder.consigneeProvince}, #{sesameOrder.consigneeCity},
+        #{sesameOrder.consigneeArea}, #{sesameOrder.consigneeStreet}, #{sesameOrder.consigneeDetailedAddress}, #{sesameOrder.consigneeAddress},
+        #{sesameOrder.sesameShopId}, #{sesameOrder.sesameShopOpenId}, #{sesameOrder.sesameShopName},
+        #{sesameOrder.commodityJson}, #{sesameOrder.remarks}, #{sesameOrder.status}, #{sesameOrder.delFlag}, #{sesameOrder.createdId},
+        #{sesameOrder.createdName}, #{sesameOrder.createdTime}, #{sesameOrder.updatedId}, #{sesameOrder.updatedName})
+    </insert>
+    <update id="delOrderById">
+        UPDATE sesame_order SET del_flag = 0 WHERE `id` = #{orderId}
+    </update>
+
+    <resultMap id="getOredrPageMap" type="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageDto">
+        <result column="shopOpenId" property="shopOpenId"/>
+        <result column="shopName" property="shopName"/>
+        <result column="payPrice" property="payPrice"/>
+        <result column="orderOpenId" property="orderOpenId"/>
+        <collection property="commodityList" ofType="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderPageCommodityDto">
+            <result property="commodityOpenId" column="commodityOpenId"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="num" column="num"/>
+            <result property="spePayPrice" column="spePayPrice"/>
+            <result property="status" column="status"/>
+            <result property="orderCommodityId" column="orderCommodityId"/>
+        </collection>
+    </resultMap>
+
+    <select id="getOredrPage" resultMap="getOredrPageMap">
+        SELECT
+            o.open_id AS orderOpenId,
+            o.sesame_shop_open_id AS shopOpenId,
+            o.sesame_shop_name AS shopName,
+            oc.sesame_commodity_open_id AS commodityOpenId,
+            oc.sesame_commodity_name AS commodityName,
+            oc.sesame_specifications_open_id AS specificationsOpenId,
+            oc.sesame_specifications_name AS specificationsName,
+            oc.sesame_specifications_thumbnail AS specificationsThumbnail,
+            oc.num,
+            oc.pay_price AS spePayPrice,
+            oc.`status`,
+            o.pay_price,
+            oc.`id` AS orderCommodityId
+        FROM
+            sesame_order o
+            LEFT JOIN sesame_order_commodity oc ON o.`id` = oc.sesame_order_id
+        WHERE
+            o.created_id = #{userId}
+            AND o.del_flag = 1
+            AND o.sesame_shop_id IS NOT NULL
+            <if test="status != null">
+                AND o.`status` = #{status}
+            </if>
+        ORDER BY
+            o.created_time DESC,
+            o.sesame_shop_name,
+            oc.`sort`
+    </select>
+
+    <resultMap id="getOrderDetailMap" type="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailDto">
+        <result column="shopOpenId" property="shopOpenId"/>
+        <result column="shopName" property="shopName"/>
+        <result column="payPrice" property="payPrice"/>
+        <result column="totalPrice" property="totalPrice"/>
+        <result column="orderStatus" property="orderStatus"/>
+        <result column="consigneeName" property="consigneeName"/>
+        <result column="consigneePhone" property="consigneePhone"/>
+        <result column="orderNo" property="orderNo"/>
+        <result column="transactionNo" property="transactionNo"/>
+        <result column="payType" property="payType"/>
+        <result column="createdTime" property="createdTime"/>
+        <result column="payTime" property="payTime"/>
+        <result column="deliveryTime" property="deliveryTime"/>
+        <result column="transactionTime" property="transactionTime"/>
+        <collection property="commodityList" ofType="com.zhumuchang.dongqu.api.dto.order.resp.RespOrderDetailCommodityDto">
+            <result property="orderCommodityId" column="orderCommodityId"/>
+            <result property="commodityOpenId" column="commodityOpenId"/>
+            <result property="commodityName" column="commodityName"/>
+            <result property="specificationsOpenId" column="specificationsOpenId"/>
+            <result property="specificationsName" column="specificationsName"/>
+            <result property="specificationsThumbnail" column="specificationsThumbnail"/>
+            <result property="num" column="num"/>
+            <result property="spePayPrice" column="spePayPrice"/>
+            <result property="originalPrice" column="originalPrice"/>
+            <result property="speStatus" column="speStatus"/>
+        </collection>
+    </resultMap>
+    <select id="getOrderDetail" resultMap="getOrderDetailMap">
+        SELECT
+            o.sesame_shop_open_id AS shopOpenId,
+            o.sesame_shop_name AS shopName,
+            o.pay_price AS payPrice,
+            o.total_price AS totalPrice,
+            o.`status` AS orderStatus,
+            o.consignee_name AS consigneeName,
+            o.consignee_phone AS consigneePhone,
+            o.order_no AS orderNo,
+            o.transaction_no AS transactionNo,
+            o.pay_type AS payType,
+            o.created_time AS createdTime,
+            o.pay_time AS payTime,
+            o.delivery_time AS deliveryTime,
+            o.transaction_time AS transactionTime,
+            oc.`id` AS orderCommodityId,
+            oc.open_id AS commodityOpenId,
+            oc.sesame_commodity_name AS commodityName,
+            oc.sesame_specifications_open_id AS specificationsOpenId,
+            oc.sesame_specifications_name AS specificationsName,
+            oc.sesame_specifications_thumbnail AS specificationsThumbnail,
+            oc.`num`,
+            oc.pay_price AS spePayPrice,
+            oc.original_price AS originalPrice,
+            oc.`status` AS speStatus
+        FROM
+         sesame_order o
+         LEFT JOIN sesame_order_commodity oc ON o.`id` = oc.sesame_order_id
+        WHERE
+            o.del_flag = 1
+            AND oc.del_flag = 1
+            AND o.`id` = #{orderId}
+            AND o.created_id = #{userId}
+        ORDER BY
+            oc.`sort`
+    </select>
+
+    <select id="checkOrderIdToUser" resultType="java.lang.Integer">
+        SELECT
+            `id`
+        FROM
+            sesame_order
+        WHERE
+            del_flag = 1
+            AND `id` = #{orderId}
+            AND created_id = #{userId}
+    </select>
+</mapper>

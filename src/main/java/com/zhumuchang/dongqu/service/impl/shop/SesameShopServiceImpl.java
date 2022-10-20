@@ -39,4 +39,16 @@ public class SesameShopServiceImpl extends ServiceImpl<SesameShopMapper, SesameS
         Integer enable = sesameShopMapper.getEnableById(shopId);
         return enable;
     }
+
+    /**
+     * 根据ID获取店铺名称
+     *
+     * @param sesameShopId 店铺主键ID
+     * @return 店铺名称
+     */
+    @Override
+    public String getNameById(Integer sesameShopId) {
+        String name = sesameShopMapper.getNameById(sesameShopId);
+        return name;
+    }
 }

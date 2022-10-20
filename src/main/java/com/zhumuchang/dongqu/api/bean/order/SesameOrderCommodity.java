@@ -1,4 +1,4 @@
-package com.zhumuchang.dongqu.api.bean.commodity;
+package com.zhumuchang.dongqu.api.bean.order;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -11,15 +11,15 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * 商品规格
+ * 订单商品表
  * </p>
  *
  * @author sx
- * @since 2022-07-14
+ * @since 2022-08-26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class SesameCommoditySpecifications implements Serializable {
+public class SesameOrderCommodity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -32,7 +32,17 @@ public class SesameCommoditySpecifications implements Serializable {
     private String openId;
 
     /**
-     * 店铺主键id
+     * 订单id
+     */
+    private Integer sesameOrderId;
+
+    /**
+     * 订单编号
+     */
+    private String sesameOrderNo;
+
+    /**
+     * 店铺id
      */
     private Integer sesameShopId;
 
@@ -42,54 +52,69 @@ public class SesameCommoditySpecifications implements Serializable {
     private String sesameShopOpenId;
 
     /**
-     * 商品主键id
+     * 店铺名称
+     */
+    private String sesameShopName;
+
+    /**
+     * 商品ID
      */
     private Integer sesameCommodityId;
 
     /**
-     * 商品对外id
+     * 商品对外ID
      */
     private String sesameCommodityOpenId;
 
     /**
-     * 规格名称
-     */
-    private String name;
-
-    /**
      * 商品名称
      */
-    private String commodityName;
+    private String sesameCommodityName;
 
     /**
-     * 规格价格
+     * 规格ID
      */
-    private BigDecimal price;
+    private Integer sesameSpecificationsId;
 
     /**
-     * 商品价格
+     * 规格对外ID
      */
-    private BigDecimal commodityPrice;
+    private String sesameSpecificationsOpenId;
 
     /**
-     * 价格浮动
+     * 规格名称
      */
-    private Integer priceFloat;
-
-    /**
-     * 库存
-     */
-    private Integer stock;
+    private String sesameSpecificationsName;
 
     /**
      * 规格缩略图
      */
-    private String thumbnail;
+    private String sesameSpecificationsThumbnail;
 
     /**
-     * 商品限购数量（为空或者等于0时代表不限制购买数量）
+     * 原价
      */
-    private Integer limitBuy;
+    private BigDecimal originalPrice;
+
+    /**
+     * 实付价格
+     */
+    private BigDecimal payPrice;
+
+    /**
+     * 商品数量
+     */
+    private Integer num;
+
+    /**
+     * 商品状态：1.正常 2.退款成功
+     */
+    private Integer status;
+
+    /**
+     * 序号
+     */
+    private Integer sort;
 
     /**
      * 删除状态 0.删除 1.正常
@@ -99,7 +124,7 @@ public class SesameCommoditySpecifications implements Serializable {
     /**
      * 创建人id
      */
-    private String createdId;
+    private Integer createdId;
 
     /**
      * 创建人
@@ -114,7 +139,7 @@ public class SesameCommoditySpecifications implements Serializable {
     /**
      * 更新人id
      */
-    private String updatedId;
+    private Integer updatedId;
 
     /**
      * 更新人

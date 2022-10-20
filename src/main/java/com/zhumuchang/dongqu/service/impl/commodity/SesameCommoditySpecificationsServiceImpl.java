@@ -6,10 +6,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zhumuchang.dongqu.api.bean.commodity.SesameCommoditySpecifications;
 import com.zhumuchang.dongqu.api.dto.commodity.CommodityDto;
+import com.zhumuchang.dongqu.api.dto.commodity.SpecificationsDto;
 import com.zhumuchang.dongqu.api.dto.commodity.req.ReqAddCommoditySpecificationsDto;
-import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommodityService;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCommoditySpecificationsService;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.mapper.commodity.SesameCommoditySpecificationsMapper;
@@ -60,6 +61,18 @@ public class SesameCommoditySpecificationsServiceImpl extends ServiceImpl<Sesame
             log.info("设置商品规格 - 保存失败 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
             throw new BusinessException(BusinessEnum.FAIL);
         }
+    }
+
+    /**
+     * 根据规格对外ID获取规格信息
+     *
+     * @param specificationsOpenId 商品规格对外ID
+     * @return 规格信息
+     */
+    @Override
+    public SpecificationsDto getByOpenId(String specificationsOpenId) {
+        SpecificationsDto specificationsDto = sesameCommoditySpecificationsMapper.getByOpenId(specificationsOpenId);
+        return specificationsDto;
     }
 
     /**

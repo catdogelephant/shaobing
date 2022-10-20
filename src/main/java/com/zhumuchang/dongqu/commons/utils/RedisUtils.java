@@ -17,6 +17,17 @@ public class RedisUtils {
      */
     public static final String COMMODITY_VISIT_UV_KEY = "COMMODITY_VISIT_UV";
 
+    /**
+     * 购物车key
+     */
+    public static final String CART_KEY = "CART";
+
+    /**
+     * 获取key
+     * @param key
+     * @param joinKey
+     * @return
+     */
     public static String getKey(String key, String... joinKey) {
         StringBuilder stringBuilder = new StringBuilder(key);
         for (String join : joinKey) {
