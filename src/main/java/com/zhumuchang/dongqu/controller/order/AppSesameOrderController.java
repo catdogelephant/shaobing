@@ -92,4 +92,11 @@ public class AppSesameOrderController {
         return null;
     }
 
+    @PostMapping(name = "取消订单", path = "/cancelOrder")
+    public Object cancelOrder(HttpServletRequest request, @RequestBody StringPageDto param) {
+        TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
+        sesameOrderService.cancelOrder(tokenUser, param);
+        return null;
+    }
+
 }

@@ -140,7 +140,7 @@ public class SesameOrder implements Serializable {
     private String remarks;
 
     /**
-     * 订单状态 0.待支付 1.待发货 2.待收货 3.待评价 4.已完成 5.已取消 6.已退款 7.退换中 8.申诉中
+     * 订单状态 0.待支付 1.待发货 2.待收货 3.待评价 4.已完成 5.已取消 6.已退款 7.退换中 8.申诉中 9.订单支付超时取消订单
      */
     private Integer status;
 

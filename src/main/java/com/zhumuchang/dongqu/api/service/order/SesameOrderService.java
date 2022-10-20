@@ -98,4 +98,12 @@ public interface SesameOrderService extends IService<SesameOrder> {
      * @param list 订单id集合
      */
     void queueCancelOrderByList(List<Integer> list);
+
+    /**
+     * 取消订单
+     *
+     * @param tokenUser 用户信息
+     * @param param     订单对外id
+     */
+    void cancelOrder(TokenUser tokenUser, StringPageDto param);
 }

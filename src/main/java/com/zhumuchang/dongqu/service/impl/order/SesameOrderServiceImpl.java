@@ -476,7 +476,7 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
         Integer orderId = sesameMapper.getNotDelIdByOpenId(param.getStrParam(), TableConstants.SESAME_ORDER_TABLE_NAME);
         Integer queryId = sesameOrderMapper.checkOrderIdToUser(tokenUser.getUserId(), orderId);
         if (null == queryId) {
-            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "订单不存在");
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "订单信息错误");
         }
         Integer del = sesameOrderMapper.delOrderById(orderId);
         if (null == del || del != 1) {
@@ -492,6 +492,31 @@ public class SesameOrderServiceImpl extends ServiceImpl<SesameOrderMapper, Sesam
     @Override
     public void queueCancelOrderByList(List<Integer> list) {
         sesameOrderMapper.queueCancelOrderByList(list);
+    }
+
+    /**
+     * 取消订单
+     *
+     * @param tokenUser 用户信息
+     * @param param     订单对外id
+     */
+    @Override
+    public void cancelOrder(TokenUser tokenUser, StringPageDto param) {
+        if (null == tokenUser || null == param || StringUtils.isBlank(param.getStrParam())) {
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
+        }
+        Integer orderId = sesameMapper.getNotDelIdByOpenId(param.getStrParam(), TableConstants.SESAME_ORDER_TABLE_NAME);
+        if (null == orderId) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "订单不存在");
+        }
+        Integer queryId = sesameOrderMapper.checkOrderIdToUser(tokenUser.getUserId(), orderId);
+        if (null == queryId) {
+            throw new BusinessException(BusinessEnum.DATA_NOT_FOUND.getCode(), "订单信息错误");
+        }
+        Integer cancel = sesameOrderMapper.cancelOrder(tokenUser.getUserId(), orderId);
+        if (null == cancel || cancel != 1) {
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), "取消订单失败");
+        }
     }
 
     public SesameOrder createBean(String openId, Integer userId, String orderNo, String transactionNo, Integer payType, BigDecimal totalPrice,
