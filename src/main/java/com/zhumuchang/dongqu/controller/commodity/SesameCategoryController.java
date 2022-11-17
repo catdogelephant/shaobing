@@ -35,16 +35,16 @@ public class SesameCategoryController {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
         String errorMsg = sesameCategoryService.addCategory(param, tokenUser);
         if (!StringUtils.isEmpty(errorMsg)) {
-            return new ResultDto(null, 500, errorMsg);
+            throw new BusinessException(BusinessEnum.FAIL.getCode(), errorMsg);
         }
-        return new ResultDto(null, 200, "请求成功");
+        return null;
     }
 
     @PostMapping(name = "停启用品类", value = "/enableCategory")
     public ResultDto enableCategory(HttpServletRequest request, @RequestBody ReqOneParamDto param) {
         TokenUser tokenUser = (TokenUser) request.getAttribute("tokenUser");
-        ResultDto resultDto = sesameCategoryService.enableCategory(param, tokenUser);
-        return resultDto;
+        sesameCategoryService.enableCategory(param, tokenUser);
+        return null;
     }
 
     @GetMapping(name = "品类分页列表", value = "/categoryPage")

@@ -12,9 +12,9 @@ import com.zhumuchang.dongqu.api.dto.commodity.req.ReqOneParamDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespAppCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.commodity.resp.RespCategoryPageDto;
 import com.zhumuchang.dongqu.api.dto.user.ResultDto;
-import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.api.service.commodity.SesameCategoryService;
 import com.zhumuchang.dongqu.commons.constants.ConstantsUtils;
+import com.zhumuchang.dongqu.commons.enumapi.BusinessEnum;
 import com.zhumuchang.dongqu.commons.exception.BusinessException;
 import com.zhumuchang.dongqu.commons.interceptor.TokenUser;
 import com.zhumuchang.dongqu.mapper.commodity.SesameCategoryMapper;
@@ -91,16 +91,16 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
      * @return 响应对象
      */
     @Override
-    public ResultDto enableCategory(ReqOneParamDto param, TokenUser tokenUser) {
+    public void enableCategory(ReqOneParamDto param, TokenUser tokenUser) {
         if (null == param || Objects.isNull(param.getParam()) || StringUtils.isBlank(String.valueOf(param.getParam())) || null == tokenUser) {
             log.info("停启用品类 - 参数为空 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
-            return new ResultDto(BusinessEnum.PARAM_NULL_FAIL, null);
+            throw new BusinessException(BusinessEnum.PARAM_NULL_FAIL);
         }
         String openId = String.valueOf(param.getParam());
         SesameCategory sesameCategory = sesameCategoryMapper.getByOpenId(openId);
         if (null == sesameCategory || ConstantsUtils.CODE_0.equals(sesameCategory.getDelFlag())) {
             log.info("停启用品类 - 品类不存在或品类已删除 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
-            return new ResultDto(BusinessEnum.PARAM_ERROR, null);
+            throw new BusinessException(BusinessEnum.PARAM_ERROR);
         }
 
         Integer enable;
@@ -112,9 +112,8 @@ public class SesameCategoryServiceImpl extends ServiceImpl<SesameCategoryMapper,
         Boolean update = sesameCategoryMapper.updateEnableById(sesameCategory.getId(), enable, tokenUser.getUserId());
         if (!update) {
             log.info("停启用品类 - 更新失败 - param={}, tokenUser={}", JSONObject.toJSONString(param), JSONObject.toJSONString(tokenUser));
-            return new ResultDto(BusinessEnum.FAIL, null);
+            throw new BusinessException(BusinessEnum.FAIL);
         }
-        return new ResultDto(BusinessEnum.SUCCESS, null);
     }
 
     /**

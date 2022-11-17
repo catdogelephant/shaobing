@@ -38,7 +38,7 @@ public interface SesameCategoryService extends IService<SesameCategory> {
      * @param tokenUser tokenUser
      * @return 响应对象
      */
-    ResultDto enableCategory(ReqOneParamDto param, TokenUser tokenUser);
+    void enableCategory(ReqOneParamDto param, TokenUser tokenUser);
 
     /**
      * 品类分页列表
